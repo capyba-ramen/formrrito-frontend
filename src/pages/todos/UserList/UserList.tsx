@@ -11,6 +11,7 @@ const UserList = () => {
     <div className={cx('root')}>
       <UserAvatar imgSrc={User1} />
       {import.meta.env.VITE_SOME_KEY}
+      {process.env.TEST_KEY}
     </div>
   );
 };
