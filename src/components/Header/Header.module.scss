@@ -1,0 +1,26 @@
+.root {
+  background: var(--white);
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-links {
+  a:not(:last-child) {
+    margin-bottom: 8px;
+  }
+}

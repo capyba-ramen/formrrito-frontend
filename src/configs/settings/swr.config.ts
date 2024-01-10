@@ -1,11 +1,11 @@
-import { getFetcher } from '../../api/fetchers';
+// import { get } from '../../api/base';
 
 const swrConfig = {
   revalidateOnFocus: false,
   revalidateIfStale: false,
   revalidateOnReconnect: false,
   shouldRetryOnError: false,
-  fetcher: getFetcher,
+  // fetcher: get,
 };
 
 export default swrConfig;

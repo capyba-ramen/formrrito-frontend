@@ -1,10 +1,9 @@
 @import "./normalize.scss";
-
 @import "./colors";
-// @import "./breakpoints";
+@import "./breakpoints";
 
 body {
-    font-family: "Noto Sans", "Apple Casual", Corbel, "Microsoft JhengHei Fixed", "Microsoft JhengHei", sans-serif;
+    font-family: Roboto, "Apple Casual", Corbel, "Microsoft JhengHei Fixed", "Microsoft JhengHei", sans-serif;
     background-color: var(--gray-1);
 }
 

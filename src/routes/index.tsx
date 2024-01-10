@@ -1,7 +1,9 @@
 import ErrorBoundaryLayout from '../layouts/ErrorBoundary/ErrorBoundaryLayout';
-import UserList from '../pages/todos/UserList/UserList';
-import ToDoList from '../pages/todos/ToDoList/ToDoList';
-import ToDoLayout from '../layouts/ToDo/ToDoLayout';
+import Forms from '../pages/Forms/Forms';
+import FormFiller from '../pages/FormFiller/FormFiller';
+import FormBuilder from '../pages/FormBuilder/FormBuilder';
+import BusinessLayout from '../layouts/BusinessLayout/BusinessLayout';
+import ConsumerLayout from '../layouts/ConsumerLayout/ConsumerLayout';
 import NotFound from '../pages/NotFound/NotFound';
 import { createBrowserRouter } from 'react-router-dom';
 
@@ -10,12 +12,19 @@ export const router = createBrowserRouter([
     element: <ErrorBoundaryLayout />,
     children: [
       {
-        path: '/todo',
-        element: <ToDoLayout />,
-        children: [
-          { path: 'users/:id', element: <ToDoList /> },
-          { path: 'users', element: <UserList /> },
-        ],
+        path: '/form',
+        element: <BusinessLayout />,
+        children: [{ path: ':formId', element: <FormBuilder /> }],
+      },
+      {
+        path: '/forms',
+        element: <BusinessLayout />,
+        children: [{ path: '', element: <Forms /> }],
+      },
+      {
+        path: '/c-form',
+        element: <ConsumerLayout />,
+        children: [{ path: ':formId', element: <FormFiller /> }],
       },
       {
         path: '*',

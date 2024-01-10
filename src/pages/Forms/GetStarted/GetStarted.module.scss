@@ -1,0 +1,28 @@
+.root {
+    border-radius: 8px;
+    background-color: var(--gray-2);
+    padding: 16px;
+    overflow-x: auto;
+}
+
+.container {
+    display: flex;
+}
+
+.templates-showcase {
+    display: flex;
+    align-items: center;
+    flex: 1;
+}
+
+.paper {
+    padding: 16px;
+    border-radius: 8px;
+}
+
+.create-new {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0.2;
+}
