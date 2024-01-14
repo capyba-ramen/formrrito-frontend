@@ -1,0 +1,66 @@
+import Button from '@mui/material/Button';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Typography from '@mui/material/Typography';
+
+import Password from '../UserFormFields/Password/Password';
+import Email from '../UserFormFields/Email/Email';
+import Username from '../UserFormFields/Username/Username';
+import { useFormContext } from 'react-hook-form';
+import { AuthDialogMode } from './AuthDialog';
+import useSignUp from '../../api/hooks/useSignUp';
+
+export interface SignUpProps {
+  onAuthDialogModeChange: (mode: AuthDialogMode) => void;
+}
+
+const SignUp = (props: SignUpProps) => {
+  const { onAuthDialogModeChange } = props;
+  const { handleSubmit } = useFormContext();
+  const { trigger: postSignUp } = useSignUp();
+
+  const handleSignUp = handleSubmit((data) => {
+    postSignUp({
+      email: data.email,
+      password: data.password,
+      username: data.username,
+    }).then((res) => {
+      console.log(res.data);
+      onAuthDialogModeChange('signIn');
+    });
+  });
+
+  const handleSignInClick = () => {
+    onAuthDialogModeChange('signIn');
+  };
+
+  return (
+    <>
+      <DialogTitle align="center">Signup with Formrrito!</DialogTitle>
+      <DialogContentText sx={{ color: 'var(--gray-3)' }} align="center">
+        Wrap up your ideas with Formrrito! Signup to start rolling out your custom forms today!
+      </DialogContentText>
+      <DialogContent sx={{ padding: '24px 24px 0' }}>
+        <Username />
+        <Email />
+        <Password />
+        <div style={{ padding: '24px 0' }}>
+          <Button variant="contained" size="large" fullWidth onClick={handleSignUp}>
+            Register
+          </Button>
+          <Typography align="center" sx={{ margin: '16px 0' }}>
+            or
+          </Typography>
+          <Button variant="outlined" size="large" fullWidth onClick={handleSignInClick}>
+            Sign in
+          </Button>
+        </div>
+      </DialogContent>
+    </>
+  );
+};
+
+SignUp.displayName = 'SignUp';
+
+export default SignUp;
