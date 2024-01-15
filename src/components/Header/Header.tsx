@@ -1,17 +1,17 @@
 import * as React from 'react';
-import { redirect } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 import LogoSm from '../../assets/images/logo-sm.svg';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import Avatar from '@mui/material/Avatar';
 import Popover from '@mui/material/Popover';
-import Link from '@mui/material/Link';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { removeToken } from '../../utils/auth';
 import useAuth from '../AuthProvider/useAuth';
+import useCreateForm from '../../api/hooks/useCreateForm';
 
 import * as classNames from 'classnames/bind';
 import style from './Header.module.scss';
@@ -20,6 +20,8 @@ const cx = classNames.bind(style);
 const Header = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const { loggedInUser } = useAuth();
+  const { trigger: postCreateForm } = useCreateForm();
+  const navigate = useNavigate();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     if (!loggedInUser) return;
@@ -31,8 +33,17 @@ const Header = () => {
   };
   const handleSignOut = () => {
     removeToken();
+    handleClose();
 
-    return redirect('/forms');
+    return navigate('/forms');
+  };
+
+  const handleCreateForm = () => {
+    postCreateForm().then((res) => {
+      if (res) {
+        navigate(`/form/${res.data.form_id}`);
+      }
+    });
   };
 
   const open = Boolean(anchorEl);
@@ -41,9 +52,11 @@ const Header = () => {
   return (
     <>
       <Paper elevation={1} className={cx('root')}>
-        <div className={cx('logo')}>
-          <img height="44" src={LogoSm} />
-        </div>
+        <Link to="/forms">
+          <div className={cx('logo')}>
+            <img height="44" src={LogoSm} />
+          </div>
+        </Link>
         <div className={cx('right')}>
           <Avatar
             alt={loggedInUser?.name}
@@ -59,7 +72,7 @@ const Header = () => {
           >
             {loggedInUser?.name[0]}
           </Avatar>
-          <Button variant="contained" size="medium" startIcon={<AddIcon />}>
+          <Button onClick={handleCreateForm} variant="contained" size="medium" startIcon={<AddIcon />}>
             Create Form
           </Button>
         </div>
@@ -100,9 +113,9 @@ const Header = () => {
           {loggedInUser?.name[0]}
         </Avatar>
         <section className={cx('menu-links')}>
-          <Link underline="none" variant="body2" sx={{ display: 'block' }}>
+          <Typography variant="body2" component="p">
             {loggedInUser?.name}
-          </Link>
+          </Typography>
           <Typography
             onClick={handleSignOut}
             variant="body2"

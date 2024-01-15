@@ -1,6 +1,6 @@
 import * as React from 'react';
 import AuthDialog from '../AuthDialog/AuthDialog';
-import useUserInfo, { User } from '../../api/hooks/useUserInfo';
+import useUserInfoRequest, { User } from '../../api/hooks/useUserInfoRequest';
 import AuthContext, { AuthContextProps } from './AuthContext';
 
 interface AuthProviderProps {
@@ -11,7 +11,7 @@ const AuthProvider = (props: AuthProviderProps) => {
   const { children } = props;
   const [loggedInUser, setLoggedInUser] = React.useState<User | null>(null);
   const [showAuthDialog, setShowAuthDialog] = React.useState(false);
-  const { user, error } = useUserInfo();
+  const { user, error } = useUserInfoRequest();
 
   React.useEffect(() => {
     if (error?.response?.status === 401) {

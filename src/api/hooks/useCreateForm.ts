@@ -1,8 +1,8 @@
 import useSWRMutation from 'swr/mutation';
 import { postFetcher } from '../fetchers';
 
-export default function useSignUp() {
-  const { trigger, isMutating } = useSWRMutation('/api/user/signup', postFetcher);
+export default function useCreateForm() {
+  const { trigger, isMutating } = useSWRMutation('/api/form/', postFetcher);
 
   return {
     trigger,

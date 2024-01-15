@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { User } from '../../api/hooks/useUserInfo';
+import { User } from '../../api/hooks/useUserInfoRequest';
 
 export interface AuthContextProps {
   loggedInUser: User | null;

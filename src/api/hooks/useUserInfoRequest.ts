@@ -4,7 +4,7 @@ export type User = {
   name: string;
 };
 
-export default function useUserInfo() {
+export default function useUserInfoRequest() {
   const { data, isLoading, isValidating, error } = useSWR('/api/user/info');
 
   return {

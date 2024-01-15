@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 import Card, { CardProps } from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import CardActionArea from '@mui/material/CardActionArea';
@@ -19,8 +21,11 @@ export interface FormCardProps extends CardProps {
 
 const FormCard = (props: FormCardProps) => {
   const { image, title, openDateTime, formId, ...other } = props;
+  const navigate = useNavigate();
 
-  console.log(formId);
+  const handleFormClick = () => {
+    navigate(`/form/${formId}`);
+  };
 
   return (
     <Card
@@ -31,7 +36,7 @@ const FormCard = (props: FormCardProps) => {
       {...other}
     >
       <CardActionArea>
-        <CardMedia component="img" height="144" image={image} />
+        <CardMedia component="img" height="144" image={image} onClick={handleFormClick} />
       </CardActionArea>
       <CardHeader
         classes={{
@@ -44,7 +49,7 @@ const FormCard = (props: FormCardProps) => {
             <MoreVertIcon />
           </IconButton>
         }
-        title={title}
+        title={title || 'Untitled'}
         subheader={
           <>
             <AccessTimeIcon sx={{ marginRight: '4px', fontSize: 16 }} />
