@@ -1,18 +1,7 @@
 import * as React from 'react';
 import AuthDialog from '../AuthDialog/AuthDialog';
 import useUserInfo, { User } from '../../api/hooks/useUserInfo';
-
-interface AuthContextProps {
-  loggedInUser: User | null;
-  openAuthDialog: () => void;
-  closeAuthDialog: () => void;
-}
-
-export const AuthContext = React.createContext<AuthContextProps>({
-  loggedInUser: null,
-  openAuthDialog: () => {},
-  closeAuthDialog: () => {},
-});
+import AuthContext, { AuthContextProps } from './AuthContext';
 
 interface AuthProviderProps {
   children: React.ReactNode;
@@ -39,14 +28,13 @@ const AuthProvider = (props: AuthProviderProps) => {
   };
 
   const closeAuthDialog = () => {
-    if (!loggedInUser) return;
-
     setShowAuthDialog(false);
   };
 
   const contextValue: AuthContextProps = React.useMemo(
     () => ({
       loggedInUser,
+      setLoggedInUser,
       openAuthDialog,
       closeAuthDialog,
     }),
@@ -56,7 +44,7 @@ const AuthProvider = (props: AuthProviderProps) => {
   return (
     <AuthContext.Provider value={contextValue}>
       {children}
-      <AuthDialog open={showAuthDialog} onClose={closeAuthDialog} />
+      <AuthDialog open={showAuthDialog} onClose={loggedInUser ? closeAuthDialog : undefined} />
     </AuthContext.Provider>
   );
 };

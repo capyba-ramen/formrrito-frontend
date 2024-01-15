@@ -1,4 +1,5 @@
 import { Controller } from 'react-hook-form';
+import { emailRegex } from '../../../utils/regex';
 
 import TextField from '@mui/material/TextField';
 
@@ -10,6 +11,10 @@ const Email = (props: EmailProps) => {
       name="email"
       rules={{
         required: 'Required',
+        pattern: {
+          value: emailRegex,
+          message: 'Please enter a valid email address',
+        },
       }}
       render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
         <TextField

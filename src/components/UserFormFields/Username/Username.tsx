@@ -1,6 +1,7 @@
 import { Controller } from 'react-hook-form';
 
 import TextField from '@mui/material/TextField';
+import { usernameRegex } from '../../../utils/regex';
 
 export interface UsernameProps {}
 
@@ -10,6 +11,10 @@ const Username = (props: UsernameProps) => {
       name="username"
       rules={{
         required: 'Required',
+        pattern: {
+          value: usernameRegex,
+          message: 'Username must be 3 to 20 characters long, and can only contain letters, numbers, and underscores',
+        },
       }}
       render={({ field: { onChange, value, ref }, fieldState: { error } }) => (
         <TextField

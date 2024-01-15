@@ -12,15 +12,18 @@ import { SWRConfig } from 'swr';
 import theme from './configs/settings/theme.config.ts';
 import swrConfig from './configs/settings/swr.config';
 import AuthProvider from './components/AuthProvider/AuthProvider';
+import NotificationProvider from './components/NotificationProvider/NotificationProvider';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <AuthProvider>
-        <SWRConfig value={swrConfig}>
-          <RouterProvider router={router} />
-        </SWRConfig>
-      </AuthProvider>
+      <SWRConfig value={swrConfig}>
+        <NotificationProvider>
+          <AuthProvider>
+            <RouterProvider router={router} />
+          </AuthProvider>
+        </NotificationProvider>
+      </SWRConfig>
     </ThemeProvider>
   </React.StrictMode>
 );

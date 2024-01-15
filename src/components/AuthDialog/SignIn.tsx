@@ -25,11 +25,7 @@ const SignIn = (props: SignInProps) => {
     postSignIn({
       email: data.email,
       password: data.password,
-    }).then((res) => {
-      if (res.data.access_token) {
-        localStorage.setItem('access_token', res.data.access_token);
-      }
-
+    }).then(() => {
       closeAuthDialog();
     });
   });

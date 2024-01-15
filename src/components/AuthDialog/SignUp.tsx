@@ -10,6 +10,7 @@ import Username from '../UserFormFields/Username/Username';
 import { useFormContext } from 'react-hook-form';
 import { AuthDialogMode } from './AuthDialog';
 import useSignUp from '../../api/hooks/useSignUp';
+import useNotification from '../NotificationProvider/useNotification';
 
 export interface SignUpProps {
   onAuthDialogModeChange: (mode: AuthDialogMode) => void;
@@ -19,14 +20,17 @@ const SignUp = (props: SignUpProps) => {
   const { onAuthDialogModeChange } = props;
   const { handleSubmit } = useFormContext();
   const { trigger: postSignUp } = useSignUp();
+  const { addNotification } = useNotification();
 
   const handleSignUp = handleSubmit((data) => {
     postSignUp({
       email: data.email,
       password: data.password,
       username: data.username,
-    }).then((res) => {
-      console.log(res.data);
+    }).then(() => {
+      addNotification({
+        message: 'Account created successfully! Please login to continue.',
+      });
       onAuthDialogModeChange('signIn');
     });
   });

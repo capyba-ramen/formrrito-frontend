@@ -29,7 +29,7 @@ const AuthDialog = (props: AuthDialogProps) => {
   const [mode, setMode] = React.useState('signIn');
 
   const methods = useForm({
-    mode: 'onChange',
+    mode: 'onSubmit',
     defaultValues: {
       username: '',
       email: '',

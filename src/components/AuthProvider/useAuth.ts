@@ -1,18 +1,15 @@
 import * as React from 'react';
 
-import { AuthContext } from './AuthProvider';
+import AuthContext from './AuthContext';
 
 const useAuth = () => {
-  const { loggedInUser, showAuthDialog, openAuthDialog, closeAuthDialog, handleLogin, handleRegister } =
-    React.useContext(AuthContext);
+  const { loggedInUser, setLoggedInUser, openAuthDialog, closeAuthDialog } = React.useContext(AuthContext);
 
   return {
     loggedInUser,
-    showAuthDialog,
+    setLoggedInUser,
     openAuthDialog,
     closeAuthDialog,
-    handleLogin,
-    handleRegister,
   };
 };
 
