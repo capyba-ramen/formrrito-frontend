@@ -11,14 +11,14 @@ import style from './FormList.module.scss';
 const cx = classNames.bind(style);
 
 const FormList = () => {
-  const { forms } = useFormsRequest();
+  const { forms, isFetching } = useFormsRequest();
 
   return (
     <section className={cx('root')}>
-      <Typography sx={{ marginBottom: '16px' }}>Recent Forms</Typography>
+      <Typography sx={{ marginBottom: '16px', fontWeight: 700 }}>Recent Forms</Typography>
       <Grid container spacing={2}>
         {forms?.map((form: Form) => (
-          <Grid item xs={6} sm={6} md={4} lg={3}>
+          <Grid key={form.id} item xs={6} sm={6} md={4} lg={3}>
             <FormCard formId={form.id} image={ImageSrc4} title={form.title} openDateTime={form?.opened_at} />
           </Grid>
         ))}

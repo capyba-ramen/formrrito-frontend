@@ -10,6 +10,7 @@ import useAuth from '../AuthProvider/useAuth';
 import useSignIn from '../../api/hooks/useSignIn';
 import { useFormContext } from 'react-hook-form';
 import { AuthDialogMode } from './AuthDialog';
+import useNotification from '../NotificationProvider/useNotification';
 
 export interface SignInProps {
   onAuthDialogModeChange: (mode: AuthDialogMode) => void;
@@ -20,14 +21,22 @@ const SignIn = (props: SignInProps) => {
   const { closeAuthDialog } = useAuth();
   const { handleSubmit } = useFormContext();
   const { trigger: postSignIn } = useSignIn();
+  const { addNotification } = useNotification();
 
   const handleSignIn = handleSubmit((data) => {
     postSignIn({
       email: data.email,
       password: data.password,
-    }).then(() => {
-      closeAuthDialog();
-    });
+    })
+      .then(() => {
+        closeAuthDialog();
+        location.reload();
+      })
+      .catch((err) => {
+        addNotification({
+          message: err.response.data?.detail,
+        });
+      });
   });
 
   const handleSignUpClick = () => {
@@ -44,7 +53,7 @@ const SignIn = (props: SignInProps) => {
         <Email />
         <Password />
         <div style={{ padding: '24px 0' }}>
-          <Button variant="contained" size="large" fullWidth onClick={handleSignIn}>
+          <Button type="submit" variant="contained" size="large" fullWidth onClick={handleSignIn}>
             Sign in
           </Button>
           <Typography align="center" sx={{ margin: '16px 0' }}>

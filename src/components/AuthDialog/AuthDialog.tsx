@@ -53,6 +53,7 @@ const AuthDialog = (props: AuthDialogProps) => {
         },
         component: 'form',
       }}
+      scroll="body"
     >
       <FormProvider {...methods}>
         {mode === 'signIn' ? (

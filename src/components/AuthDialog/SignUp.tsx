@@ -50,7 +50,7 @@ const SignUp = (props: SignUpProps) => {
         <Email />
         <Password />
         <div style={{ padding: '24px 0' }}>
-          <Button variant="contained" size="large" fullWidth onClick={handleSignUp}>
+          <Button variant="contained" size="large" type="submit" fullWidth onClick={handleSignUp}>
             Register
           </Button>
           <Typography align="center" sx={{ margin: '16px 0' }}>

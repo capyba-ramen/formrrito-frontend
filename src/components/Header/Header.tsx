@@ -31,11 +31,13 @@ const Header = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   const handleSignOut = () => {
     removeToken();
     handleClose();
 
-    return navigate('/forms');
+    navigate('/forms');
+    location.reload();
   };
 
   const handleCreateForm = () => {

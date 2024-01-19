@@ -13,7 +13,9 @@ const TemplateItem = (props: TemplateItemProps) => {
 
   return (
     <div className={cx('root')} {...other}>
-      <img className={cx('image')} src={image} />
+      <div className={cx('image')}>
+        <img src={image} />
+      </div>
       <Typography variant="body2" align="center">
         {title}
       </Typography>
