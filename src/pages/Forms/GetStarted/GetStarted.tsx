@@ -5,14 +5,14 @@ import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
 import AddIcon from '@mui/icons-material/Add';
-import useCreateForm from '../../../api/hooks/useCreateForm';
+import useCreateForm from '@/api/form/useCreateForm';
 
-import TemplateItem from '../../../components/TemplateItem/TemplateItem';
-import ImageSrc1 from '../../../assets/images/1.png';
-import ImageSrc2 from '../../../assets/images/2.png';
-import ImageSrc3 from '../../../assets/images/3.png';
-import ImageSrc4 from '../../../assets/images/4.png';
-import ImageSrc5 from '../../../assets/images/5.png';
+import TemplateItem from '@/components/TemplateItem/TemplateItem';
+import ImageSrc1 from '@/assets/images/1.png';
+import ImageSrc2 from '@/assets/images/2.png';
+import ImageSrc3 from '@/assets/images/3.png';
+import ImageSrc4 from '@/assets/images/4.png';
+import ImageSrc5 from '@/assets/images/5.png';
 
 import * as classNames from 'classnames/bind';
 import style from './GetStarted.module.scss';

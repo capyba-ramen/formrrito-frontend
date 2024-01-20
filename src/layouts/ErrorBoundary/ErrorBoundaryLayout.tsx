@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Outlet } from 'react-router-dom';
-import ErrorBoundary from '../../components/ErrorBoundary/ErrorBoundary';
+import ErrorBoundary from '@/components/ErrorBoundary/ErrorBoundary';
 
 const ErrorBoundaryLayout = () => (
   <ErrorBoundary>

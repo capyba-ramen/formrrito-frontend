@@ -1,3 +1,5 @@
+import { useFormContext } from 'react-hook-form';
+
 import Button from '@mui/material/Button';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -7,8 +9,7 @@ import Typography from '@mui/material/Typography';
 import Password from '../UserFormFields/Password/Password';
 import Email from '../UserFormFields/Email/Email';
 import useAuth from '../AuthProvider/useAuth';
-import useSignIn from '../../api/hooks/useSignIn';
-import { useFormContext } from 'react-hook-form';
+import useSignIn from '@/api/user/useSignIn';
 import { AuthDialogMode } from './AuthDialog';
 import useNotification from '../NotificationProvider/useNotification';
 

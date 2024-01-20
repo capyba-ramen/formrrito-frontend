@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import Header from '../../components/Header/Header';
+import Header from '@/components/Header/Header';
 
 import * as classNames from 'classnames/bind';
 import style from './BusinessLayout.module.scss';

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
-import LogoSm from '../../assets/images/logo-sm.svg';
+import LogoSm from '@/assets/images/logo-sm.svg';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import Avatar from '@mui/material/Avatar';
@@ -9,9 +9,9 @@ import Popover from '@mui/material/Popover';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import { removeToken } from '../../utils/auth';
+import { removeToken } from '@/utils/auth';
 import useAuth from '../AuthProvider/useAuth';
-import useCreateForm from '../../api/hooks/useCreateForm';
+import useCreateForm from '@/api/form/useCreateForm';
 
 import * as classNames from 'classnames/bind';
 import style from './Header.module.scss';
@@ -115,7 +115,7 @@ const Header = () => {
           {loggedInUser?.name[0]}
         </Avatar>
         <section className={cx('menu-links')}>
-          <Typography variant="body2" component="p">
+          <Typography variant="body2" component="p" gutterBottom>
             {loggedInUser?.name}
           </Typography>
           <Typography

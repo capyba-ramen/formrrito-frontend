@@ -1,5 +1,5 @@
 import { Controller } from 'react-hook-form';
-import { emailRegex } from '../../../utils/regex';
+import { emailRegex } from '@/utils/regex';
 
 import TextField from '@mui/material/TextField';
 

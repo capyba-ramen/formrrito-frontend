@@ -1,7 +1,7 @@
 import ErrorBoundaryLayout from '../layouts/ErrorBoundary/ErrorBoundaryLayout';
 import Forms from '../pages/Forms/Forms';
 import FormFiller from '../pages/FormFiller/FormFiller';
-import FormBuilder from '../pages/FormBuilder/FormBuilder';
+import FormEdit from '../pages/FormEdit/FormEdit';
 import BusinessLayout from '../layouts/BusinessLayout/BusinessLayout';
 import ConsumerLayout from '../layouts/ConsumerLayout/ConsumerLayout';
 import NotFound from '../pages/NotFound/NotFound';
@@ -14,7 +14,7 @@ export const router = createBrowserRouter([
       {
         path: '/form',
         element: <BusinessLayout />,
-        children: [{ path: ':formId', element: <FormBuilder /> }],
+        children: [{ path: ':formId', element: <FormEdit /> }],
       },
       {
         path: '/forms',

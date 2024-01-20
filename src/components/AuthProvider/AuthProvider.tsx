@@ -1,6 +1,6 @@
 import * as React from 'react';
 import AuthDialog from '../AuthDialog/AuthDialog';
-import useUserInfoRequest, { User } from '../../api/hooks/useUserInfoRequest';
+import useUserInfoRequest, { User } from '@/api/user/useUserInfoRequest';
 import AuthContext, { AuthContextProps } from './AuthContext';
 
 interface AuthProviderProps {

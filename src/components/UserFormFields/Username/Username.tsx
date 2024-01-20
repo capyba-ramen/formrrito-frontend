@@ -1,7 +1,7 @@
 import { Controller } from 'react-hook-form';
 
 import TextField from '@mui/material/TextField';
-import { usernameRegex } from '../../../utils/regex';
+import { usernameRegex } from '@/utils/regex';
 
 export interface UsernameProps {}
 

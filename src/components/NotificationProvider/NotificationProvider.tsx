@@ -1,7 +1,7 @@
 import * as React from 'react';
 import NotificationContext, { NotificationContextProps } from './NotificationContext';
 import Snackbar, { SnackbarProps } from '@mui/material/Snackbar';
-import useTimeout from '../../hooks/useTimeout';
+import useTimeout from '@/hooks/useTimeout';
 
 interface NotificationProviderProps {
   children: React.ReactNode;

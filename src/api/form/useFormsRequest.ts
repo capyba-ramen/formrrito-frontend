@@ -1,15 +1,5 @@
 import useSWR from 'swr';
-import { generateQueryString } from '../../utils/queryString';
-
-export type Form = {
-  id: string;
-  title: string;
-  description: string;
-  created_at: string;
-  opened_at: string;
-  user_id: string;
-  accepts_reply: boolean;
-};
+import { generateQueryString } from '@/utils/queryString';
 
 export default function useFormsRequest(
   params: { start: string; size: string; sort: 'desc' | 'asc' } = { start: '1', size: '10', sort: 'desc' }

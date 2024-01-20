@@ -1,7 +1,7 @@
 import { Controller } from 'react-hook-form';
 
 import TextField from '@mui/material/TextField';
-import { passwordRegex } from '../../../utils/regex';
+import { passwordRegex } from '@/utils/regex';
 
 export interface PasswordProps {}
 

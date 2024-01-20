@@ -8,8 +8,8 @@ import CardHeader from '@mui/material/CardHeader';
 import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
-import useDeleteForm from '../../api/hooks/useDeleteForm';
-import useFormsRequest from '../../api/hooks/useFormsRequest';
+import useDeleteForm from '@/api/form/useDeleteForm';
+import useFormsRequest from '@/api/form/useFormsRequest';
 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';

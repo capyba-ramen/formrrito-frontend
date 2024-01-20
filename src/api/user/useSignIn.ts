@@ -2,8 +2,8 @@ import useSWRMutation from 'swr/mutation';
 
 import client from '../client';
 import { postFetcher } from '../fetchers';
-import useAuth from '../../components/AuthProvider/useAuth';
-import { getToken, setToken } from '../../utils/auth';
+import useAuth from '@/components/AuthProvider/useAuth';
+import { getToken, setToken } from '@/utils/auth';
 
 const updateUser = async (url: string, { arg }: { arg?: string }) =>
   client
