@@ -11,10 +11,11 @@ const cx = classNames.bind(style);
 
 export interface AddQuestionButtonProps extends ButtonProps {
   append: (params: QuestionField) => void;
+  setActiveQuestionId: (id: string | undefined) => void;
 }
 
 const AddQuestionButton = (props: AddQuestionButtonProps) => {
-  const { append, ...other } = props;
+  const { append, setActiveQuestionId, ...other } = props;
   const { formId } = useParams();
 
   const { trigger: postCreateQuestion } = useCreateQuestion(formId);
@@ -23,13 +24,15 @@ const AddQuestionButton = (props: AddQuestionButtonProps) => {
     postCreateQuestion().then((res) => {
       if (res.data.question_id) {
         append({
-          qId: '',
+          qId: res.data.question_id,
           type: 0,
           title: '',
           description: '',
           required: false,
           options: [],
         });
+
+        setActiveQuestionId(res.data.question_id);
       }
     });
   };

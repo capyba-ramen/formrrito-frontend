@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import { removeToken } from '@/utils/auth';
 import useAuth from '../AuthProvider/useAuth';
 import useCreateForm from '@/api/form/useCreateForm';
+import useFormsRequest from '@/api/form/useFormsRequest';
 
 import * as classNames from 'classnames/bind';
 import style from './Header.module.scss';
@@ -22,6 +23,7 @@ const Header = () => {
   const { loggedInUser } = useAuth();
   const { trigger: postCreateForm } = useCreateForm();
   const navigate = useNavigate();
+  const { mutate } = useFormsRequest();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     if (!loggedInUser) return;
@@ -44,6 +46,7 @@ const Header = () => {
     postCreateForm().then((res) => {
       if (res) {
         navigate(`/form/${res.data.form_id}`);
+        mutate();
       }
     });
   };

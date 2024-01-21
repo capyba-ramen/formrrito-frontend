@@ -1,3 +1,5 @@
+import { ImageUrl } from '@/constants/form';
+
 export type Form = {
   id: string;
   title: string;
@@ -6,4 +8,25 @@ export type Form = {
   opened_at: string;
   user_id: string;
   accepts_reply: boolean;
+  image_url: keyof typeof ImageUrl;
+};
+
+export type FormListApiData = {
+  count: number;
+  has_next: boolean;
+  limit: number;
+  offset: number;
+  result: Form[];
+};
+
+export type FormCreateApiData = {
+  data: {
+    form_id: string;
+  };
+};
+
+export type TemplateFormCreateApiData = {
+  data: {
+    form_id: string;
+  };
 };

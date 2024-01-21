@@ -24,6 +24,10 @@ const FormTabs = (props: FormTabsProps) => {
       aria-label="primary tabs example"
       variant="fullWidth"
       centered
+      classes={{
+        root: cx('root'),
+     
+      }}
     >
       <Tab value="questions" label="Questions" disableRipple href="#questions" />
       <Tab value="responses" label="Responses" disableRipple href="#responses" />

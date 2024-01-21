@@ -1,4 +1,5 @@
-import { useFormContext, Controller, useWatch } from 'react-hook-form';
+import * as React from 'react';
+import { useFormContext, Controller, useWatch, useFieldArray } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
 import TextField from '@mui/material/TextField';
@@ -10,6 +11,9 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import AddOption from './AddOption';
+import Radio from '@mui/material/Radio';
+import Checkbox from '@mui/material/Checkbox';
 
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
@@ -19,6 +23,8 @@ import useUpdateQuestion from '@/api/question/useUpdateQuestion';
 import useNotification from '@/components/NotificationProvider/useNotification';
 import useErrorsHandler from '@/hooks/useErrorsHandler';
 import { Question } from '@/types/question';
+import Option from './Option/Option';
+import { NonOptionQuestionTypes, QuestionTypeEnum } from '@/constants/question';
 
 import * as classNames from 'classnames/bind';
 import style from './QuestionEdit.module.scss';
@@ -32,13 +38,17 @@ export interface QuestionEditProps {
 const QuestionEdit = (props: QuestionEditProps) => {
   const { qId, index } = props;
   const { formId } = useParams();
-  const { control, getValues } = useFormContext();
+  const { control, getValues, formState } = useFormContext();
   const watchType = useWatch({ name: `questions.${index}.type` });
   const { trigger: deleteQuestion } = useDeleteQuestion(qId, formId);
   const { trigger: updateQuestion } = useUpdateQuestion();
   const { mutate } = useFormRequest(formId);
   const { addNotification } = useNotification();
   const { errorsHandler } = useErrorsHandler();
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: `questions[${index}].options`,
+  });
 
   const handleDeleteQuestion = () => {
     deleteQuestion().then(() => {
@@ -49,64 +59,105 @@ const QuestionEdit = (props: QuestionEditProps) => {
     });
   };
 
-  const handleUpdateQuestion = () => {
-    updateQuestion({
-      form_id: formId,
-      question_id: qId,
-      title: getValues(`questions.${index}.title`),
-      description: getValues(`questions.${index}.description`),
-      type: getValues(`questions.${index}.type`),
-      is_required: getValues(`questions.${index}.required`),
-    }).then((res) => {
-      console.log(res);
-    });
-  };
-
   const handleUpdateQuestionType = (type: Question['type']) => {
     updateQuestion({
       form_id: formId,
       question_id: qId,
       type,
     })
-      .then((res) => {
-        console.log(res);
+      .then(() => {
+        if (NonOptionQuestionTypes.includes(type)) {
+          remove();
+        }
       })
       .catch(errorsHandler);
   };
 
+  React.useEffect(() => {
+    getValues();
+  }, [formState, getValues]);
+
   const renderOptions = () => {
     switch (watchType) {
-      case 0:
+      case QuestionTypeEnum.SIMPLE:
         return <div>ShortAnswer</div>;
-      case 1:
+      case QuestionTypeEnum.COMPLEX:
         return <div>Paragraph</div>;
-      case 2:
-        return <div>Multiple Choice</div>;
-      case 3:
-        return <div>Checkboxes</div>;
-      case 4:
-        return <div>Dropdown</div>;
+      case QuestionTypeEnum.SINGLE:
+        return (
+          <>
+            <div className={cx('options')}>
+              {fields?.map((el, idx) => (
+                <Option
+                  key={el.id}
+                  name={`questions.${index}.options.${idx}.title`}
+                  prefix={<Radio />}
+                  onRemove={() => {
+                    remove(idx);
+                  }}
+                />
+              ))}
+            </div>
+            <AddOption append={append} currentLength={fields?.length} />
+          </>
+        );
+      case QuestionTypeEnum.MULTIPLE:
+        return (
+          <>
+            <div className={cx('options')}>
+              {fields?.map((el, idx) => (
+                <Option
+                  key={el.id}
+                  name={`questions.${index}.options.${idx}.title`}
+                  prefix={<Checkbox />}
+                  onRemove={() => {
+                    remove(idx);
+                  }}
+                />
+              ))}
+            </div>
+            <AddOption append={append} currentLength={fields?.length} />
+          </>
+        );
+      case QuestionTypeEnum.DROP_DOWN:
+        return (
+          <>
+            <div className={cx('options')}>
+              {fields?.map((el, idx) => (
+                <Option
+                  key={el.id}
+                  name={`questions.${index}.options.${idx}.title`}
+                  prefix={
+                    <Typography variant="subtitle1" component="p">
+                      {idx + 1}. &nbsp;&nbsp;
+                    </Typography>
+                  }
+                  onRemove={() => {
+                    remove(idx);
+                  }}
+                />
+              ))}
+            </div>
+            <AddOption append={append} currentLength={fields?.length} />
+          </>
+        );
       default:
         return undefined;
     }
   };
 
   return (
-    <div
-      tabIndex={0}
-      className={cx('root')}
-      onFocus={() => {
-        console.log(`onFocus!! ${qId}`);
-      }}
-      onBlur={() => {
-        console.log(`onBlur!! ${qId}`);
-      }}
-    >
+    <div className={cx('root')}>
       <div className={cx('header')}>
         <Controller
           control={control}
           name={`questions.${index}.title`}
-          rules={{}}
+          rules={{
+            maxLength: {
+              value: 50,
+              message: 'Maximum 50 characters',
+            },
+          }}
           render={({ field: { value, onChange, ref }, fieldState: { error } }) => (
             <TextField
               label="Question Title"
@@ -149,7 +200,12 @@ const QuestionEdit = (props: QuestionEditProps) => {
       <Controller
         control={control}
         name={`questions.${index}.description`}
-        rules={{}}
+        rules={{
+          maxLength: {
+            value: 150,
+            message: 'Maximum 150 characters',
+          },
+        }}
         render={({ field: { value, onChange, ref }, fieldState: { error } }) => (
           <TextField
             label="Question Description"
@@ -172,14 +228,13 @@ const QuestionEdit = (props: QuestionEditProps) => {
           <DeleteOutlineOutlinedIcon />
         </IconButton>
         <div className={cx('switch')}>
-          <Typography variant="body2" color="var(--black)">
+          <Typography variant="body2" color="var(--black)" sx={{ marginRight: '4px' }}>
             Required
           </Typography>
           <Controller
             control={control}
             name={`questions.${index}.required`}
-            rules={{}}
-            render={({ field: { value = false, onChange, ref }, fieldState: { error } }) => (
+            render={({ field: { value = false, onChange, ref } }) => (
               <Switch
                 checked={value}
                 onChange={(e) => {

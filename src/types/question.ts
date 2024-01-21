@@ -17,5 +17,5 @@ export type QuestionField = {
   title: string;
   description: string;
   required: boolean;
-  options: string[];
+  options: Option[];
 };

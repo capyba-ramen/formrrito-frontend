@@ -1,9 +1,12 @@
 import client from './client';
+import { AxiosResponse } from 'axios';
 
-export const postFetcher = (url, { arg }) => client.post(url, arg);
+type Fetcher = (url: string, { arg }: { arg: any }) => Promise<AxiosResponse>;
 
-export const deleteFetcher = (url, { arg }) => client.delete(url, arg);
+export const postFetcher: Fetcher = (url: string, { arg }) => client.post(url, arg);
 
-export const putFetcher = (url, { arg }) => client.put(url, arg);
+export const deleteFetcher: Fetcher = (url: string, { arg }) => client.delete(url, arg);
 
-export const getFetcher = (...args) => client.get(...args).then((res) => res.data);
+export const putFetcher: Fetcher = (url: string, { arg }) => client.put(url, arg);
+
+export const getFetcher: Fetcher = (args) => client.get(args).then((res: AxiosResponse) => res.data);

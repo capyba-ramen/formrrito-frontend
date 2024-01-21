@@ -11,19 +11,16 @@ const NotificationProvider = (props: NotificationProviderProps) => {
   const { children } = props;
   const [notifications, setNotifications] = React.useState<SnackbarProps[]>([]);
 
-  const addNotification = React.useCallback(
-    (notification: SnackbarProps) => {
-      setNotifications((notifications) => [...notifications, notification]);
-    },
-    [setNotifications]
-  );
+  const addNotification = React.useCallback((notification: SnackbarProps) => {
+    setNotifications((notifications) => [...notifications, notification]);
+  }, []);
 
   const removeNotification = React.useCallback(() => {
     setNotifications((array) => {
       const [, ...rest] = array;
       return rest;
     });
-  }, [setNotifications]);
+  }, []);
 
   const [, clear, set] = useTimeout(removeNotification, 3000);
 
@@ -35,7 +32,7 @@ const NotificationProvider = (props: NotificationProviderProps) => {
     return () => {
       clear();
     };
-  }, [notifications, set]);
+  }, [notifications, set, clear]);
 
   const contextValue: NotificationContextProps = React.useMemo(
     () => ({

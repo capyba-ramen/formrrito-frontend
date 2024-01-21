@@ -1,25 +1,102 @@
 import { useParams } from 'react-router-dom';
+import { useFormContext, Controller } from 'react-hook-form';
 
-import Typography from '@mui/material/Typography';
-import useFormRequest from '@/api/form/useFormRequest';
+import TextField from '@mui/material/TextField';
+import useUpdateForm from '@/api/form/useUpdateForm';
+import { FormApiFields } from '@/constants/form';
+import useClearDirtyFields from '@/hooks/useClearDirtyFields';
+import { ImageUrl } from '@/constants/form';
 
 import * as classNames from 'classnames/bind';
 import style from './FormInfo.module.scss';
 const cx = classNames.bind(style);
 
-export interface FormInfoProps {}
-
-const FormInfo = (props: FormInfoProps) => {
+const FormInfo = () => {
   const { formId } = useParams();
-  const { form } = useFormRequest(formId, { revalidateOnMount: false });
+  const {
+    control,
+    getValues,
+    formState: { dirtyFields },
+  } = useFormContext();
+  const { trigger: updateForm } = useUpdateForm();
+  const { clearDirtyFields } = useClearDirtyFields();
+
+  const handleUpdateForm = (name: keyof typeof FormApiFields) => {
+    if (!dirtyFields[name]) return;
+
+    updateForm({
+      form_id: formId,
+      field: FormApiFields[name],
+      value: getValues(name),
+    }).then(() => {
+      clearDirtyFields();
+    });
+  };
 
   return (
-    <>
-      <Typography variant="h4" gutterBottom sx={{ fontWeight: 700 }}>
-        {form?.title || 'Untitled Form'}
-      </Typography>
-      {form?.description && <Typography>{form?.description}</Typography>}
-    </>
+    <div className={cx('root')}>
+      <div className={cx('banner')}>
+        <img src={ImageUrl[getValues('imageUrl')]} alt="form-banner" />
+      </div>
+      <Controller
+        control={control}
+        name="title"
+        rules={{
+          maxLength: {
+            value: 50,
+            message: 'Maximum 50 characters',
+          },
+        }}
+        render={({ field: { value, onChange, ref }, fieldState: { error } }) => (
+          <TextField
+            value={value}
+            variant="standard"
+            onChange={onChange}
+            error={!!error?.type}
+            helperText={error?.message}
+            ref={ref}
+            classes={{
+              root: cx('input', 'title-input'),
+            }}
+            inputProps={{
+              className: cx('title'),
+            }}
+            onBlur={() => {
+              handleUpdateForm('title');
+            }}
+          />
+        )}
+      />
+      <Controller
+        control={control}
+        name="description"
+        rules={{
+          maxLength: {
+            value: 50,
+            message: 'Maximum 50 characters',
+          },
+        }}
+        render={({ field: { value, onChange, ref }, fieldState: { error } }) => (
+          <TextField
+            value={value}
+            variant="standard"
+            onChange={onChange}
+            error={!!error?.type}
+            helperText={error?.message}
+            ref={ref}
+            classes={{
+              root: cx('input'),
+            }}
+            inputProps={{
+              className: cx('description'),
+            }}
+            onBlur={() => {
+              handleUpdateForm('description');
+            }}
+          />
+        )}
+      />
+    </div>
   );
 };
 

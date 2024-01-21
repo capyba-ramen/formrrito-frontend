@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import Typography from '@mui/material/Typography';
@@ -8,56 +7,53 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Radio from '@mui/material/Radio';
 import Checkbox from '@mui/material/Checkbox';
 import Divider from '@mui/material/Divider';
-import { Question } from '@/types/question';
-
-import * as classNames from 'classnames/bind';
-import style from './QuestionDisplay.module.scss';
-const cx = classNames.bind(style);
+import { QuestionTypeEnum } from '@/constants/question';
 
 export interface QuestionDisplayProps {
   qId: string;
   index: number;
-  onSetActiveQId: (qId?: Question['id']) => void;
 }
 
 const QuestionDisplay = (props: QuestionDisplayProps) => {
-  const { qId, index, onSetActiveQId } = props;
+  const { qId, index } = props;
   const { getValues } = useFormContext();
-  const watchType = useWatch({ name: `questions.${index}.type` }); // TODO: use
-  const handleClick = () => {
-    onSetActiveQId(qId);
-  };
+  const watchType = useWatch({ name: `questions.${index}.type` });
 
-  const renderOptions = React.useCallback(() => {
+  const renderOptions = () => {
     switch (watchType) {
-      case 0:
-        return <div>Short Answer</div>;
-      case 1:
+      case QuestionTypeEnum.SIMPLE:
+        return <div>Short Answer Text</div>;
+      case QuestionTypeEnum.COMPLEX:
         return <div>Long Answer Text</div>;
-      case 2:
-      case 4:
+      case QuestionTypeEnum.SINGLE:
         return (
           <RadioGroup>
-            {getValues(`questions.${index}.options`)?.map((el) => (
-              <FormControlLabel value={el.id} key={`${qId}-${el.id}`} control={<Radio />} label={el.title} />
+            {getValues(`questions.${index}.options`)?.map((el, idx) => (
+              <FormControlLabel value={idx} key={`${qId}-${idx}`} control={<Radio />} label={el.title} />
             ))}
           </RadioGroup>
         );
-      case 3:
+      case QuestionTypeEnum.MULTIPLE:
         return (
           <FormGroup>
-            {getValues(`questions.${index}.options`)?.map((el) => (
-              <FormControlLabel key={`${qId}-${el.id}`} control={<Checkbox />} label={el.title} />
+            {getValues(`questions.${index}.options`)?.map((el, idx) => (
+              <FormControlLabel key={`${qId}-${idx}`} value={idx} control={<Checkbox />} label={el.title} />
             ))}
           </FormGroup>
+        );
+      case QuestionTypeEnum.DROP_DOWN:
+        return (
+          <ol>
+            {getValues(`questions.${index}.options`)?.map((el, idx) => <li key={`${qId}-${idx}`}>{el.title}</li>)}
+          </ol>
         );
       default:
         return undefined;
     }
-  }, []);
+  };
 
   return (
-    <div className={cx('root')} onClick={handleClick}>
+    <div>
       <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
         {getValues(`questions.${index}.title`) || `Question ${index + 1}`}
       </Typography>

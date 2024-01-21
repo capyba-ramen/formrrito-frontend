@@ -7,18 +7,27 @@ import FormInfo from './FormInfo/FormInfo';
 import FormWrapper from '@/components/FormWrapper/FormWrapper';
 import AddQuestionButton from './AddQuestionButton/AddQuestionButton';
 import Questions from './Questions/Questions';
-
+import Responses from './Responses/Responses';
+import useErrorsHandler from '@/hooks/useErrorsHandler';
 import useFormRequest from '@/api/form/useFormRequest';
 import { Question } from '@/types/question';
 
 const FormEdit = () => {
+  const [activeQuestionId, setActiveQuestionId] = React.useState<string | undefined>(undefined);
+  const [errorQuestionId, setErrorQuestionId] = React.useState<string | undefined>(undefined);
   const { formId } = useParams();
-  const { form } = useFormRequest(formId);
+  const { form, error } = useFormRequest(formId);
+  const { errorsHandler } = useErrorsHandler();
   const location = useLocation();
-  console.log(location.hash);
   const methods = useForm({
     mode: 'onChange',
-    defaultValues: { questions: [] },
+    defaultValues: {
+      title: '',
+      description: '',
+      acceptResponse: true,
+      imageUrl: '',
+      questions: [],
+    },
   });
 
   const { reset, control } = methods;
@@ -28,16 +37,29 @@ const FormEdit = () => {
   });
 
   React.useEffect(() => {
+    if (!error) return;
+
+    errorsHandler(error);
+  }, [error, errorsHandler]);
+
+  React.useEffect(() => {
     if (!form) return;
 
     reset({
+      title: form?.title || 'Untitled Form',
+      description: form?.description || 'Form description',
+      acceptResponse: form?.accept_responses,
+      imageUrl: form?.image_url,
       questions: form?.questions?.map((q: Question) => ({
         qId: q.id,
         type: q.type,
         title: q.title,
         description: q.description,
         required: q.is_required,
-        options: q.options,
+        options: q.options?.map((el) => ({
+          optionId: el.id,
+          title: el.title,
+        })),
       })),
     });
   }, [form]);
@@ -49,14 +71,17 @@ const FormEdit = () => {
       <FormWrapper style={{ marginTop: '24px' }}>
         {location.hash !== '#responses' ? (
           <>
-            <Questions questions={fields} />
-            <AddQuestionButton sx={{ marginTop: '16px' }} append={append} />
+            <Questions
+              questions={fields}
+              activeQuestionId={activeQuestionId}
+              setActiveQuestionId={setActiveQuestionId}
+              errorQuestionId={errorQuestionId}
+              setErrorQuestionId={setErrorQuestionId}
+            />
+            <AddQuestionButton sx={{ marginTop: '16px' }} append={append} setActiveQuestionId={setActiveQuestionId} />
           </>
         ) : (
-          <div>
-            Responses
-            <h1>Charts</h1>
-          </div>
+          <Responses />
         )}
       </FormWrapper>
     </FormProvider>

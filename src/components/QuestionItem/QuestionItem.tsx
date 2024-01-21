@@ -1,6 +1,7 @@
 import { Question } from '@/types/question';
 import QuestionEdit from './QuestionEdit/QuestionEdit';
 import QuestionDisplay from './QuestionDisplay/QuestionDisplay';
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 
 import * as classNames from 'classnames/bind';
 import style from './QuestionItem.module.scss';
@@ -11,23 +12,23 @@ export interface QuestionItemProps {
   type?: Question['type'];
   title: Question['title'];
   description?: Question['description'];
-  active: boolean;
   index: number;
-  onSetActiveQId: (qId?: Question['id']) => void;
   options: Question['options'];
+  active: boolean;
+  error: boolean;
+  onQuestionClickAway: () => void;
+  onQuestionClick: () => void;
 }
 
 const QuestionItem = (props: QuestionItemProps) => {
-  const { active, qId, index, onSetActiveQId } = props;
+  const { active, error, qId, index, onQuestionClickAway, onQuestionClick } = props;
 
   return (
-    <div className={cx('root', { active })}>
-      {active ? (
-        <QuestionEdit qId={qId} index={index} />
-      ) : (
-        <QuestionDisplay qId={qId} index={index} onSetActiveQId={onSetActiveQId} />
-      )}
-    </div>
+    <ClickAwayListener mouseEvent="onMouseDown" touchEvent="onTouchStart" onClickAway={onQuestionClickAway}>
+      <div className={cx('root', { active, error })} onClick={onQuestionClick}>
+        {active ? <QuestionEdit qId={qId} index={index} /> : <QuestionDisplay qId={qId} index={index} />}
+      </div>
+    </ClickAwayListener>
   );
 };
 

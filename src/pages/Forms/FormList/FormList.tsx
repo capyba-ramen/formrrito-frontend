@@ -2,8 +2,8 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 
 import FormCard from '@/components/FormCard/FormCard';
-import ImageSrc4 from '@/assets/images/4.png';
-
+import SkeletonFormCard from '@/components/FormCard/SkeletonFormCard';
+import { ImageUrl } from '@/constants/form';
 import useFormsRequest from '@/api/form/useFormsRequest';
 import { Form } from '@/types/form';
 
@@ -17,17 +17,24 @@ const FormList = () => {
   return (
     <section className={cx('root')}>
       <Typography sx={{ marginBottom: '16px', fontWeight: 700 }}>Recent Forms</Typography>
-      {isFetching ? (
-        'is loading...'
-      ) : (
-        <Grid container spacing={2}>
-          {forms?.map((form: Form) => (
-            <Grid key={form.id} item xs={6} sm={6} md={4} lg={3}>
-              <FormCard formId={form.id} image={ImageSrc4} title={form.title} openDateTime={form?.opened_at} />
+
+      <Grid container spacing={2}>
+        {isFetching ? (
+          <>
+            {Array.from(new Array(6)).map((_, idx) => (
+              <Grid key={idx} item xs={6} sm={6} md={4} lg={3}>
+                <SkeletonFormCard />
+              </Grid>
+            ))}
+          </>
+        ) : (
+          forms?.map((el: Form) => (
+            <Grid key={el.id} item xs={6} sm={6} md={4} lg={3}>
+              <FormCard formId={el.id} image={ImageUrl[el.image_url]} title={el.title} openDateTime={el?.opened_at} />
             </Grid>
-          ))}
-        </Grid>
-      )}
+          ))
+        )}
+      </Grid>
     </section>
   );
 };

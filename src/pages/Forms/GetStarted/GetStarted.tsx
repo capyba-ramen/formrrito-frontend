@@ -6,13 +6,9 @@ import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
 import AddIcon from '@mui/icons-material/Add';
 import useCreateForm from '@/api/form/useCreateForm';
-
+import { TemplateForms } from '@/constants/form';
 import TemplateItem from '@/components/TemplateItem/TemplateItem';
-import ImageSrc1 from '@/assets/images/1.png';
-import ImageSrc2 from '@/assets/images/2.png';
-import ImageSrc3 from '@/assets/images/3.png';
-import ImageSrc4 from '@/assets/images/4.png';
-import ImageSrc5 from '@/assets/images/5.png';
+import useFormsRequest from '@/api/form/useFormsRequest';
 
 import * as classNames from 'classnames/bind';
 import style from './GetStarted.module.scss';
@@ -21,10 +17,13 @@ const cx = classNames.bind(style);
 const GetStarted = () => {
   const { trigger: postCreateForm } = useCreateForm();
   const navigate = useNavigate();
+  const { mutate } = useFormsRequest();
+
   const handleCreateForm = () => {
     postCreateForm().then((res) => {
       if (res) {
         navigate(`/form/${res.data.form_id}`);
+        mutate();
       }
     });
   };
@@ -71,21 +70,11 @@ const GetStarted = () => {
             </Typography>
           </div>
           <Grid wrap="nowrap" container spacing={2}>
-            <Grid item>
-              <TemplateItem title="Party Invite" image={ImageSrc5} />
-            </Grid>
-            <Grid item>
-              <TemplateItem title="Contact Information" image={ImageSrc2} />
-            </Grid>
-            <Grid item>
-              <TemplateItem title="Event Registration" image={ImageSrc1} />
-            </Grid>
-            <Grid item>
-              <TemplateItem title="RSVP" image={ImageSrc3} />
-            </Grid>
-            <Grid item>
-              <TemplateItem title="Customer Feedback" image={ImageSrc4} />
-            </Grid>
+            {TemplateForms.map((el) => (
+              <Grid item key={el.type}>
+                <TemplateItem title={el.title} image={el.image} type={el.type} />
+              </Grid>
+            ))}
           </Grid>
         </Paper>
       </div>
