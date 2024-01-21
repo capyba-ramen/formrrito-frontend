@@ -5,6 +5,7 @@ import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
 import useUpdateForm from '@/api/form/useUpdateForm';
 import { FormApiFields } from '@/constants/form';
+import useClearDirtyFields from '@/hooks/useClearDirtyFields';
 
 import * as classNames from 'classnames/bind';
 import style from './Responses.module.scss';
@@ -15,17 +16,23 @@ const Responses = () => {
   const {
     control,
     getValues,
+    trigger,
     formState: { dirtyFields },
   } = useFormContext();
   const { trigger: updateForm } = useUpdateForm();
+  const { clearDirtyFields } = useClearDirtyFields();
 
-  const handleUpdateForm = (name: keyof typeof FormApiFields) => {
+  const handleUpdateForm = async (name: keyof typeof FormApiFields) => {
     if (!dirtyFields[name]) return;
+    const isValid = await trigger(FormApiFields[name]);
+    if (!isValid) return;
 
     updateForm({
       form_id: formId,
       field: FormApiFields[name],
       value: getValues(name),
+    }).then(() => {
+      clearDirtyFields();
     });
   };
 
@@ -44,7 +51,7 @@ const Responses = () => {
               checked={value}
               onChange={(e) => {
                 onChange(e.target.checked);
-                handleUpdateForm('acceptsResponses');
+                handleUpdateForm('acceptResponses');
               }}
               ref={ref}
             />

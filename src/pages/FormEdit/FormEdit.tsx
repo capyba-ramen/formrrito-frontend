@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FormProvider, useForm, useFieldArray } from 'react-hook-form';
+import { FormProvider, useForm, useFieldArray, FieldArrayWithId } from 'react-hook-form';
 import { useParams, useLocation } from 'react-router-dom';
 
 import FormTabs from './FormTabs/FormTabs';
@@ -10,12 +10,13 @@ import Questions from './Questions/Questions';
 import Responses from './Responses/Responses';
 import useErrorsHandler from '@/hooks/useErrorsHandler';
 import useFormRequest from '@/api/form/useFormRequest';
-import { Question } from '@/types/question';
+import { Question, QuestionField } from '@/types/question';
+import { FormValues } from '@/types/form';
 
 const FormEdit = () => {
   const [activeQuestionId, setActiveQuestionId] = React.useState<string | undefined>(undefined);
   const [errorQuestionId, setErrorQuestionId] = React.useState<string | undefined>(undefined);
-  const { formId } = useParams();
+  const formId = useParams()?.formId || '';
   const { form, error } = useFormRequest(formId);
   const { errorsHandler } = useErrorsHandler();
   const location = useLocation();
@@ -31,7 +32,7 @@ const FormEdit = () => {
   });
 
   const { reset, control } = methods;
-  const { append, fields } = useFieldArray({
+  const { append, fields, swap } = useFieldArray<FormValues, 'questions'>({
     control,
     name: 'questions',
   });
@@ -72,11 +73,12 @@ const FormEdit = () => {
         {location.hash !== '#responses' ? (
           <>
             <Questions
-              questions={fields}
+              questions={fields as (QuestionField & FieldArrayWithId)[]}
               activeQuestionId={activeQuestionId}
-              setActiveQuestionId={setActiveQuestionId}
+              onSetActiveQuestionId={setActiveQuestionId}
               errorQuestionId={errorQuestionId}
-              setErrorQuestionId={setErrorQuestionId}
+              onSetErrorQuestionId={setErrorQuestionId}
+              onSwap={swap}
             />
             <AddQuestionButton sx={{ marginTop: '16px' }} append={append} setActiveQuestionId={setActiveQuestionId} />
           </>

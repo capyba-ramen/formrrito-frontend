@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
 import useNotification from '../components/NotificationProvider/useNotification';
 import useAuth from '../components/AuthProvider/useAuth';
@@ -8,7 +9,7 @@ export default function useErrorsHandler() {
   const { openInfoDialog } = useAuth();
   const navigate = useNavigate();
 
-  const errorsHandler = React.useCallback((error) => {
+  const errorsHandler = React.useCallback((error: AxiosError) => {
     if (error?.response?.status === 403) {
       openInfoDialog({
         title: 'Access Denied',

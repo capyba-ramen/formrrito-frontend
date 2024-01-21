@@ -51,7 +51,7 @@ export const TemplateForms = [
   },
 ];
 
-export const ImageUrl = {
+export const ImageUrl: ImageUrlType = {
   '1': ImageSrc1,
   '2': ImageSrc2,
   '3': ImageSrc3,
@@ -62,4 +62,17 @@ export const ImageUrl = {
   '8': ImageSrc8,
   '9': ImageSrc9,
   '10': ImageSrc10,
+};
+
+export type ImageUrlType = {
+  '1': string;
+  '2': string;
+  '3': string;
+  '4': string;
+  '5': string;
+  '6': string;
+  '7': string;
+  '8': string;
+  '9': string;
+  '10': string;
 };

@@ -5,7 +5,7 @@ import TextField from '@mui/material/TextField';
 import useUpdateForm from '@/api/form/useUpdateForm';
 import { FormApiFields } from '@/constants/form';
 import useClearDirtyFields from '@/hooks/useClearDirtyFields';
-import { ImageUrl } from '@/constants/form';
+import { ImageUrl, ImageUrlType } from '@/constants/form';
 
 import * as classNames from 'classnames/bind';
 import style from './FormInfo.module.scss';
@@ -16,13 +16,16 @@ const FormInfo = () => {
   const {
     control,
     getValues,
+    trigger,
     formState: { dirtyFields },
   } = useFormContext();
   const { trigger: updateForm } = useUpdateForm();
   const { clearDirtyFields } = useClearDirtyFields();
 
-  const handleUpdateForm = (name: keyof typeof FormApiFields) => {
+  const handleUpdateForm = async (name: keyof typeof FormApiFields) => {
     if (!dirtyFields[name]) return;
+    const isValid = await trigger(FormApiFields[name]);
+    if (!isValid) return;
 
     updateForm({
       form_id: formId,
@@ -36,7 +39,7 @@ const FormInfo = () => {
   return (
     <div className={cx('root')}>
       <div className={cx('banner')}>
-        <img src={ImageUrl[getValues('imageUrl')]} alt="form-banner" />
+        <img src={ImageUrl[getValues('imageUrl') as keyof ImageUrlType]} alt="form-banner" />
       </div>
       <Controller
         control={control}

@@ -1,4 +1,5 @@
-import { ImageUrl } from '@/constants/form';
+import { ImageUrlType } from '@/constants/form';
+import { QuestionField } from '@/types/question';
 
 export type Form = {
   id: string;
@@ -8,7 +9,7 @@ export type Form = {
   opened_at: string;
   user_id: string;
   accepts_reply: boolean;
-  image_url: keyof typeof ImageUrl;
+  image_url: keyof ImageUrlType;
 };
 
 export type FormListApiData = {
@@ -29,4 +30,12 @@ export type TemplateFormCreateApiData = {
   data: {
     form_id: string;
   };
+};
+
+export type FormValues = {
+  title: string;
+  description: string;
+  acceptResponse: boolean;
+  imageUrl: string;
+  questions: QuestionField[];
 };

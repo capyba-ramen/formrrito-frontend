@@ -6,12 +6,10 @@ import * as classNames from 'classnames/bind';
 import style from './FormTabs.module.scss';
 const cx = classNames.bind(style);
 
-export interface FormTabsProps {}
-
-const FormTabs = (props: FormTabsProps) => {
+const FormTabs = () => {
   const [value, setValue] = React.useState('questions');
 
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+  const handleChange = (_: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
 
@@ -26,7 +24,6 @@ const FormTabs = (props: FormTabsProps) => {
       centered
       classes={{
         root: cx('root'),
-     
       }}
     >
       <Tab value="questions" label="Questions" disableRipple href="#questions" />

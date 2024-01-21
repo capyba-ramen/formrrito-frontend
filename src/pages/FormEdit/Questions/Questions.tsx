@@ -1,26 +1,30 @@
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, FieldArrayWithId } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
-import { QuestionField } from '@/types/question';
 import QuestionItem from '@/components/QuestionItem/QuestionItem';
 import useUpdateQuestion from '@/api/question/useUpdateQuestion';
 import useUpdateOptions from '@/api/option/useUpdateOptions';
+import useChangeQuestionOrder from '@/api/question/useChangeQuestionOrder';
 import { OptionQuestionTypes } from '@/constants/question';
 import useClearDirtyFields from '@/hooks/useClearDirtyFields';
+import { QuestionField } from '@/types/question';
+import { OptionField } from '@/types/option';
 
 export interface QuestionsProps {
-  questions: (QuestionField & { id: string })[];
+  questions: (QuestionField & FieldArrayWithId)[];
   activeQuestionId?: string;
-  setActiveQuestionId: (id: string | undefined) => void;
+  onSetActiveQuestionId: (id: string | undefined) => void;
   errorQuestionId?: string;
-  setErrorQuestionId: (id: string | undefined) => void;
+  onSetErrorQuestionId: (id: string | undefined) => void;
+  onSwap: (index1: number, index2: number) => void;
 }
 
 const Questions = (props: QuestionsProps) => {
-  const { questions, activeQuestionId, setActiveQuestionId, errorQuestionId, setErrorQuestionId } = props;
-  const { formId } = useParams();
+  const { questions, activeQuestionId, onSetActiveQuestionId, errorQuestionId, onSetErrorQuestionId, onSwap } = props;
+  const formId = useParams().formId || '';
   const { trigger: updateQuestion } = useUpdateQuestion();
   const { trigger: updateOptions } = useUpdateOptions();
+  const { trigger: changeQuestionOrder } = useChangeQuestionOrder();
   const { getValues, trigger, formState } = useFormContext();
   const { dirtyFields } = formState;
   const { clearDirtyFields } = useClearDirtyFields();
@@ -28,13 +32,13 @@ const Questions = (props: QuestionsProps) => {
   const handleClickAway = async (qId: string, index: number) => {
     if (activeQuestionId !== qId) return;
 
-    const isValid = await trigger([`questions.${index}.title`, `questions.${index}.description`]);
+    const isValid = await trigger([`questions.${index}`]);
     if (!isValid) {
-      setErrorQuestionId(qId);
+      onSetErrorQuestionId(qId);
       return;
     }
 
-    setActiveQuestionId(undefined);
+    onSetActiveQuestionId(undefined);
 
     if (
       dirtyFields?.questions?.[index]?.options ||
@@ -48,7 +52,7 @@ const Questions = (props: QuestionsProps) => {
           ? updateOptions({
               formId,
               questionId: qId,
-              options: getValues(`questions.${index}.options`).map((el) => ({
+              options: getValues(`questions.${index}.options`).map((el: OptionField) => ({
                 id: el.optionId || '',
                 title: el.title,
               })),
@@ -70,7 +74,7 @@ const Questions = (props: QuestionsProps) => {
 
       Promise.all([updateOptionsPromise, updateQuestionPromise]).then(() => {
         clearDirtyFields();
-        setErrorQuestionId(undefined);
+        onSetErrorQuestionId(undefined);
       });
     }
   };
@@ -78,7 +82,21 @@ const Questions = (props: QuestionsProps) => {
   const handleClick = (qId: string) => {
     if (errorQuestionId) return;
 
-    setActiveQuestionId(qId);
+    onSetActiveQuestionId(qId);
+  };
+
+  const handleSwap = (index1: number, index2: number) => {
+    if (errorQuestionId) return;
+    if (index1 < 0 || index2 < 0 || index1 >= questions.length) return;
+
+    onSwap(index1, index2);
+
+    changeQuestionOrder({
+      form_id: formId,
+      question_ids_in_order: getValues('questions').map((el: QuestionField) => el.qId),
+    }).then((res) => {
+      console.log(res);
+    });
   };
 
   return (
@@ -95,6 +113,7 @@ const Questions = (props: QuestionsProps) => {
           }}
           active={activeQuestionId === q.qId}
           error={errorQuestionId === q.qId}
+          onQuestionSwap={handleSwap}
           {...q}
         />
       ))}

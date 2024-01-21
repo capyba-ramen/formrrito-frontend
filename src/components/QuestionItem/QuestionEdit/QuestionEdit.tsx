@@ -15,6 +15,8 @@ import AddOption from './AddOption';
 import Radio from '@mui/material/Radio';
 import Checkbox from '@mui/material/Checkbox';
 
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import useDeleteQuestion from '@/api/question/useDeleteQuestion';
@@ -33,11 +35,12 @@ const cx = classNames.bind(style);
 export interface QuestionEditProps {
   qId: string;
   index: number;
+  onQuestionSwap: (index1: number, index2: number) => void;
 }
 
 const QuestionEdit = (props: QuestionEditProps) => {
-  const { qId, index } = props;
-  const { formId } = useParams();
+  const { qId, index, onQuestionSwap } = props;
+  const formId = useParams()?.formId || '';
   const { control, getValues, formState } = useFormContext();
   const watchType = useWatch({ name: `questions.${index}.type` });
   const { trigger: deleteQuestion } = useDeleteQuestion(qId, formId);
@@ -146,6 +149,14 @@ const QuestionEdit = (props: QuestionEditProps) => {
     }
   };
 
+  const handleSwapUp = () => {
+    onQuestionSwap(index, index - 1);
+  };
+
+  const handleSwapDown = () => {
+    onQuestionSwap(index, index + 1);
+  };
+
   return (
     <div className={cx('root')}>
       <div className={cx('header')}>
@@ -221,29 +232,50 @@ const QuestionEdit = (props: QuestionEditProps) => {
       />
       <div className={cx('content')}>{renderOptions()}</div>
       <div className={cx('actions')}>
-        <IconButton aria-label="copy" color="primary" sx={{ width: '40px', height: '40px' }}>
-          <ContentCopyIcon fontSize="small" />
-        </IconButton>
-        <IconButton aria-label="delete" color="primary" onClick={handleDeleteQuestion}>
-          <DeleteOutlineOutlinedIcon />
-        </IconButton>
-        <div className={cx('switch')}>
-          <Typography variant="body2" color="var(--black)" sx={{ marginRight: '4px' }}>
-            Required
-          </Typography>
-          <Controller
-            control={control}
-            name={`questions.${index}.required`}
-            render={({ field: { value = false, onChange, ref } }) => (
-              <Switch
-                checked={value}
-                onChange={(e) => {
-                  onChange(e.target.checked);
-                }}
-                ref={ref}
-              />
-            )}
-          />
+        <div className={cx('action-left')}>
+          <IconButton aria-label="copy" color="primary" sx={{ width: '40px', height: '40px' }}>
+            <ContentCopyIcon fontSize="small" />
+          </IconButton>
+          <IconButton aria-label="delete" color="primary" onClick={handleDeleteQuestion}>
+            <DeleteOutlineOutlinedIcon />
+          </IconButton>
+          <div className={cx('switch')}>
+            <Typography variant="body2" color="var(--black)" sx={{ marginRight: '4px' }}>
+              Required
+            </Typography>
+            <Controller
+              control={control}
+              name={`questions.${index}.required`}
+              render={({ field: { value = false, onChange, ref } }) => (
+                <Switch
+                  checked={value}
+                  onChange={(e) => {
+                    onChange(e.target.checked);
+                  }}
+                  ref={ref}
+                />
+              )}
+            />
+          </div>
+        </div>
+        <div>
+          <IconButton
+            aria-label="move up"
+            color="primary"
+            sx={{ marginRight: '8px' }}
+            disabled={index === 0}
+            onClick={handleSwapUp}
+          >
+            <ExpandLessIcon fontSize="small" />
+          </IconButton>
+          <IconButton
+            aria-label="move down"
+            color="primary"
+            onClick={handleSwapDown}
+            disabled={index === getValues('questions')?.length - 1}
+          >
+            <ExpandMoreIcon fontSize="small" />
+          </IconButton>
         </div>
       </div>
     </div>

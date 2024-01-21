@@ -1,4 +1,4 @@
-import { Option } from './option';
+import { OptionField, Option } from './option';
 
 export type Question = {
   id: string;
@@ -17,5 +17,5 @@ export type QuestionField = {
   title: string;
   description: string;
   required: boolean;
-  options: Option[];
+  options: OptionField[];
 };
