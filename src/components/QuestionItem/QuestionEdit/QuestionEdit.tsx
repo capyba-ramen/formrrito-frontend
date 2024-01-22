@@ -151,11 +151,11 @@ const QuestionEdit = (props: QuestionEditProps) => {
   };
 
   const handleSwapUp = () => {
-    onQuestionSwap(qId, -1);
+    onQuestionSwap(index, index - 1);
   };
 
   const handleSwapDown = () => {
-    onQuestionSwap(qId, 1);
+    onQuestionSwap(index, index + 1);
   };
 
   return (

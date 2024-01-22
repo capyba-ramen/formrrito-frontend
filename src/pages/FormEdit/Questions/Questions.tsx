@@ -14,31 +14,34 @@ export interface QuestionsProps {
   questions: (QuestionField & FieldArrayWithId)[];
   activeQuestionId?: string;
   onSetActiveQuestionId: (id: string | undefined) => void;
-  errorQuestionId?: string;
-  onSetErrorQuestionId: (id: string | undefined) => void;
   onSwap: (index1: number, index2: number) => void;
 }
 
 const Questions = (props: QuestionsProps) => {
-  const { questions, activeQuestionId, onSetActiveQuestionId, errorQuestionId, onSetErrorQuestionId, onSwap } = props;
+  const { questions, activeQuestionId, onSetActiveQuestionId, onSwap } = props;
   const formId = useParams().formId || '';
   const { trigger: updateQuestion } = useUpdateQuestion();
   const { trigger: updateOptions } = useUpdateOptions();
   const { trigger: changeQuestionOrder } = useChangeQuestionOrder();
-  const { getValues, trigger, formState } = useFormContext();
+  const {
+    getValues,
+    trigger,
+    formState,
+    clearErrors,
+    formState: { errors },
+  } = useFormContext();
   const { dirtyFields } = formState;
   const { clearDirtyFields } = useClearDirtyFields();
 
-  const handleClickAway = async (qId: string, index: number) => {
-    if (activeQuestionId !== qId) return;
+  const handleDirtyFieldsQuestion = async (qId: string, index: number) => {
+    clearErrors();
 
-    const isValid = await trigger([`questions.${index}`]);
-    if (!isValid) {
-      onSetErrorQuestionId(qId);
-      return;
-    }
-
-    onSetActiveQuestionId(undefined);
+    const isValid = await trigger([
+      `questions.${index}.title`,
+      `questions.${index}.description`,
+      `questions.${index}.options`,
+    ]);
+    if (!isValid) return;
 
     if (
       dirtyFields?.questions?.[index]?.options ||
@@ -72,36 +75,47 @@ const Questions = (props: QuestionsProps) => {
             })
           : Promise.resolve();
 
-      Promise.all([updateOptionsPromise, updateQuestionPromise]).then(() => {
+      return Promise.all([updateOptionsPromise, updateQuestionPromise]).then(() => {
         clearDirtyFields();
-        onSetErrorQuestionId(undefined);
+        clearErrors();
+        return true;
       });
     }
   };
 
+  const handleClickAway = (qId: string, index: number) => {
+    if (activeQuestionId !== qId) return;
+
+    handleDirtyFieldsQuestion(qId, index);
+  };
+
   const handleClick = (qId: string) => {
-    if (errorQuestionId) return;
+    if (errors?.questions) return;
 
     onSetActiveQuestionId(qId);
   };
 
-  const handleSwap = (index1: number, index2: number) => {
-    if (errorQuestionId) return;
+  const handleSwap = async (index1: number, index2: number) => {
+    if (Object.keys(errors?.questions?.[index1] || {})?.length) return;
     if (index1 < 0 || index2 < 0 || index1 >= questions.length) return;
+
+    if (!(await handleDirtyFieldsQuestion(questions[index1].qId, index1))) {
+      return;
+    }
 
     onSwap(index1, index2);
 
     changeQuestionOrder({
       form_id: formId,
       question_ids_in_order: getValues('questions').map((el: QuestionField) => el.qId),
-    }).then((res) => {
-      console.log(res);
+    }).then(() => {
+      clearDirtyFields();
     });
   };
 
   return (
     <>
-      {questions?.map((q, index) => (
+      {questions?.map((q, index: number) => (
         <QuestionItem
           key={q.id}
           index={index}
@@ -112,7 +126,7 @@ const Questions = (props: QuestionsProps) => {
             handleClick(q.qId);
           }}
           active={activeQuestionId === q.qId}
-          error={errorQuestionId === q.qId}
+          error={Object.keys(errors?.questions?.[index] || {})?.length}
           onQuestionSwap={handleSwap}
           {...q}
         />

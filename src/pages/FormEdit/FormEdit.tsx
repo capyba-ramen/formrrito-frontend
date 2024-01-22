@@ -15,7 +15,6 @@ import { FormValues } from '@/types/form';
 
 const FormEdit = () => {
   const [activeQuestionId, setActiveQuestionId] = React.useState<string | undefined>(undefined);
-  const [errorQuestionId, setErrorQuestionId] = React.useState<string | undefined>(undefined);
   const formId = useParams()?.formId || '';
   const { data, error } = useFormRequest(formId);
   const { errorsHandler } = useErrorsHandler();
@@ -76,8 +75,6 @@ const FormEdit = () => {
               questions={fields as (QuestionField & FieldArrayWithId)[]}
               activeQuestionId={activeQuestionId}
               onSetActiveQuestionId={setActiveQuestionId}
-              errorQuestionId={errorQuestionId}
-              onSetErrorQuestionId={setErrorQuestionId}
               onSwap={swap}
             />
             <AddQuestionButton sx={{ marginTop: '16px' }} append={append} setActiveQuestionId={setActiveQuestionId} />
