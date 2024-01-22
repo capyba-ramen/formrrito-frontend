@@ -1,7 +1,7 @@
 import client from './client';
 import { AxiosResponse } from 'axios';
 
-type Fetcher = (url: string, { arg }: { arg: any }) => Promise<AxiosResponse>;
+export type Fetcher = (url: string, { arg }: { arg: any }) => Promise<AxiosResponse>;
 
 export const postFetcher: Fetcher = (url: string, { arg }) => client.post(url, arg);
 

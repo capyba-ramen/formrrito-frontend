@@ -12,7 +12,7 @@ import ImageSrc10 from '@/assets/images/10.png';
 export const FormApiFields = {
   title: 'title',
   description: 'description',
-  acceptResponses: 'accept_responses',
+  acceptsReply: 'accepts_reply',
 };
 
 export const TemplateEnum = {

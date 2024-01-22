@@ -1,12 +1,14 @@
-import useSWR, { SWRConfiguration } from 'swr';
+import createRequestApi from '@/api/createRequestApi';
+import { Form } from '@/types/form';
 
-export default function useFormRequest(formId?: string, swrOptions?: SWRConfiguration) {
-  const { data, isLoading, isValidating, error, mutate } = useSWR(formId ? `/api/form/${formId}` : null, swrOptions);
+const {
+  useRequest: useFormRequest,
+  preload,
+  mutate,
+} = createRequestApi<Form>({
+  key: (formId) => `/api/form/${formId}`,
+});
 
-  return {
-    form: data,
-    isFetching: isLoading || isValidating,
-    error,
-    mutate,
-  };
-}
+export { preload, mutate };
+
+export default useFormRequest;

@@ -17,7 +17,7 @@ const FormEdit = () => {
   const [activeQuestionId, setActiveQuestionId] = React.useState<string | undefined>(undefined);
   const [errorQuestionId, setErrorQuestionId] = React.useState<string | undefined>(undefined);
   const formId = useParams()?.formId || '';
-  const { form, error } = useFormRequest(formId);
+  const { data, error } = useFormRequest(formId);
   const { errorsHandler } = useErrorsHandler();
   const location = useLocation();
   const methods = useForm({
@@ -25,7 +25,7 @@ const FormEdit = () => {
     defaultValues: {
       title: '',
       description: '',
-      acceptResponse: true,
+      acceptsReply: true,
       imageUrl: '',
       questions: [],
     },
@@ -44,14 +44,14 @@ const FormEdit = () => {
   }, [error, errorsHandler]);
 
   React.useEffect(() => {
-    if (!form) return;
+    if (!data) return;
 
     reset({
-      title: form?.title || 'Untitled Form',
-      description: form?.description || 'Form description',
-      acceptResponse: form?.accept_responses,
-      imageUrl: form?.image_url,
-      questions: form?.questions?.map((q: Question) => ({
+      title: data?.title || 'Untitled Form',
+      description: data?.description || 'Form description',
+      acceptsReply: data?.accepts_reply,
+      imageUrl: data?.image_url,
+      questions: data?.questions?.map((q: Question) => ({
         qId: q.id,
         type: q.type,
         title: q.title,
@@ -63,7 +63,7 @@ const FormEdit = () => {
         })),
       })),
     });
-  }, [form]);
+  }, [data]);
 
   return (
     <FormProvider {...methods}>

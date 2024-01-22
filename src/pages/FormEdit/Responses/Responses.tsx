@@ -45,13 +45,13 @@ const Responses = () => {
         </Typography>
         <Controller
           control={control}
-          name="acceptsResponses"
+          name="acceptsReply"
           render={({ field: { value = false, onChange, ref } }) => (
             <Switch
               checked={value}
               onChange={(e) => {
                 onChange(e.target.checked);
-                handleUpdateForm('acceptResponses');
+                handleUpdateForm('acceptsReply');
               }}
               ref={ref}
             />

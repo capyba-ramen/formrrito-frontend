@@ -14,6 +14,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import AddOption from './AddOption';
 import Radio from '@mui/material/Radio';
 import Checkbox from '@mui/material/Checkbox';
+import Tooltip from '@mui/material/Tooltip';
 
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -45,7 +46,7 @@ const QuestionEdit = (props: QuestionEditProps) => {
   const watchType = useWatch({ name: `questions.${index}.type` });
   const { trigger: deleteQuestion } = useDeleteQuestion(qId, formId);
   const { trigger: updateQuestion } = useUpdateQuestion();
-  const { mutate } = useFormRequest(formId);
+  const { mutate } = useFormRequest(formId, { revalidateOnMount: false });
   const { addNotification } = useNotification();
   const { errorsHandler } = useErrorsHandler();
   const { fields, append, remove } = useFieldArray({
@@ -150,11 +151,11 @@ const QuestionEdit = (props: QuestionEditProps) => {
   };
 
   const handleSwapUp = () => {
-    onQuestionSwap(index, index - 1);
+    onQuestionSwap(qId, -1);
   };
 
   const handleSwapDown = () => {
-    onQuestionSwap(index, index + 1);
+    onQuestionSwap(qId, 1);
   };
 
   return (
@@ -233,12 +234,16 @@ const QuestionEdit = (props: QuestionEditProps) => {
       <div className={cx('content')}>{renderOptions()}</div>
       <div className={cx('actions')}>
         <div className={cx('action-left')}>
-          <IconButton aria-label="copy" color="primary" sx={{ width: '40px', height: '40px' }}>
-            <ContentCopyIcon fontSize="small" />
-          </IconButton>
-          <IconButton aria-label="delete" color="primary" onClick={handleDeleteQuestion}>
-            <DeleteOutlineOutlinedIcon />
-          </IconButton>
+          <Tooltip title="Duplicate">
+            <IconButton aria-label="copy" color="primary" sx={{ width: '40px', height: '40px' }}>
+              <ContentCopyIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton aria-label="delete" color="primary" onClick={handleDeleteQuestion}>
+              <DeleteOutlineOutlinedIcon />
+            </IconButton>
+          </Tooltip>
           <div className={cx('switch')}>
             <Typography variant="body2" color="var(--black)" sx={{ marginRight: '4px' }}>
               Required
@@ -259,23 +264,27 @@ const QuestionEdit = (props: QuestionEditProps) => {
           </div>
         </div>
         <div>
-          <IconButton
-            aria-label="move up"
-            color="primary"
-            sx={{ marginRight: '8px' }}
-            disabled={index === 0}
-            onClick={handleSwapUp}
-          >
-            <ExpandLessIcon fontSize="small" />
-          </IconButton>
-          <IconButton
-            aria-label="move down"
-            color="primary"
-            onClick={handleSwapDown}
-            disabled={index === getValues('questions')?.length - 1}
-          >
-            <ExpandMoreIcon fontSize="small" />
-          </IconButton>
+          <Tooltip title="Swap Up">
+            <IconButton
+              aria-label="swap up"
+              color="primary"
+              sx={{ marginRight: '8px' }}
+              disabled={index === 0}
+              onClick={handleSwapUp}
+            >
+              <ExpandLessIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Swap Down">
+            <IconButton
+              aria-label="swap down"
+              color="primary"
+              onClick={handleSwapDown}
+              disabled={index === getValues('questions')?.length - 1}
+            >
+              <ExpandMoreIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
         </div>
       </div>
     </div>

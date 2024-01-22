@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import LogoSm from '@/assets/images/logo-sm.svg';
 import Button from '@mui/material/Button';
@@ -12,7 +12,6 @@ import Typography from '@mui/material/Typography';
 import { removeToken } from '@/utils/auth';
 import useAuth from '../AuthProvider/useAuth';
 import useCreateForm from '@/api/form/useCreateForm';
-import useFormsRequest from '@/api/form/useFormsRequest';
 
 import * as classNames from 'classnames/bind';
 import style from './Header.module.scss';
@@ -23,7 +22,6 @@ const Header = () => {
   const { loggedInUser } = useAuth();
   const { trigger: postCreateForm } = useCreateForm();
   const navigate = useNavigate();
-  const { mutate } = useFormsRequest();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     if (!loggedInUser) return;
@@ -46,7 +44,6 @@ const Header = () => {
     postCreateForm().then((res) => {
       if (res) {
         navigate(`/form/${res.data.form_id}`);
-        mutate();
       }
     });
   };
@@ -57,11 +54,11 @@ const Header = () => {
   return (
     <>
       <Paper elevation={1} className={cx('root')}>
-        <Link to="/forms">
+        <a href="/forms">
           <div className={cx('logo')}>
             <img height="44" src={LogoSm} />
           </div>
-        </Link>
+        </a>
         <div className={cx('right')}>
           <Avatar
             alt={loggedInUser?.name}
