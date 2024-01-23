@@ -11,7 +11,6 @@ import { ThemeProvider } from '@mui/material/styles';
 import { SWRConfig } from 'swr';
 import theme from './configs/settings/theme.config.ts';
 import swrConfig from './configs/settings/swr.config';
-import AuthProvider from './components/AuthProvider/AuthProvider';
 import NotificationProvider from './components/NotificationProvider/NotificationProvider';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -19,9 +18,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <ThemeProvider theme={theme}>
       <SWRConfig value={swrConfig}>
         <NotificationProvider>
-          <AuthProvider>
-            <RouterProvider router={router} />
-          </AuthProvider>
+          <RouterProvider router={router} />
         </NotificationProvider>
       </SWRConfig>
     </ThemeProvider>

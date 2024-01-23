@@ -56,7 +56,7 @@ const Header = () => {
       <Paper elevation={1} className={cx('root')}>
         <a href="/forms">
           <div className={cx('logo')}>
-            <img height="44" src={LogoSm} />
+            <img height="44" src={LogoSm} alt="formrrito-logo" />
           </div>
         </a>
         <div className={cx('right')}>
