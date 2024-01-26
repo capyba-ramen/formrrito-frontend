@@ -54,6 +54,7 @@ const FormInfo = () => {
           <TextField
             value={value}
             variant="standard"
+            multiline
             onChange={onChange}
             error={!!error?.type}
             helperText={error?.message}
@@ -83,6 +84,7 @@ const FormInfo = () => {
           <TextField
             value={value}
             variant="standard"
+            multiline
             onChange={onChange}
             error={!!error?.type}
             helperText={error?.message}

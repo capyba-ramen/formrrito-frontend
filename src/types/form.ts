@@ -19,6 +19,7 @@ export type FormListApiData = {
   limit: number;
   offset: number;
   result: Form[];
+  next: number;
 };
 
 export type FormCreateApiData = {

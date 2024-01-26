@@ -54,7 +54,7 @@ const QuestionDisplay = (props: QuestionDisplayProps) => {
 
   return (
     <div>
-      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+      <Typography variant="subtitle1" fontWeight={700}>
         {getValues(`questions.${index}.title`) || `Question ${index + 1}`}
       </Typography>
       {getValues(`questions.${index}.description`) && (

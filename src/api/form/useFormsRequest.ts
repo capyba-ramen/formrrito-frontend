@@ -7,13 +7,8 @@ const {
   preload,
   mutate,
 } = createRequestApi<FormListApiData>({
-  key: (
-    params: { start?: string; size?: string; sort?: 'desc' | 'asc' } = {
-      start: '1',
-      size: '10',
-      sort: 'desc',
-    }
-  ) => (params ? `/api/form/list${generateQueryString(params)}` : null),
+  key: (params: { start?: string; size?: string; sort?: 'desc' | 'asc' }) =>
+    params ? `/api/form/list${generateQueryString(params)}` : null,
 });
 
 export { preload, mutate };

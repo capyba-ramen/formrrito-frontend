@@ -1,15 +1,14 @@
-import useSWR from 'swr';
+import createRequestApi from '@/api/createRequestApi';
+import { UserInfoApiData } from '@/types/user';
 
-export type User = {
-  name: string;
-};
+const {
+  useRequest: useUserInfoRequest,
+  preload,
+  mutate,
+} = createRequestApi<UserInfoApiData>({
+  key: (shouldFetch) => (shouldFetch ? `/api/user/info` : ''),
+});
 
-export default function useUserInfoRequest() {
-  const { data, isLoading, isValidating, error } = useSWR('/api/user/info');
+export { preload, mutate };
 
-  return {
-    user: data,
-    isFetching: isLoading || isValidating,
-    error,
-  };
-}
+export default useUserInfoRequest;

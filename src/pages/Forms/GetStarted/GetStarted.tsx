@@ -30,7 +30,7 @@ const GetStarted = () => {
 
   return (
     <section className={cx('root')}>
-      <Typography variant="h6" sx={{ marginBottom: '20px', fontWeight: 700 }}>
+      <Typography variant="h6" fontWeight={700} gutterBottom>
         Get Started With Formrrito!
       </Typography>
       <div className={cx('container')}>
@@ -52,7 +52,7 @@ const GetStarted = () => {
                 <AddIcon />
               </IconButton>
             </div>
-            <Typography variant="body1" sx={{ fontWeight: 600 }}>
+            <Typography variant="body1" fontWeight={600}>
               Create New Form
             </Typography>
             <Typography variant="body2" color="var(--gray-3)">
@@ -62,7 +62,7 @@ const GetStarted = () => {
         </Paper>
         <Paper elevation={0} className={cx('paper', 'templates-showcase')}>
           <div style={{ marginRight: '36px', whiteSpace: 'nowrap' }}>
-            <Typography variant="body1" sx={{ fontWeight: 600 }}>
+            <Typography variant="body1" fontWeight={600}>
               Use Popular Templates
             </Typography>
             <Typography variant="body2" color="var(--gray-3)">

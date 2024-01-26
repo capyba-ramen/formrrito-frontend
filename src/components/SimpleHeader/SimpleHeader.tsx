@@ -8,9 +8,11 @@ const cx = classNames.bind(style);
 const SimpleHeader = () => {
   return (
     <Paper elevation={1} className={cx('root')}>
-      <div className={cx('logo')}>
-        <img height="44" src={LogoSm} alt="formrrito-logo" />
-      </div>
+      <a href="/forms">
+        <div className={cx('logo')}>
+          <img height="44" src={LogoSm} alt="formrrito-logo" />
+        </div>
+      </a>
     </Paper>
   );
 };

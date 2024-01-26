@@ -10,6 +10,7 @@ import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
 import useDeleteForm from '@/api/form/useDeleteForm';
 import useFormsRequest from '@/api/form/useFormsRequest';
+import { utcToFormatUserDateTime } from '@/utils/date';
 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -28,7 +29,7 @@ export interface FormCardProps extends CardProps {
 }
 
 const FormCard = (props: FormCardProps) => {
-  const { image, title, openDateTime, formId, ...other } = props;
+  const { image, title, openDateTime = '', formId, ...other } = props;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const { trigger: deleteForm } = useDeleteForm(formId);
   const { mutate } = useFormsRequest();
@@ -79,7 +80,7 @@ const FormCard = (props: FormCardProps) => {
           subheader={
             <>
               <AccessTimeIcon sx={{ marginRight: '4px', fontSize: 16 }} />
-              {openDateTime}
+              {utcToFormatUserDateTime(openDateTime)}
             </>
           }
         />

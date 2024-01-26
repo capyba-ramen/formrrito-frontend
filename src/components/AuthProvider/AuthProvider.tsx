@@ -1,16 +1,18 @@
 import * as React from 'react';
 import AuthDialog from '@/components/AuthDialog/AuthDialog';
 import InfoDialog, { InfoDialogProps } from '@/components/InfoDialog/InfoDialog';
-import useUserInfoRequest, { User } from '@/api/user/useUserInfoRequest';
+import useUserInfoRequest from '@/api/user/useUserInfoRequest';
 import AuthContext, { AuthContextProps } from './AuthContext';
+import { UserInfo } from '@/types/user';
 
 interface AuthProviderProps {
   children: React.ReactNode;
+  type?: 'business' | 'consumer';
 }
 
 const AuthProvider = (props: AuthProviderProps) => {
-  const { children } = props;
-  const [loggedInUser, setLoggedInUser] = React.useState<User | null>(null);
+  const { children, type = 'business' } = props;
+  const [loggedInUser, setLoggedInUser] = React.useState<UserInfo | null>(null);
   const [showAuthDialog, setShowAuthDialog] = React.useState(false);
   const [infoDialogProps, setInfoDialogProps] = React.useState<InfoDialogProps>({
     open: false,
@@ -21,9 +23,10 @@ const AuthProvider = (props: AuthProviderProps) => {
     onConfirm: () => {},
     onCancel: () => {},
   });
-  const { user, error } = useUserInfoRequest();
+  const { data: user, error } = useUserInfoRequest(type === 'business');
 
   React.useEffect(() => {
+    if (type === 'consumer') return;
     if (error?.response?.status === 401) {
       openAuthDialog();
     }

@@ -7,3 +7,10 @@ export type Reply = {
   option_title: string;
   answer: string;
 };
+
+export type ReplyField = {
+  questionId: string;
+  questionType: Question['type'];
+  options: Reply['option_id'][];
+  answer: string;
+};

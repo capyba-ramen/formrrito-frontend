@@ -7,8 +7,12 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import useCFormRequest from '@/api/form/useCFormRequest';
 import { Question } from '@/types/question';
+import { ReplyField } from '@/types/reply';
 import { ImageUrl, ImageUrlType } from '@/constants/form';
 import FormFieldWrapper from '@/components/FormFieldWrapper/FormFieldWrapper';
+import useErrorsHandler from '@/hooks/useErrorsHandler';
+import useSubmitCForm from '@/api/form/useSubmitCForm';
+import useNotification from '@/components/NotificationProvider/useNotification';
 
 import * as classNames from 'classnames/bind';
 import style from './FormFiller.module.scss';
@@ -16,18 +20,23 @@ const cx = classNames.bind(style);
 
 const FormFiller = () => {
   const formId = useParams()?.formId || '';
-  const { data } = useCFormRequest(formId);
+  const { data, error } = useCFormRequest(formId);
   const methods = useForm({
     mode: 'onChange',
     defaultValues: {
       replies: [],
     },
   });
-  const { reset, formState, getValues, handleSubmit } = methods;
+  const { reset, handleSubmit } = methods;
+  const { errorsHandler } = useErrorsHandler();
+  const { trigger: submitCForm } = useSubmitCForm(formId);
+  const { addNotification } = useNotification();
 
   React.useEffect(() => {
-    console.log(getValues());
-  }, [formState]);
+    if (!error) return;
+
+    errorsHandler(error);
+  }, [error, errorsHandler]);
 
   React.useEffect(() => {
     // TODO: handle not accepts_reply
@@ -35,17 +44,47 @@ const FormFiller = () => {
 
     reset({
       replies: data?.questions?.map((q: Question) => ({
-        question_id: q.id,
-        question_type: q.type,
-        option_id: '',
-        option_title: '',
+        questionId: q.id,
+        questionType: q.type,
+        options: [],
         answer: '',
       })),
     });
   }, [data]);
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
+  const onSubmit = handleSubmit((formData) => {
+    console.log({
+      replies: formData.replies.map((r: ReplyField) => ({
+        question_id: r.questionId,
+        question_type: r.questionType,
+        option_ids: r.options,
+        title_ids: r.options.map(
+          (o: string) => data?.questions?.find((q) => q.id === r.questionId)?.options?.find((op) => op.id === o)?.title
+        ),
+        answer: r.answer,
+      })),
+    });
+
+    // submitCForm({
+    //   replies: formData.replies.map((r: ReplyField) => ({
+    //     question_id: r.questionId,
+    //     question_type: r.questionType,
+    //     option_ids: r.options,
+    //     title_ids: r.options.map(
+    //       (o: string) => data?.questions?.find((q) => q.id === r.questionId)?.options?.find((op) => op.id === o)?.title
+    //     ),
+    //     answer: r.answer,
+    //   }))
+    // })
+    //   .then(() => {
+    //     addNotification({
+    //       message: 'Submit successfully',
+    //     });
+    //   })
+    //   .catch(() => {
+    //     addNotification({
+    //       message:'Submit failed'
+    //     });
   });
 
   const onClear = () => {

@@ -2,6 +2,7 @@ import { useFormContext, Controller } from 'react-hook-form';
 import Typography from '@mui/material/Typography';
 
 import { Question } from '@/types/question';
+import { QuestionTypeEnum } from '@/constants/question';
 import FormField from '@/components/FormField/FormField';
 
 import * as classNames from 'classnames/bind';
@@ -35,14 +36,72 @@ const FormFieldWrapper = (props: FormFieldWrapperProps) => {
         control={control}
         name={`replies.${index}`}
         rules={{
-          validate: (value) => {
-            if (is_required && (!value?.answer || !value?.option_id || !value?.option_title))
-              return 'This field is required';
+          validate: {
+            required: (v) => {
+              switch (type) {
+                case QuestionTypeEnum.SIMPLE:
+                case QuestionTypeEnum.COMPLEX:
+                  return !!v?.answer || 'required!';
+                case QuestionTypeEnum.SINGLE:
+                case QuestionTypeEnum.MULTIPLE:
+                case QuestionTypeEnum.DROP_DOWN:
+                  return !!v?.options?.length || 'required!';
+                default:
+                  return true;
+              }
+            },
           },
         }}
-        render={({ field: { value, onChange, ref }, fieldState: { error } }) => (
-          <FormField type={type} options={options} onChange={onChange} value={value} ref={ref} error={error} />
-        )}
+        render={({ field: { value, onChange, ref }, fieldState: { error } }) => {
+          const getValue = (value: any, type: Question['type']) => {
+            switch (type) {
+              case QuestionTypeEnum.SIMPLE:
+              case QuestionTypeEnum.COMPLEX:
+                return value?.answer;
+              case QuestionTypeEnum.SINGLE:
+              case QuestionTypeEnum.MULTIPLE:
+              case QuestionTypeEnum.DROP_DOWN:
+                return value?.options;
+              default:
+                return value;
+            }
+          };
+
+          const handleChange = (value: any, type: Question['type']) => (e) => {
+            switch (type) {
+              case QuestionTypeEnum.MULTIPLE:
+                return onChange({
+                  ...value,
+                  options: e.target.checked
+                    ? [...value?.options, e.target.name]
+                    : value?.options?.filter((v) => v !== e.target.name),
+                });
+              case QuestionTypeEnum.SINGLE:
+              case QuestionTypeEnum.DROP_DOWN:
+                return onChange({
+                  ...value,
+                  options: [e.target.value],
+                });
+              default:
+                return onChange({
+                  ...value,
+                  answer: e.target.value,
+                });
+            }
+          };
+          return (
+            <FormField
+              required={is_required}
+              type={type}
+              options={options}
+              onChange={handleChange(value, type)}
+              value={getValue(value, type)}
+              ref={ref}
+              helperText={error?.message}
+              error={!!error?.type}
+            />
+          );
+        }}
       />
     </div>
   );
