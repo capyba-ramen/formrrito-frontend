@@ -1,23 +1,19 @@
 import * as React from 'react';
-import { FormProvider, useForm, useFieldArray, FieldArrayWithId } from 'react-hook-form';
-import { useParams, useLocation } from 'react-router-dom';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import FormTabs from './FormTabs/FormTabs';
 import FormInfo from './FormInfo/FormInfo';
 import FormWrapper from '@/components/FormWrapper/FormWrapper';
-import AddQuestionButton from './AddQuestionButton/AddQuestionButton';
 import Questions from './Questions/Questions';
 import Responses from './Responses/Responses';
-import useErrorsHandler from '@/hooks/useErrorsHandler';
 import useFormRequest from '@/api/form/useFormRequest';
-import { Question, QuestionField } from '@/types/question';
-import { FormValues } from '@/types/form';
+import PageSkeleton from '@/components/PageSkeleton/PageSkeleton';
 
 const FormEdit = () => {
-  const [activeQuestionId, setActiveQuestionId] = React.useState<string | undefined>(undefined);
   const formId = useParams()?.formId || '';
-  const { data, error } = useFormRequest(formId);
-  const { errorsHandler } = useErrorsHandler();
+  const { data, isFetching } = useFormRequest(formId);
   const location = useLocation();
   const methods = useForm({
     mode: 'onChange',
@@ -29,60 +25,32 @@ const FormEdit = () => {
       questions: [],
     },
   });
-
-  const { reset, control } = methods;
-  const { append, fields, swap } = useFieldArray<FormValues, 'questions'>({
-    control,
-    name: 'questions',
-  });
-
-  React.useEffect(() => {
-    if (!error) return;
-
-    errorsHandler(error);
-  }, [error, errorsHandler]);
+  const { reset } = methods;
 
   React.useEffect(() => {
     if (!data) return;
 
-    reset({
+    reset((formValues) => ({
+      ...formValues,
       title: data?.title || 'Untitled Form',
       description: data?.description || 'Form description',
-      acceptsReply: data?.accepts_reply,
       imageUrl: data?.image_url,
-      questions: data?.questions?.map((q: Question) => ({
-        qId: q.id,
-        type: q.type,
-        title: q.title,
-        description: q.description,
-        required: q.is_required,
-        options: q.options?.map((el) => ({
-          optionId: el.id,
-          title: el.title,
-        })),
-      })),
-    });
+    }));
   }, [data]);
 
   return (
     <FormProvider {...methods}>
-      <FormInfo />
-      <FormTabs />
-      <FormWrapper style={{ marginTop: '24px' }}>
-        {location.hash !== '#responses' ? (
-          <>
-            <Questions
-              questions={fields as (QuestionField & FieldArrayWithId)[]}
-              activeQuestionId={activeQuestionId}
-              onSetActiveQuestionId={setActiveQuestionId}
-              onSwap={swap}
-            />
-            <AddQuestionButton sx={{ marginTop: '16px' }} append={append} setActiveQuestionId={setActiveQuestionId} />
-          </>
-        ) : (
-          <Responses />
-        )}
-      </FormWrapper>
+      {isFetching ? (
+        <PageSkeleton />
+      ) : (
+        <>
+          <FormInfo />
+          <FormTabs />
+          <FormWrapper style={{ marginTop: '24px' }}>
+            {location.hash !== '#responses' ? <Questions /> : <Responses />}
+          </FormWrapper>
+        </>
+      )}
     </FormProvider>
   );
 };

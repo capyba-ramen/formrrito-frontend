@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useFormContext, Controller, useWatch, useFieldArray } from 'react-hook-form';
+import { useFormContext, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
 import TextField from '@mui/material/TextField';
@@ -11,11 +11,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import AddOption from './AddOption';
-import Radio from '@mui/material/Radio';
-import Checkbox from '@mui/material/Checkbox';
+import Options from './Options/Options';
 import Tooltip from '@mui/material/Tooltip';
-
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -24,10 +21,11 @@ import useDeleteQuestion from '@/api/question/useDeleteQuestion';
 import useFormRequest from '@/api/form/useFormRequest';
 import useUpdateQuestion from '@/api/question/useUpdateQuestion';
 import useNotification from '@/components/NotificationProvider/useNotification';
-import useErrorsHandler from '@/hooks/useErrorsHandler';
+import useApiErrorHandlers from '@/api/useApiErrorsHandler';
+
 import { Question } from '@/types/question';
-import Option from './Option/Option';
-import { NonOptionQuestionTypes, QuestionTypeEnum } from '@/constants/question';
+import { OptionField } from '@/types/option';
+import { NonOptionQuestionTypes } from '@/constants/question';
 
 import * as classNames from 'classnames/bind';
 import style from './QuestionEdit.module.scss';
@@ -43,16 +41,16 @@ const QuestionEdit = (props: QuestionEditProps) => {
   const { qId, index, onQuestionSwap } = props;
   const formId = useParams()?.formId || '';
   const { control, getValues, formState } = useFormContext();
-  const watchType = useWatch({ name: `questions.${index}.type` });
   const { trigger: deleteQuestion } = useDeleteQuestion(qId, formId);
   const { trigger: updateQuestion } = useUpdateQuestion();
   const { mutate } = useFormRequest(formId, { revalidateOnMount: false });
   const { addNotification } = useNotification();
-  const { errorsHandler } = useErrorsHandler();
+  const { errorsHandler } = useApiErrorHandlers();
   const { fields, append, remove } = useFieldArray({
     control,
     name: `questions[${index}].options`,
   });
+  const watchType = useWatch({ name: `questions.${index}.type` });
 
   const handleDeleteQuestion = () => {
     deleteQuestion().then(() => {
@@ -69,9 +67,16 @@ const QuestionEdit = (props: QuestionEditProps) => {
       question_id: qId,
       type,
     })
-      .then(() => {
+      .then((res) => {
         if (NonOptionQuestionTypes.includes(type)) {
           remove();
+        }
+
+        if (res?.data) {
+          append({
+            optionId: res.data.id,
+            title: res.data.title,
+          });
         }
       })
       .catch(errorsHandler);
@@ -80,75 +85,6 @@ const QuestionEdit = (props: QuestionEditProps) => {
   React.useEffect(() => {
     getValues();
   }, [formState, getValues]);
-
-  const renderOptions = () => {
-    switch (watchType) {
-      case QuestionTypeEnum.SIMPLE:
-        return <div>ShortAnswer</div>;
-      case QuestionTypeEnum.COMPLEX:
-        return <div>Paragraph</div>;
-      case QuestionTypeEnum.SINGLE:
-        return (
-          <>
-            <div className={cx('options')}>
-              {fields?.map((el, idx) => (
-                <Option
-                  key={el.id}
-                  name={`questions.${index}.options.${idx}.title`}
-                  prefix={<Radio />}
-                  onRemove={() => {
-                    remove(idx);
-                  }}
-                />
-              ))}
-            </div>
-            <AddOption append={append} currentLength={fields?.length} />
-          </>
-        );
-      case QuestionTypeEnum.MULTIPLE:
-        return (
-          <>
-            <div className={cx('options')}>
-              {fields?.map((el, idx) => (
-                <Option
-                  key={el.id}
-                  name={`questions.${index}.options.${idx}.title`}
-                  prefix={<Checkbox />}
-                  onRemove={() => {
-                    remove(idx);
-                  }}
-                />
-              ))}
-            </div>
-            <AddOption append={append} currentLength={fields?.length} />
-          </>
-        );
-      case QuestionTypeEnum.DROP_DOWN:
-        return (
-          <>
-            <div className={cx('options')}>
-              {fields?.map((el, idx) => (
-                <Option
-                  key={el.id}
-                  name={`questions.${index}.options.${idx}.title`}
-                  prefix={
-                    <Typography variant="subtitle1" component="p">
-                      {idx + 1}. &nbsp;&nbsp;
-                    </Typography>
-                  }
-                  onRemove={() => {
-                    remove(idx);
-                  }}
-                />
-              ))}
-            </div>
-            <AddOption append={append} currentLength={fields?.length} />
-          </>
-        );
-      default:
-        return undefined;
-    }
-  };
 
   const handleSwapUp = () => {
     onQuestionSwap(index, index - 1);
@@ -231,7 +167,15 @@ const QuestionEdit = (props: QuestionEditProps) => {
           />
         )}
       />
-      <div className={cx('content')}>{renderOptions()}</div>
+      <div className={cx('content')}>
+        <Options
+          index={index}
+          options={fields as OptionField & { id: string }[]}
+          append={append}
+          remove={remove}
+          type={watchType}
+        />
+      </div>
       <div className={cx('actions')}>
         <div className={cx('action-left')}>
           <Tooltip title="Duplicate">

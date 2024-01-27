@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { useLocation } from 'react-router-dom';
+
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
@@ -7,7 +9,22 @@ import style from './FormTabs.module.scss';
 const cx = classNames.bind(style);
 
 const FormTabs = () => {
-  const [value, setValue] = React.useState('questions');
+  const [value, setValue] = React.useState('#questions');
+  const location = useLocation();
+
+  React.useEffect(() => {
+    switch (location.hash) {
+      case '#questions':
+        setValue('#questions');
+        break;
+      case '#responses':
+        setValue('#responses');
+        break;
+      default:
+        setValue('#questions');
+        break;
+    }
+  }, [location.hash]);
 
   const handleChange = (_: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -26,8 +43,8 @@ const FormTabs = () => {
         root: cx('root'),
       }}
     >
-      <Tab value="questions" label="Questions" disableRipple href="#questions" />
-      <Tab value="responses" label="Responses" disableRipple href="#responses" />
+      <Tab value="#questions" label="Questions" disableRipple href="#questions" />
+      <Tab value="#responses" label="Responses" disableRipple href="#responses" />
     </Tabs>
   );
 };

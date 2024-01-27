@@ -5,6 +5,7 @@
     .title {
         font-weight: 700;
         font-size: 32px;
+        line-height: 1.5;
     }
 
     .description {
@@ -25,6 +26,12 @@
             }
         }
     }
+}
+
+.title-share {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .banner {

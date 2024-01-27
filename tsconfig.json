@@ -9,6 +9,8 @@
     "paths": {
       "@/*": ["*"],
     },
+    "noImplicitAny": false,
+    
 
     /* Bundler mode */
     "moduleResolution": "node",

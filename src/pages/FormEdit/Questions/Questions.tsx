@@ -1,24 +1,23 @@
-import { useFormContext, FieldArrayWithId } from 'react-hook-form';
+import * as React from 'react';
+import { useFormContext } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
-import QuestionItem from '@/components/QuestionItem/QuestionItem';
+import { useFieldArray } from 'react-hook-form';
+import QuestionItem from '@/pages/FormEdit/QuestionItem/QuestionItem';
 import useUpdateQuestion from '@/api/question/useUpdateQuestion';
 import useUpdateOptions from '@/api/option/useUpdateOptions';
 import useChangeQuestionOrder from '@/api/question/useChangeQuestionOrder';
 import { OptionQuestionTypes } from '@/constants/question';
 import useClearDirtyFields from '@/hooks/useClearDirtyFields';
-import { QuestionField } from '@/types/question';
 import { OptionField } from '@/types/option';
+import useApiErrorHandlers from '@/api/useApiErrorsHandler';
+import useFormRequest from '@/api/form/useFormRequest';
+import { Question, QuestionField } from '@/types/question';
+import { FormValues } from '@/types/form';
+import AddQuestionButton from '../AddQuestionButton/AddQuestionButton';
 
-export interface QuestionsProps {
-  questions: (QuestionField & FieldArrayWithId)[];
-  activeQuestionId?: string;
-  onSetActiveQuestionId: (id: string | undefined) => void;
-  onSwap: (index1: number, index2: number) => void;
-}
-
-const Questions = (props: QuestionsProps) => {
-  const { questions, activeQuestionId, onSetActiveQuestionId, onSwap } = props;
+const Questions = () => {
+  const [activeQuestionId, setActiveQuestionId] = React.useState<string | undefined>(undefined);
   const formId = useParams().formId || '';
   const { trigger: updateQuestion } = useUpdateQuestion();
   const { trigger: updateOptions } = useUpdateOptions();
@@ -29,8 +28,47 @@ const Questions = (props: QuestionsProps) => {
     formState,
     clearErrors,
     formState: { errors },
+    reset,
   } = useFormContext();
   const { dirtyFields } = formState;
+  const { data, error } = useFormRequest(formId, {
+    revalidateOnMount: false,
+  });
+  const { errorsHandler } = useApiErrorHandlers();
+
+  const {
+    append,
+    fields: questions,
+    swap,
+  } = useFieldArray<FormValues, 'questions'>({
+    name: 'questions',
+  });
+
+  React.useEffect(() => {
+    if (!error) return;
+
+    errorsHandler(error);
+  }, [error, errorsHandler]);
+
+  React.useEffect(() => {
+    if (!data) return;
+
+    reset((formValues) => ({
+      ...formValues,
+      questions: data?.questions?.map((q: Question) => ({
+        qId: q.id,
+        type: q.type,
+        title: q.title,
+        description: q.description,
+        required: q.is_required,
+        options: q.options?.map((el) => ({
+          optionId: el.id,
+          title: el.title,
+        })),
+      })) as never[],
+    }));
+  }, [data]);
+
   const { clearDirtyFields } = useClearDirtyFields();
 
   const handleDirtyFieldsQuestion = async (qId: string, index: number) => {
@@ -92,7 +130,7 @@ const Questions = (props: QuestionsProps) => {
   const handleClick = (qId: string) => {
     if (errors?.questions) return;
 
-    onSetActiveQuestionId(qId);
+    setActiveQuestionId(qId);
   };
 
   const handleSwap = async (index1: number, index2: number) => {
@@ -103,7 +141,7 @@ const Questions = (props: QuestionsProps) => {
       return;
     }
 
-    onSwap(index1, index2);
+    swap(index1, index2);
 
     changeQuestionOrder({
       form_id: formId,
@@ -126,11 +164,12 @@ const Questions = (props: QuestionsProps) => {
             handleClick(q.qId);
           }}
           active={activeQuestionId === q.qId}
-          error={Object.keys(errors?.questions?.[index] || {})?.length}
+          error={!!Object.keys(errors?.questions?.[index] || {})?.length}
           onQuestionSwap={handleSwap}
           {...q}
         />
       ))}
+      <AddQuestionButton sx={{ marginTop: '16px' }} append={append} setActiveQuestionId={setActiveQuestionId} />
     </>
   );
 };

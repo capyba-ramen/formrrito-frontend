@@ -25,6 +25,7 @@ const FormFieldWrapper = (props: FormFieldWrapperProps) => {
   return (
     <div className={cx('root')}>
       <Typography variant="body1" fontWeight={500} gutterBottom>
+        {is_required && <span style={{ color: 'var(--red-1)' }}>*</span>}{' '}
         {title ? `${index + 1}. ${title}` : `Question ${index + 1}`}
       </Typography>
       {description && (
@@ -37,55 +38,41 @@ const FormFieldWrapper = (props: FormFieldWrapperProps) => {
         name={`replies.${index}`}
         rules={{
           validate: {
-            required: (v) => {
-              switch (type) {
-                case QuestionTypeEnum.SIMPLE:
-                case QuestionTypeEnum.COMPLEX:
-                  return !!v?.answer || 'required!';
-                case QuestionTypeEnum.SINGLE:
-                case QuestionTypeEnum.MULTIPLE:
-                case QuestionTypeEnum.DROP_DOWN:
-                  return !!v?.options?.length || 'required!';
-                default:
-                  return true;
-              }
-            },
+            ...(is_required
+              ? {
+                  required: (v) => {
+                    switch (type) {
+                      case QuestionTypeEnum.SIMPLE:
+                      case QuestionTypeEnum.COMPLEX:
+                      case QuestionTypeEnum.DROP_DOWN:
+                      case QuestionTypeEnum.SINGLE:
+                        return !!v?.value || 'required!';
+                      case QuestionTypeEnum.MULTIPLE:
+                        return !!v?.value?.length || 'required!';
+                      default:
+                        return true;
+                    }
+                  },
+                }
+              : {}),
           },
         }}
         render={({ field: { value, onChange, ref }, fieldState: { error } }) => {
-          const getValue = (value: any, type: Question['type']) => {
-            switch (type) {
-              case QuestionTypeEnum.SIMPLE:
-              case QuestionTypeEnum.COMPLEX:
-                return value?.answer;
-              case QuestionTypeEnum.SINGLE:
-              case QuestionTypeEnum.MULTIPLE:
-              case QuestionTypeEnum.DROP_DOWN:
-                return value?.options;
-              default:
-                return value;
-            }
-          };
-
           const handleChange = (value: any, type: Question['type']) => (e) => {
             switch (type) {
               case QuestionTypeEnum.MULTIPLE:
                 return onChange({
                   ...value,
-                  options: e.target.checked
-                    ? [...value?.options, e.target.name]
-                    : value?.options?.filter((v) => v !== e.target.name),
+                  value: e.target.checked
+                    ? [...(value?.value || []), e.target.name]
+                    : value?.value?.filter((v) => v !== e.target.name),
                 });
               case QuestionTypeEnum.SINGLE:
               case QuestionTypeEnum.DROP_DOWN:
-                return onChange({
-                  ...value,
-                  options: [e.target.value],
-                });
               default:
                 return onChange({
                   ...value,
-                  answer: e.target.value,
+                  value: e.target.value,
                 });
             }
           };
@@ -95,7 +82,7 @@ const FormFieldWrapper = (props: FormFieldWrapperProps) => {
               type={type}
               options={options}
               onChange={handleChange(value, type)}
-              value={getValue(value, type)}
+              value={value?.value}
               ref={ref}
               helperText={error?.message}
               error={!!error?.type}

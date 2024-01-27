@@ -35,7 +35,7 @@ const FormField = React.forwardRef((props: FormFieldProps, ref) => {
           onChange={onChange}
           variant="standard"
           fullWidth
-          ref={ref}
+          inputRef={ref}
           helperText={helperText}
           error={error}
           required={required}
@@ -49,7 +49,7 @@ const FormField = React.forwardRef((props: FormFieldProps, ref) => {
           multiline
           variant="standard"
           fullWidth
-          ref={ref}
+          inputRef={ref}
           helperText={helperText}
           error={error}
           required={required}

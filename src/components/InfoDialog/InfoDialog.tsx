@@ -17,10 +17,24 @@ export interface InfoDialogProps {
   cancelBtnText?: string;
   onConfirm?: () => void;
   onCancel?: () => void;
+  onClose?: () => void;
+  children?: React.ReactNode;
+  isCloseableByOutside?: boolean;
 }
 
 const InfoDialog = (props: InfoDialogProps) => {
-  const { open, title, content, confirmBtnText, cancelBtnText, onConfirm, onCancel } = props;
+  const {
+    open,
+    title,
+    content,
+    children,
+    confirmBtnText,
+    cancelBtnText,
+    onConfirm,
+    onCancel,
+    onClose,
+    isCloseableByOutside = true,
+  } = props;
 
   return (
     <Dialog
@@ -31,10 +45,12 @@ const InfoDialog = (props: InfoDialogProps) => {
         },
       }}
       scroll="body"
+      onClose={isCloseableByOutside ? onClose : undefined}
     >
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{content}</DialogContentText>
+        {children}
       </DialogContent>
       <DialogActions>
         {cancelBtnText && <Button onClick={onCancel}>{cancelBtnText}</Button>}
@@ -44,6 +60,6 @@ const InfoDialog = (props: InfoDialogProps) => {
   );
 };
 
-InfoDialog.displayName = ' InfoDialog';
+InfoDialog.displayName = 'InfoDialog';
 
 export default InfoDialog;

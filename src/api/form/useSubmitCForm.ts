@@ -1,9 +1,16 @@
-import createMutationApi from '@/api/createMutationApi';
-import { postFetcher } from '../fetchers';
+import useSWRMutation from 'swr/mutation';
+import client from '../client';
+import { Reply } from '@/types/reply';
 
-const { useMutation: useSubmitCForm } = createMutationApi({
-  key: (formId) => `/api/reply/${formId}`,
-  fetcher: postFetcher,
-});
+const apiPostSubmitReply = (_: string, { arg: { formId, replies } }: { arg: { formId: string; replies: Reply[] } }) => {
+  return client.post(`/api/reply/${formId}`, { replies });
+};
 
-export default useSubmitCForm;
+export default function useSubmitCForm() {
+  const { trigger, isMutating } = useSWRMutation('/api/reply/formId', apiPostSubmitReply);
+
+  return {
+    trigger,
+    isMutating,
+  };
+}
