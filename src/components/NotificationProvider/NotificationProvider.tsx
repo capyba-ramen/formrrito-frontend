@@ -2,7 +2,6 @@ import * as React from 'react';
 import NotificationContext, { NotificationContextProps } from './NotificationContext';
 import Snackbar, { SnackbarProps } from '@mui/material/Snackbar';
 import useTimeout from '@/hooks/useTimeout';
-import InfoDialog, { InfoDialogProps } from '@/components/InfoDialog/InfoDialog';
 
 interface NotificationProviderProps {
   children: React.ReactNode;
@@ -11,15 +10,6 @@ interface NotificationProviderProps {
 const NotificationProvider = (props: NotificationProviderProps) => {
   const { children } = props;
   const [notifications, setNotifications] = React.useState<SnackbarProps[]>([]);
-  const [dialogProps, setDialogProps] = React.useState<InfoDialogProps>({
-    open: false,
-    title: '',
-    content: '',
-    confirmBtnText: '',
-    cancelBtnText: '',
-    onConfirm: () => {},
-    onCancel: () => {},
-  });
 
   const addNotification = React.useCallback((notification: SnackbarProps) => {
     setNotifications((notifications) => [...notifications, notification]);
@@ -31,17 +21,6 @@ const NotificationProvider = (props: NotificationProviderProps) => {
       return rest;
     });
   }, []);
-
-  const openDialog = (dialogProps: Omit<InfoDialogProps, 'open'>) => {
-    setDialogProps({
-      open: true,
-      ...dialogProps,
-    });
-  };
-
-  const closeDialog = () => {
-    setDialogProps({ open: false });
-  };
 
   const [, clear, set] = useTimeout(removeNotification, 3000);
 
@@ -59,16 +38,9 @@ const NotificationProvider = (props: NotificationProviderProps) => {
     () => ({
       notifications,
       addNotification,
-      openDialog,
-      closeDialog,
     }),
     [addNotification, notifications]
   );
-
-  const handleClose = () => {
-    dialogProps.onClose?.();
-    closeDialog();
-  };
 
   return (
     <NotificationContext.Provider value={contextValue}>
@@ -83,7 +55,6 @@ const NotificationProvider = (props: NotificationProviderProps) => {
           {...props}
         />
       ))}
-      <InfoDialog onClose={handleClose} {...dialogProps} />
     </NotificationContext.Provider>
   );
 };

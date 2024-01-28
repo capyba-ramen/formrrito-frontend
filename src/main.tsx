@@ -12,14 +12,17 @@ import { SWRConfig } from 'swr';
 import theme from './configs/settings/theme.config.ts';
 import swrConfig from './configs/settings/swr.config';
 import NotificationProvider from './components/NotificationProvider/NotificationProvider';
+import DialogProvider from './components/DialogProvider/DialogProvider';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <SWRConfig value={swrConfig}>
-        <NotificationProvider>
-          <RouterProvider router={router} />
-        </NotificationProvider>
+        <DialogProvider>
+          <NotificationProvider>
+            <RouterProvider router={router} />
+          </NotificationProvider>
+        </DialogProvider>
       </SWRConfig>
     </ThemeProvider>
   </React.StrictMode>

@@ -30,7 +30,7 @@ const ResponseStat = (props: ResponseStatProps) => {
     switch (type) {
       case QuestionTypeEnum.SIMPLE:
       case QuestionTypeEnum.COMPLEX:
-        return <div>{responses?.map((r) => <Typography>{r}</Typography>)}</div>;
+        return <div>{responses?.map((r) => <Typography key={r}>{r}</Typography>)}</div>;
       case QuestionTypeEnum.SINGLE:
       case QuestionTypeEnum.DROP_DOWN:
         return (
@@ -58,6 +58,13 @@ const ResponseStat = (props: ResponseStatProps) => {
                   data: options?.map((o) => o.count),
                 },
               ],
+            }}
+            options={{
+              plugins: {
+                legend: {
+                  display: false,
+                },
+              },
             }}
           />
         );

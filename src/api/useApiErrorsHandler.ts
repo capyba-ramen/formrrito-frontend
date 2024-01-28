@@ -1,10 +1,12 @@
 import * as React from 'react';
 import { AxiosError } from 'axios';
 import { useNavigate } from 'react-router-dom';
-import useNotification from '../components/NotificationProvider/useNotification';
+import useNotification from '@/components/NotificationProvider/useNotification';
+import useDialog from '@/components/DialogProvider/useDialog';
 
 export default function useApiErrorHandlers() {
-  const { addNotification, openDialog } = useNotification();
+  const { addNotification } = useNotification();
+  const { openDialog } = useDialog();
   const navigate = useNavigate();
 
   const errorsHandler = React.useCallback((error: AxiosError) => {

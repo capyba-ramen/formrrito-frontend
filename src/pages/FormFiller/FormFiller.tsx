@@ -5,15 +5,16 @@ import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 import FormWrapper from '@/components/FormWrapper/FormWrapper';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import useCFormRequest from '@/api/form/useCFormRequest';
+import useCFormRequest from '@/api/reply/useCFormRequest';
 import { Question } from '@/types/question';
 import { ReplyField } from '@/types/reply';
 import { ImageUrl, ImageUrlType } from '@/constants/form';
 import FormFieldWrapper from '@/components/FormFieldWrapper/FormFieldWrapper';
 import useApiErrorHandlers from '@/api/useApiErrorsHandler';
-import useSubmitCForm from '@/api/form/useSubmitCForm';
+import useSubmitCForm from '@/api/reply/useSubmitCForm';
 import useNotification from '@/components/NotificationProvider/useNotification';
 import PageSkeleton from '@/components/PageSkeleton/PageSkeleton';
+import useDialog from '@/components/DialogProvider/useDialog';
 
 import { QuestionTypeEnum } from '@/constants/question';
 
@@ -33,7 +34,9 @@ const FormFiller = () => {
   const { reset, handleSubmit } = methods;
   const { errorsHandler } = useApiErrorHandlers();
   const { trigger: submitCForm } = useSubmitCForm();
-  const { addNotification, openDialog } = useNotification();
+  const { addNotification } = useNotification();
+  const { openDialog } = useDialog();
+
   const { fields } = useFieldArray({
     control: methods.control,
     name: 'replies',

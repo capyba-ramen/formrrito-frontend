@@ -27,6 +27,7 @@ const Chart = (props: ChartProps) => {
         ...data,
         datasets: data.datasets?.map((d) => ({
           ...d,
+          barPercentage: 0.5,
           backgroundColor: [
             'rgba(255, 205, 86, 0.2)',
             'rgba(75, 192, 192, 0.2)',
