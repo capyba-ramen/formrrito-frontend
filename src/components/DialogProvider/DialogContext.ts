@@ -1,9 +1,17 @@
 import * as React from 'react';
-import { InfoDialogProps } from '@/components/InfoDialog/InfoDialog';
 
 export interface DialogContextProps {
-  openDialog: (dialogProps: Omit<InfoDialogProps, 'open'>) => void;
-  closeDialog: () => void;
+  openDialog: (
+    key: string,
+    {
+      component,
+      dialogProps,
+    }: {
+      component?: React.FC;
+      dialogProps?: any;
+    }
+  ) => void;
+  closeDialog: (key: string) => void;
 }
 
 const DialogContext = React.createContext<DialogContextProps>({

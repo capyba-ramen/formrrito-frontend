@@ -7,7 +7,11 @@ import TextField from '@mui/material/TextField';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import useCreateShortenedUrl from '@/api/tool/useCreateShortenedUrl';
-import InfoDialog from '@/components/InfoDialog/InfoDialog';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import Button from '@mui/material/Button';
+import DialogTitle from '@mui/material/DialogTitle';
 
 import * as classNames from 'classnames/bind';
 import style from './SendLinkDialog.module.scss';
@@ -50,29 +54,41 @@ const SendLinkDialog = (props) => {
       });
   };
   return (
-    <InfoDialog
+    <Dialog
       open={open}
       onClose={onClose}
-      title="Send Form"
-      content="Copy the link below and send it to your friends. They'll be able to fill out your form."
-      onConfirm={handleConfirm}
-      confirmBtnText="Copy"
+      PaperProps={{
+        sx: {
+          padding: '24px 16px',
+        },
+      }}
     >
-      <div className={cx('link')}>
-        <Typography variant="subtitle1" fontWeight={600}>
-          Link
+      <DialogTitle>Send Form</DialogTitle>
+      <DialogContent>
+        <Typography variant="body2" color="var(--gray-3)">
+          Copy the link below and send it to your friends. They'll be able to fill out your form.
         </Typography>
-        <TextField
-          value={linkPrefix + (isShortened ? shortenedUrl : `/c-form/${formId}`)}
-          fullWidth
-          variant="standard"
-        />
-        <FormControlLabel
-          control={<Checkbox name="shortened-url" onChange={handleChange} checked={isShortened} />}
-          label="Shorten URL"
-        />
-      </div>
-    </InfoDialog>
+        <div className={cx('link')}>
+          <Typography variant="subtitle1" fontWeight={600}>
+            Link
+          </Typography>
+          <TextField
+            value={linkPrefix + (isShortened ? shortenedUrl : `/c-form/${formId}`)}
+            fullWidth
+            variant="standard"
+          />
+          <FormControlLabel
+            control={<Checkbox name="shortened-url" onChange={handleChange} checked={isShortened} />}
+            label="Shorten URL"
+          />
+        </div>
+      </DialogContent>
+      <DialogActions>
+        <Button variant="contained" onClick={handleConfirm}>
+          Copy
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

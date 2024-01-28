@@ -1,12 +1,23 @@
 import * as React from 'react';
 import DialogContext from './DialogContext';
 
-const useDialog = () => {
+const useDialog = (key: string) => {
   const { openDialog, closeDialog } = React.useContext(DialogContext);
 
+  const handleOpenDialog = React.useCallback(
+    ({ component, dialogProps }: { component?: React.FC; dialogProps?: any }) => {
+      openDialog(key, { component, dialogProps });
+    },
+    [key, openDialog]
+  );
+
+  const handleCloseDialog = React.useCallback(() => {
+    closeDialog(key);
+  }, [key, closeDialog]);
+
   return {
-    openDialog,
-    closeDialog,
+    openDialog: handleOpenDialog,
+    closeDialog: handleCloseDialog,
   };
 };
 

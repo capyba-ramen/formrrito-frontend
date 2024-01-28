@@ -15,6 +15,7 @@ import useSubmitCForm from '@/api/reply/useSubmitCForm';
 import useNotification from '@/components/NotificationProvider/useNotification';
 import PageSkeleton from '@/components/PageSkeleton/PageSkeleton';
 import useDialog from '@/components/DialogProvider/useDialog';
+import { DialogTypes } from '@/constants/dialogs';
 
 import { QuestionTypeEnum } from '@/constants/question';
 
@@ -35,7 +36,7 @@ const FormFiller = () => {
   const { errorsHandler } = useApiErrorHandlers();
   const { trigger: submitCForm } = useSubmitCForm();
   const { addNotification } = useNotification();
-  const { openDialog } = useDialog();
+  const { openDialog } = useDialog(DialogTypes.INFO_DIALOG);
 
   const { fields } = useFieldArray({
     control: methods.control,
@@ -91,13 +92,15 @@ const FormFiller = () => {
 
     if (!data.accepts_reply) {
       openDialog({
-        title: 'Not Available',
-        content: "Oops! It seems that this form doesn't accept replies.",
-        onConfirm: () => {
-          window.location.href = '/forms';
+        dialogProps: {
+          title: 'Not Available',
+          content: "Oops! It seems that this form doesn't accept replies.",
+          onConfirm: () => {
+            window.location.href = '/forms';
+          },
+          confirmBtnText: 'Go To Homepage',
+          isCloseableByOutside: false,
         },
-        confirmBtnText: 'Go To Homepage',
-        isCloseableByOutside: false,
       });
       return;
     }
