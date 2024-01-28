@@ -1,0 +1,31 @@
+.root {
+    text-align: center;
+    width: fit-content;
+    padding: 36px;
+    border-radius: 50px;
+    background-color: var(--white);
+    margin: 64px auto;
+
+
+    .container {
+        display: flex;
+    }
+
+    .text {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .pur {
+        width: 200px;
+        height: auto;
+    }
+
+    .logo {
+        width: 48px;
+        height: auto;
+        margin-top: 16px;
+        align-self: flex-end;
+    }
+}

@@ -1,17 +1,18 @@
 import * as React from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { SWRConfig } from 'swr';
+
 import ErrorBoundaryLayout from '@/layouts/ErrorBoundary/ErrorBoundaryLayout';
 import BusinessLayout from '@/layouts/BusinessLayout/BusinessLayout';
 import ConsumerLayout from '@/layouts/ConsumerLayout/ConsumerLayout';
 import NotFound from '@/pages/NotFound/NotFound';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import NotificationProvider from '@/components/NotificationProvider/NotificationProvider';
 import DialogProvider from '@/components/DialogProvider/DialogProvider';
 import { ThemeProvider } from '@mui/material/styles';
-
 import theme from '@/configs/settings/theme.config.ts';
 import swrConfig from '@/configs/settings/swr.config';
-import { SWRConfig } from 'swr';
 
+import '@/configs/style/global.scss';
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -25,17 +26,15 @@ const Go = React.lazy(() => import('@/pages/Go/Go'));
 const router = createBrowserRouter([
   {
     element: (
-      <React.Suspense fallback={<div>Loading...</div>}>
-        <ThemeProvider theme={theme}>
-          <SWRConfig value={swrConfig}>
+      <ThemeProvider theme={theme}>
+        <SWRConfig value={swrConfig}>
+          <NotificationProvider>
             <DialogProvider>
-              <NotificationProvider>
-                <ErrorBoundaryLayout />
-              </NotificationProvider>
+              <ErrorBoundaryLayout />
             </DialogProvider>
-          </SWRConfig>
-        </ThemeProvider>
-      </React.Suspense>
+          </NotificationProvider>
+        </SWRConfig>
+      </ThemeProvider>
     ),
     children: [
       {
