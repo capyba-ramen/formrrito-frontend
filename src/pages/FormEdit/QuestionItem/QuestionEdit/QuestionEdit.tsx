@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useFormContext, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
@@ -40,7 +39,7 @@ export interface QuestionEditProps {
 const QuestionEdit = (props: QuestionEditProps) => {
   const { qId, index, onQuestionSwap } = props;
   const formId = useParams()?.formId || '';
-  const { control, getValues, formState } = useFormContext();
+  const { control, getValues } = useFormContext();
   const { trigger: deleteQuestion } = useDeleteQuestion(qId, formId);
   const { trigger: updateQuestion } = useUpdateQuestion();
   const { mutate } = useFormRequest(formId, { revalidateOnMount: false });
@@ -48,7 +47,7 @@ const QuestionEdit = (props: QuestionEditProps) => {
   const { errorsHandler } = useApiErrorHandlers();
   const { fields, append, remove } = useFieldArray({
     control,
-    name: `questions[${index}].options`,
+    name: `questions.${index}.options`,
   });
   const watchType = useWatch({ name: `questions.${index}.type` });
 
@@ -81,10 +80,6 @@ const QuestionEdit = (props: QuestionEditProps) => {
       })
       .catch(errorsHandler);
   };
-
-  React.useEffect(() => {
-    getValues();
-  }, [formState, getValues]);
 
   const handleSwapUp = () => {
     onQuestionSwap(index, index - 1);
@@ -208,7 +203,7 @@ const QuestionEdit = (props: QuestionEditProps) => {
           </div>
         </div>
         <div>
-          <Tooltip title="Swap Up">
+          <Tooltip title={index === 0 ? '' : 'Swap Up'}>
             <IconButton
               aria-label="swap up"
               color="primary"
@@ -219,7 +214,7 @@ const QuestionEdit = (props: QuestionEditProps) => {
               <ExpandLessIcon fontSize="small" />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Swap Down">
+          <Tooltip title={index === getValues('questions')?.length - 1 ? '' : 'Swap Down'}>
             <IconButton
               aria-label="swap down"
               color="primary"

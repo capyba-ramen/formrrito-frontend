@@ -1,5 +1,5 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
-import GeneralError from '@/components/GeneralError/GeneralError';
+import PurritoInfo from '@/components/PurritoInfo/PurritoInfo';
 
 interface Props {
   children?: ReactNode;
@@ -25,7 +25,7 @@ class ErrorBoundary extends Component<Props, State> {
 
   public render() {
     if (this.state.hasError) {
-      return <GeneralError />;
+      return <PurritoInfo />;
     }
 
     return this.props.children;

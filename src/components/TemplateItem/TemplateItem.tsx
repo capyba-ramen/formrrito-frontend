@@ -33,7 +33,7 @@ const TemplateItem = (props: TemplateItemProps) => {
   return (
     <div className={cx('root')} {...other} onClick={handleCreateTemplate}>
       <div className={cx('image')}>
-        <img src={image} />
+        <img src={image} alt={`template-${title}`} />
       </div>
       <Typography variant="body2" align="center">
         {title}

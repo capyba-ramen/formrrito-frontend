@@ -30,7 +30,15 @@ const ResponseStat = (props: ResponseStatProps) => {
     switch (type) {
       case QuestionTypeEnum.SIMPLE:
       case QuestionTypeEnum.COMPLEX:
-        return <div>{responses?.map((r) => <Typography key={r}>{r}</Typography>)}</div>;
+        return (
+          <>
+            {responses?.map((r) => (
+              <Typography className={cx('answer')} key={r}>
+                {r}
+              </Typography>
+            ))}
+          </>
+        );
       case QuestionTypeEnum.SINGLE:
       case QuestionTypeEnum.DROP_DOWN:
         return (

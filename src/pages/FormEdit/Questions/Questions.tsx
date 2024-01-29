@@ -9,7 +9,7 @@ import useUpdateOptions from '@/api/option/useUpdateOptions';
 import useChangeQuestionOrder from '@/api/question/useChangeQuestionOrder';
 import { OptionQuestionTypes } from '@/constants/question';
 import useClearDirtyFields from '@/hooks/useClearDirtyFields';
-import { OptionField } from '@/types/option';
+import { Option, OptionField } from '@/types/option';
 import useApiErrorHandlers from '@/api/useApiErrorsHandler';
 import useFormRequest from '@/api/form/useFormRequest';
 import { Question, QuestionField } from '@/types/question';
@@ -29,6 +29,7 @@ const Questions = () => {
     clearErrors,
     formState: { errors },
     reset,
+    setValue,
   } = useFormContext();
   const { dirtyFields } = formState;
   const { data, error } = useFormRequest(formId, {
@@ -81,15 +82,17 @@ const Questions = () => {
     ]);
     if (!isValid) return;
 
+    const questionDirtyFields = dirtyFields?.questions?.[index];
+
     if (
-      dirtyFields?.questions?.[index]?.options ||
-      dirtyFields?.questions?.[index]?.title ||
-      dirtyFields?.questions?.[index]?.description ||
-      dirtyFields?.questions?.[index]?.required
+      questionDirtyFields?.title ||
+      questionDirtyFields?.description ||
+      questionDirtyFields?.required ||
+      questionDirtyFields?.options?.some((o: OptionField) => o.optionId || o.title)
     ) {
-      const formValues = getValues();
       const updateOptionsPromise =
-        dirtyFields?.questions?.[index]?.options && OptionQuestionTypes.includes(formValues.questions[index].type)
+        questionDirtyFields?.options?.some((o: OptionField) => o.optionId || o.title) &&
+        OptionQuestionTypes.includes(getValues(`questions.${index}.type`))
           ? updateOptions({
               formId,
               questionId: qId,
@@ -101,30 +104,40 @@ const Questions = () => {
           : Promise.resolve();
 
       const updateQuestionPromise =
-        dirtyFields?.questions?.[index]?.title ||
-        dirtyFields?.questions?.[index]?.description ||
-        dirtyFields?.questions?.[index]?.required
+        questionDirtyFields?.title || questionDirtyFields?.description || questionDirtyFields?.required
           ? updateQuestion({
               form_id: formId,
               question_id: qId,
-              title: formValues.questions[index].title,
-              description: formValues.questions[index].description,
-              is_required: formValues.questions[index].required,
+              title: getValues(`questions.${index}.title`),
+              description: getValues(`questions.${index}.description`),
+              is_required: getValues(`questions.${index}.required`),
             })
           : Promise.resolve();
 
-      return Promise.all([updateOptionsPromise, updateQuestionPromise]).then(() => {
-        clearDirtyFields();
-        clearErrors();
-        return true;
-      });
+      return Promise.all([updateOptionsPromise, updateQuestionPromise])
+        .then(([res]) => {
+          setValue(
+            `questions.${index}.options`,
+            res?.data?.map((el: Option) => ({ ...el, optionId: el.id }))
+          );
+
+          clearDirtyFields();
+          clearErrors();
+          return true;
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
+
+    return true;
   };
 
   const handleClickAway = (qId: string, index: number) => {
     if (activeQuestionId !== qId) return;
 
     handleDirtyFieldsQuestion(qId, index);
+    setActiveQuestionId(undefined);
   };
 
   const handleClick = (qId: string) => {
@@ -137,18 +150,15 @@ const Questions = () => {
     if (Object.keys(errors?.questions?.[index1] || {})?.length) return;
     if (index1 < 0 || index2 < 0 || index1 >= questions.length) return;
 
-    if (!(await handleDirtyFieldsQuestion(questions[index1].qId, index1))) {
-      return;
-    }
+    const isValid = await handleDirtyFieldsQuestion(questions[index1].qId, index1);
+    if (!isValid) return;
 
     swap(index1, index2);
 
     changeQuestionOrder({
       form_id: formId,
       question_ids_in_order: getValues('questions').map((el: QuestionField) => el.qId),
-    }).then(() => {
-      clearDirtyFields();
-    });
+    }).then(clearDirtyFields);
   };
 
   return (

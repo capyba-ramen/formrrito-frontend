@@ -62,7 +62,7 @@ const FormCard = (props: FormCardProps) => {
       >
         <CardActionArea>
           <Link to={`/form/${formId}`}>
-            <CardMedia component="img" height="144" image={image} />
+            <CardMedia component="img" height="144" image={image} alt={`img-${formId}`} />
           </Link>
         </CardActionArea>
         <CardHeader

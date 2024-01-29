@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { FormProvider, useFieldArray, useForm } from 'react-hook-form';
 
 import FormWrapper from '@/components/FormWrapper/FormWrapper';
@@ -37,6 +37,7 @@ const FormFiller = () => {
   const { trigger: submitCForm } = useSubmitCForm();
   const { addNotification } = useNotification();
   const { openDialog } = useDialog(DialogTypes.INFO_DIALOG);
+  const navigate = useNavigate();
 
   const { fields } = useFieldArray({
     control: methods.control,
@@ -127,6 +128,7 @@ const FormFiller = () => {
         addNotification({
           message: 'Submit successfully',
         });
+        navigate(`/c-form/${formId}/success`);
       })
       .catch(() => {
         addNotification({

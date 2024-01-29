@@ -3,6 +3,11 @@
     border: 1px solid var(--gray-2);
     padding: 16px 24px;
     margin-bottom: 12px;
+    cursor: pointer;
+
+    &:hover:not(.active, .error) {
+        border: 1px solid var(--gray-3);
+    }
 }
 
 .active {

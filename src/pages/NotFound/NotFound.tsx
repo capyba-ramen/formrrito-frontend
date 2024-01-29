@@ -1,6 +1,6 @@
-import GeneralError from '@/components/GeneralError/GeneralError';
+import PurritoInfo from '@/components/PurritoInfo/PurritoInfo';
 
-const NotFound = () => <GeneralError title="Oops! Page not found." />;
+const NotFound = () => <PurritoInfo title="Oops! Page not found." />;
 
 NotFound.displayName = 'NotFound';
 

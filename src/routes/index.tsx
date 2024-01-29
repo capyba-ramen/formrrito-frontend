@@ -20,6 +20,7 @@ import '@fontsource/roboto/700.css';
 
 const Forms = React.lazy(() => import('@/pages/Forms/Forms'));
 const FormFiller = React.lazy(() => import('@/pages/FormFiller/FormFiller'));
+const FormSubmitted = React.lazy(() => import('@/pages/FormSubmitted/FormSubmitted'));
 const FormEdit = React.lazy(() => import('@/pages/FormEdit/FormEdit'));
 const Go = React.lazy(() => import('@/pages/Go/Go'));
 
@@ -50,7 +51,10 @@ const router = createBrowserRouter([
       {
         path: '/c-form',
         element: <ConsumerLayout />,
-        children: [{ path: ':formId', element: <FormFiller /> }],
+        children: [
+          { path: ':formId/success', element: <FormSubmitted /> },
+          { path: ':formId', element: <FormFiller /> },
+        ],
       },
       {
         path: '/u/:shortenedUrl',

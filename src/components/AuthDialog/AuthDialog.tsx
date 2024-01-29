@@ -62,7 +62,7 @@ const AuthDialog = (props: AuthDialogProps) => {
           <SignUp onAuthDialogModeChange={handleContentModeChange} />
         )}
         <div className={cx('logo')}>
-          <img height="44" src={LogoSm} />
+          <img height="44" src={LogoSm} alt="logo" />
         </div>
       </FormProvider>
     </Dialog>

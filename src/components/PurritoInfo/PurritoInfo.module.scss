@@ -5,10 +5,20 @@
     border-radius: 50px;
     background-color: var(--white);
     margin: 64px auto;
+    border: 4px solid var(--yellow-1);
 
 
     .container {
         display: flex;
+    }
+
+    .dot {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background-color: var(--green-1);
+        display: inline-block;
+        margin-right: 12px;
     }
 
     .text {
