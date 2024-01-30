@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-import { Chart as ChartJS, ChartConfiguration, ChartData } from 'chart.js/auto';
+import { Chart as ChartJS, ChartData, ChartOptions } from 'chart.js/auto';
 
-interface ChartProps {
-  options?: ChartConfiguration;
+export interface ChartProps {
+  options?: ChartOptions;
   data: ChartData<'pie' | 'bar'>;
   type?: 'pie' | 'bar';
   className?: string;
@@ -14,7 +14,7 @@ import style from './Chart.module.scss';
 const cx = classNames.bind(style);
 
 const Chart = (props: ChartProps) => {
-  const { data, type = 'pie', options = {}, className } = props;
+  const { data, type = 'pie', options, className } = props;
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
   const chartRef = React.useRef<ChartJS | null>(null);
 

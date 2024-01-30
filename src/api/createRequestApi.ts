@@ -4,18 +4,18 @@ import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import client from './client';
 import serializeKey, { SerializeKey } from './serializeKey';
 
-type Config<T> = {
-  key: string | SerializeKey<T>;
+type Config = {
+  key: string | SerializeKey;
 };
 
 type UseRequestReturn<T> = {
   isFetching: boolean;
   response?: AxiosResponse<T>;
-  data?: T;
+  data?: any;
   error?: any;
 };
 
-export default function createRequestApi<T>(config: Config<T>) {
+export default function createRequestApi<T>(config: Config) {
   const { key: _key } = config;
 
   const useRequest = (
@@ -49,7 +49,7 @@ export default function createRequestApi<T>(config: Config<T>) {
 
   const preloadByKey = (params: any) => preload(serializeKey(_key, params), (url) => client.get(url));
 
-  const mutateByKey = (params: any, ...args: Parameters<typeof mutate>) => mutate(serializeKey(_key, params), ...args);
+  const mutateByKey = (params: any, args: Parameters<typeof mutate>) => mutate(serializeKey(_key, params), args);
 
   return {
     useRequest,

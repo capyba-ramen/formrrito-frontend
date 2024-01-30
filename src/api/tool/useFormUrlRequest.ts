@@ -6,7 +6,7 @@ const {
   preload,
   mutate,
 } = createRequestApi<UnShortenedUrlApiData>({
-  key: (shortenedUrl) => `/api/tool/shortened_url/${shortenedUrl}`,
+  key: (shortenedUrl) => (shortenedUrl ? `/api/tool/shortened_url/${shortenedUrl}` : null),
 });
 
 export { preload, mutate };

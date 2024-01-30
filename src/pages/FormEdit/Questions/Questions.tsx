@@ -30,6 +30,7 @@ const Questions = () => {
     formState: { errors },
     reset,
     setValue,
+    setError,
   } = useFormContext();
   const { dirtyFields } = formState;
   const { data, error } = useFormRequest(formId, {
@@ -66,7 +67,7 @@ const Questions = () => {
           optionId: el.id,
           title: el.title,
         })),
-      })) as never[],
+      })),
     }));
   }, [data]);
 
@@ -126,7 +127,8 @@ const Questions = () => {
           return true;
         })
         .catch((err) => {
-          console.error(err);
+          setError(`questions.${index}`, { type: 'server', message: err.response.data?.detail });
+          setActiveQuestionId(qId);
         });
     }
 

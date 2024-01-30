@@ -6,7 +6,7 @@ const {
   preload,
   mutate,
 } = createRequestApi<ReplyStatisticsApiData>({
-  key: (formId) => `/api/reply/statistics/${formId}`,
+  key: (formId) => (formId ? `/api/reply/statistics/${formId}` : null),
 });
 
 export { preload, mutate };

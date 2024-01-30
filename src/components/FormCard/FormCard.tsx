@@ -31,7 +31,7 @@ export interface FormCardProps extends CardProps {
 const FormCard = (props: FormCardProps) => {
   const { image, title, openDateTime = '', formId, ...other } = props;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const { trigger: deleteForm } = useDeleteForm(formId);
+  const { trigger: deleteForm } = useDeleteForm();
   const { mutate } = useFormsRequest();
 
   const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -39,7 +39,9 @@ const FormCard = (props: FormCardProps) => {
   };
 
   const handleDeleteForm = () => {
-    deleteForm().then(() => {
+    deleteForm({
+      formId,
+    }).then(() => {
       mutate();
     });
   };

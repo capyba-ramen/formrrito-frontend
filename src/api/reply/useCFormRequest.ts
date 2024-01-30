@@ -6,7 +6,7 @@ const {
   preload,
   mutate,
 } = createRequestApi<Form>({
-  key: (formId) => `/api/reply/${formId}`,
+  key: (formId) => (formId ? `/api/reply/${formId}` : null),
 });
 
 export { preload, mutate };

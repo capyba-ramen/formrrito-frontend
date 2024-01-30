@@ -1,6 +1,6 @@
-export type SerializeKey<T> = string | ((params: T) => string);
+export type SerializeKey = string | ((params) => string | null);
 
-const serializeKey = <T>(key: SerializeKey<T>, params: T): string => {
+const serializeKey = (key: SerializeKey, params): string | null => {
   return typeof key === 'function' ? key(params) : key;
 };
 

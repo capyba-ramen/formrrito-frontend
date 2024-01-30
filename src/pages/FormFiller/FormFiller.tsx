@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import useCFormRequest from '@/api/reply/useCFormRequest';
 import { Question } from '@/types/question';
-import { ReplyField } from '@/types/reply';
+import { ReplyField, FormValues } from '@/types/reply';
 import { ImageUrl, ImageUrlType } from '@/constants/form';
 import FormFieldWrapper from '@/components/FormFieldWrapper/FormFieldWrapper';
 import useApiErrorHandlers from '@/api/useApiErrorsHandler';
@@ -16,7 +16,6 @@ import useNotification from '@/components/NotificationProvider/useNotification';
 import PageSkeleton from '@/components/PageSkeleton/PageSkeleton';
 import useDialog from '@/components/DialogProvider/useDialog';
 import { DialogTypes } from '@/constants/dialogs';
-
 import { QuestionTypeEnum } from '@/constants/question';
 
 import * as classNames from 'classnames/bind';
@@ -39,7 +38,7 @@ const FormFiller = () => {
   const { openDialog } = useDialog(DialogTypes.INFO_DIALOG);
   const navigate = useNavigate();
 
-  const { fields } = useFieldArray({
+  const { fields } = useFieldArray<FormValues, 'replies'>({
     control: methods.control,
     name: 'replies',
   });
@@ -111,7 +110,7 @@ const FormFiller = () => {
         ...q,
         question_id: q.id,
         value: transformValue(q.type, q.options),
-      })) as ReplyField[],
+      })) as never[],
     });
   }, [data]);
 

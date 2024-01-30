@@ -1,8 +1,19 @@
 import useSWRMutation from 'swr/mutation';
-import { deleteFetcher } from '../fetchers';
+import client from '../client';
 
-export default function useDeleteForm(formId: string) {
-  const { trigger, isMutating } = useSWRMutation(`/api/form/${formId}`, deleteFetcher);
+const apiDeleteForm = (
+  _: string,
+  {
+    arg: { formId },
+  }: {
+    arg: {
+      formId: string;
+    };
+  }
+) => client.delete(`/api/form/${formId}`);
+
+export default function useDeleteForm() {
+  const { trigger, isMutating } = useSWRMutation(`/api/form/formId`, apiDeleteForm);
 
   return {
     trigger,

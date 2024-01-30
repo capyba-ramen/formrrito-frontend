@@ -6,7 +6,7 @@ const {
   preload,
   mutate,
 } = createRequestApi<UserInfoApiData>({
-  key: (shouldFetch) => (shouldFetch ? `/api/user/info` : ''),
+  key: (shouldFetch) => (shouldFetch ? `/api/user/info` : null),
 });
 
 export { preload, mutate };

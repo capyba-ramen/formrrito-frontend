@@ -13,9 +13,7 @@ const apiPostUpdateOptions = (
       options: Option[];
     };
   }
-) => {
-  return client.post(`/api/option/${formId}/${questionId}`, { options });
-};
+) => client.post(`/api/option/${formId}/${questionId}`, { options });
 
 export default function useUpdateOptions() {
   const { trigger, isMutating } = useSWRMutation(`/api/option/formId/questionId`, apiPostUpdateOptions);

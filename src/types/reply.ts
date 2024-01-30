@@ -3,9 +3,9 @@ import { Question } from './question';
 export type Reply = {
   question_id: string;
   question_type: Question['type'];
-  option_ids: string[];
-  option_titles: string[];
-  answer: string;
+  option_ids?: string[];
+  option_titles?: string[];
+  answer?: string;
 };
 
 export interface ReplyField extends Question {
@@ -30,4 +30,8 @@ export type QuestionStat = {
 export type OptionStat = {
   title: string;
   count: number;
+};
+
+export type FormValues = {
+  replies: ReplyField[];
 };

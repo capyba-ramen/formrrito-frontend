@@ -48,7 +48,7 @@ const ResponseStat = (props: ResponseStatProps) => {
               labels: options?.map((o) => o.title),
               datasets: [
                 {
-                  data: options?.map((o) => o.count),
+                  data: options?.map((o) => o.count) || [],
                 },
               ],
             }}
@@ -63,7 +63,7 @@ const ResponseStat = (props: ResponseStatProps) => {
               labels: options?.map((o) => o.title),
               datasets: [
                 {
-                  data: options?.map((o) => o.count),
+                  data: options?.map((o) => o.count) || [],
                 },
               ],
             }}
