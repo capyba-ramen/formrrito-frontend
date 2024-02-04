@@ -23,22 +23,12 @@ jobs:
       - name: Build
         run: npm run build
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Write Private Key
-        run: |
-          echo "${{ secrets.EC2_PRIVATE_KEY }}" > ec2_private_key.pem
-          chmod 600 ec2_private_key.pem
-        env:
-            EC2_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-
-      - name: Copy Build to EC2
-        uses: appleboy/scp-action@master
+      - name: Deploy to Server
+        uses: easingthemes/ssh-deploy@main
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ec2_private_key.pem
-          source: "dist"
-          target: "/todo-frontend"
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+          SOURCE: "dist/"
+          REMOTE_HOST: ${{ secrets.EC2_HOST }}
+          REMOTE_USER: ec2-user
+          TARGET: "/todo-frontend"
+          EXCLUDE: "/dist/, /node_modules/"
