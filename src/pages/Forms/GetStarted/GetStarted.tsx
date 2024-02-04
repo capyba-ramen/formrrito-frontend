@@ -1,55 +1,80 @@
+import { useNavigate } from 'react-router-dom';
+
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
 import AddIcon from '@mui/icons-material/Add';
-
-import TemplateItem from '../../../components/TemplateItem/TemplateItem';
-import ImageSrc1 from '../../../assets/images/1.png';
-import ImageSrc2 from '../../../assets/images/2.png';
-import ImageSrc3 from '../../../assets/images/3.png';
-import ImageSrc4 from '../../../assets/images/4.png';
-import ImageSrc5 from '../../../assets/images/5.png';
+import useCreateForm from '@/api/form/useCreateForm';
+import { TemplateForms } from '@/constants/form';
+import TemplateItem from '@/components/TemplateItem/TemplateItem';
+import useFormsRequest from '@/api/form/useFormsRequest';
 
 import * as classNames from 'classnames/bind';
 import style from './GetStarted.module.scss';
 const cx = classNames.bind(style);
 
 const GetStarted = () => {
+  const { trigger: postCreateForm } = useCreateForm();
+  const navigate = useNavigate();
+  const { mutate } = useFormsRequest({ start: '1', size: '12', sort: 'desc' });
+
+  const handleCreateForm = () => {
+    postCreateForm().then((res) => {
+      if (res) {
+        navigate(`/form/${res.data.form_id}`);
+        mutate();
+      }
+    });
+  };
+
   return (
     <section className={cx('root')}>
-      <Typography sx={{ marginBottom: '20px' }}>Get Started With Formrrito!</Typography>
+      <Typography variant="h6" fontWeight={700} gutterBottom>
+        Get Started With Formrrito!
+      </Typography>
       <div className={cx('container')}>
-        <Paper elevation={0} className={cx('paper', 'create-new')} sx={{ marginRight: '16px', whiteSpace: 'nowrap' }}>
+        <Paper
+          elevation={0}
+          className={cx('paper', 'create-new')}
+          onClick={handleCreateForm}
+          sx={{ transition: 'transform 0.2s' }}
+        >
           <div>
-            <IconButton color="primary" aria-label="add blank form">
-              <AddIcon />
-            </IconButton>
-            <Typography>Create New Form</Typography>
-            <Typography>Blank Form</Typography>
+            <div style={{ textAlign: 'center' }}>
+              <IconButton
+                size="small"
+                classes={{
+                  root: cx('icon-button'),
+                }}
+                aria-label="add blank form"
+              >
+                <AddIcon />
+              </IconButton>
+            </div>
+            <Typography variant="body1" fontWeight={600}>
+              Create New Form
+            </Typography>
+            <Typography variant="body2" color="var(--gray-3)">
+              Blank Form
+            </Typography>
           </div>
         </Paper>
         <Paper elevation={0} className={cx('paper', 'templates-showcase')}>
           <div style={{ marginRight: '36px', whiteSpace: 'nowrap' }}>
-            <Typography>Use Popular Templates</Typography>
-            <Typography>Blank Form</Typography>
+            <Typography variant="body1" fontWeight={600}>
+              Use Popular Templates
+            </Typography>
+            <Typography variant="body2" color="var(--gray-3)">
+              Blank Form
+            </Typography>
           </div>
           <Grid wrap="nowrap" container spacing={2}>
-            <Grid item>
-              <TemplateItem title="Party Invite" image={ImageSrc5} />
-            </Grid>
-            <Grid item>
-              <TemplateItem title="Contact Information" image={ImageSrc2} />
-            </Grid>
-            <Grid item>
-              <TemplateItem title="Event Registration" image={ImageSrc1} />
-            </Grid>
-            <Grid item>
-              <TemplateItem title="RSVP" image={ImageSrc3} />
-            </Grid>
-            <Grid item>
-              <TemplateItem title="Customer Feedback" image={ImageSrc4} />
-            </Grid>
+            {TemplateForms.map((el) => (
+              <Grid item key={el.type}>
+                <TemplateItem title={el.title} image={el.image} type={el.type} />
+              </Grid>
+            ))}
           </Grid>
         </Paper>
       </div>

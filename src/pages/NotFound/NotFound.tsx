@@ -1,6 +1,6 @@
-const NotFound = () => {
-  return <div>NotFound</div>;
-};
+import PurritoInfo from '@/components/PurritoInfo/PurritoInfo';
+
+const NotFound = () => <PurritoInfo title="Oops! Page not found." />;
 
 NotFound.displayName = 'NotFound';
 

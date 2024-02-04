@@ -1,0 +1,25 @@
+.root {
+    padding: 30px;
+    border-left: 10px solid var(--yellow-1);
+    position: relative;
+
+    &:before, &:after {
+        content: '';
+        position: absolute;
+        height: 100%;
+    }
+
+    &:before {
+        top: 0;
+        left: 0;
+        width: 6px;
+        background-color: var(--green-1);
+    }
+
+    &:after {
+        top: 0;
+        left: 6px;
+        width: 4px;
+        background-color: var(--red-1);
+    }
+}

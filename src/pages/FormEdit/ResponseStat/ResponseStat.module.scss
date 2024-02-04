@@ -1,0 +1,22 @@
+.root {
+    border-radius: 4px;
+    border: 1px solid var(--gray-2);
+    padding: 16px 24px;
+    margin-bottom: 12px;
+}
+
+.chart {
+    width: 100%;
+    max-width: 100%;
+}
+
+.content {
+    margin-top: 16px;
+}
+
+.answer {
+    background-color: var(--gray-1);
+    margin-bottom: 6px;
+    padding: 8px;
+    border-radius: 4px;
+}
