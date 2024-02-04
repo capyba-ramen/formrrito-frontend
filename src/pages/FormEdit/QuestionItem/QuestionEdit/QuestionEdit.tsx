@@ -64,6 +64,9 @@ const QuestionEdit = (props: QuestionEditProps) => {
     updateQuestion({
       form_id: formId,
       question_id: qId,
+      title: getValues(`questions.${index}.title`),
+      description: getValues(`questions.${index}.description`),
+      is_required: getValues(`questions.${index}.required`),
       type,
     })
       .then((res) => {

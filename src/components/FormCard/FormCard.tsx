@@ -9,13 +9,13 @@ import IconButton from '@mui/material/IconButton';
 import Popover from '@mui/material/Popover';
 import Typography from '@mui/material/Typography';
 import useDeleteForm from '@/api/form/useDeleteForm';
-import useFormsRequest from '@/api/form/useFormsRequest';
 import { utcToFormatUserDateTime } from '@/utils/date';
 
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import useNotification from '@/components/NotificationProvider/useNotification';
 
 import * as classNames from 'classnames/bind';
 import style from './FormCard.module.scss';
@@ -26,13 +26,14 @@ export interface FormCardProps extends CardProps {
   title?: string;
   openDateTime?: string;
   formId: string;
+  onDelete: (formId: string) => void;
 }
 
 const FormCard = (props: FormCardProps) => {
-  const { image, title, openDateTime = '', formId, ...other } = props;
+  const { image, title, openDateTime = '', formId, onDelete, ...other } = props;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const { trigger: deleteForm } = useDeleteForm();
-  const { mutate } = useFormsRequest();
+  const { addNotification } = useNotification();
 
   const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -42,7 +43,10 @@ const FormCard = (props: FormCardProps) => {
     deleteForm({
       formId,
     }).then(() => {
-      mutate();
+      onDelete(formId);
+      addNotification({
+        message: 'Form deleted successfully',
+      });
     });
   };
 

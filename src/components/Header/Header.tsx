@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import LogoSm from '@/assets/images/logo-sm.svg';
+import LogoSm from '@/assets/webp/logo-sm.svg';
 import Button from '@mui/material/Button';
 import AddIcon from '@mui/icons-material/Add';
 import Avatar from '@mui/material/Avatar';

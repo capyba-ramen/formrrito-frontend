@@ -11,7 +11,13 @@ const SendLinkButton = () => {
   };
 
   return (
-    <Button variant="outlined" startIcon={<ShareIcon />} size="large" onClick={openShortUrlDialog}>
+    <Button
+      variant="outlined"
+      startIcon={<ShareIcon />}
+      size="large"
+      onClick={openShortUrlDialog}
+      sx={{ whiteSpace: 'nowrap' }}
+    >
       Send
     </Button>
   );

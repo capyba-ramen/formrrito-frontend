@@ -1,7 +1,7 @@
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import ImgPurrito from '@/assets/images/purrito.png';
-import LogoSm from '@/assets/images/logo-sm.svg';
+import ImgPurrito from '@/assets/webp/purrito.webp';
+import LogoSm from '@/assets/webp/logo-sm.svg';
 
 import * as classNames from 'classnames/bind';
 import style from './PurritoInfo.module.scss';

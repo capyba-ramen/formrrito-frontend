@@ -2,6 +2,10 @@
     display: flex;
     flex-direction: column;
 
+    @media #{$media-non-desktop} {
+        padding: 0 10px;
+    }
+
     .title {
         font-weight: 700;
         font-size: 32px;

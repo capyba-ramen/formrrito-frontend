@@ -1,4 +1,4 @@
-import LogoSm from '@/assets/images/logo-sm.svg';
+import LogoSm from '@/assets/webp/logo-sm.svg';
 import Paper from '@mui/material/Paper';
 
 import * as classNames from 'classnames/bind';

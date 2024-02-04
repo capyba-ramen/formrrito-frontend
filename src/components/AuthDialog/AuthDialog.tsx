@@ -2,7 +2,7 @@ import * as React from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import Dialog from '@mui/material/Dialog';
-import LogoSm from '@/assets/images/logo-sm.svg';
+import LogoSm from '@/assets/webp/logo-sm.svg';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 

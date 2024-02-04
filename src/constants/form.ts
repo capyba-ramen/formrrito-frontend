@@ -1,13 +1,13 @@
-import ImageSrc1 from '@/assets/images/1.png';
-import ImageSrc2 from '@/assets/images/2.png';
-import ImageSrc3 from '@/assets/images/3.png';
-import ImageSrc4 from '@/assets/images/4.png';
-import ImageSrc5 from '@/assets/images/5.png';
-import ImageSrc6 from '@/assets/images/6.png';
-import ImageSrc7 from '@/assets/images/7.png';
-import ImageSrc8 from '@/assets/images/8.png';
-import ImageSrc9 from '@/assets/images/9.png';
-import ImageSrc10 from '@/assets/images/10.png';
+import ImageSrc1 from '@/assets/webp/1.webp';
+import ImageSrc2 from '@/assets/webp/2.webp';
+import ImageSrc3 from '@/assets/webp/3.webp';
+import ImageSrc4 from '@/assets/webp/4.webp';
+import ImageSrc5 from '@/assets/webp/5.webp';
+import ImageSrc6 from '@/assets/webp/6.webp';
+import ImageSrc7 from '@/assets/webp/7.webp';
+import ImageSrc8 from '@/assets/webp/8.webp';
+import ImageSrc9 from '@/assets/webp/9.webp';
+import ImageSrc10 from '@/assets/webp/10.webp';
 
 export const FormApiFields = {
   title: 'title',

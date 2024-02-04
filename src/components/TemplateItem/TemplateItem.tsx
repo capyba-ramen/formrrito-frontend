@@ -17,7 +17,7 @@ const TemplateItem = (props: TemplateItemProps) => {
   const { image, title, type, ...other } = props;
   const { trigger: createTemplateForm } = useCreateTemplateForm();
   const navigate = useNavigate();
-  const { mutate } = useFormsRequest();
+  const { mutate } = useFormsRequest({ start: '1', size: '12', sort: 'desc' });
 
   const handleCreateTemplate = () => {
     createTemplateForm({

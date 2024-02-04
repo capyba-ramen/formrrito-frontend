@@ -17,7 +17,7 @@ const cx = classNames.bind(style);
 const GetStarted = () => {
   const { trigger: postCreateForm } = useCreateForm();
   const navigate = useNavigate();
-  const { mutate } = useFormsRequest();
+  const { mutate } = useFormsRequest({ start: '1', size: '12', sort: 'desc' });
 
   const handleCreateForm = () => {
     postCreateForm().then((res) => {

@@ -112,6 +112,7 @@ const Questions = () => {
               title: getValues(`questions.${index}.title`),
               description: getValues(`questions.${index}.description`),
               is_required: getValues(`questions.${index}.required`),
+              type: getValues(`questions.${index}.type`),
             })
           : Promise.resolve();
 
