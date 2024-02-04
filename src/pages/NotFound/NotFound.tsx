@@ -1,6 +1,6 @@
 import PurritoInfo from '@/components/PurritoInfo/PurritoInfo';
 
-const NotFound = () => <PurritoInfo title="Oops! Page not found." />;
+const NotFound = () => <PurritoInfo title="Oops! It's a 404!" />;
 
 NotFound.displayName = 'NotFound';
 
