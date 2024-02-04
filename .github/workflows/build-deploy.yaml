@@ -30,5 +30,4 @@ jobs:
           SOURCE: "dist/"
           REMOTE_HOST: ${{ secrets.EC2_HOST }}
           REMOTE_USER: ec2-user
-          TARGET: "/todo-frontend"
-          EXCLUDE: "/dist/, /node_modules/"
+          TARGET: "/home/ec2-user/todo-frontend/"
