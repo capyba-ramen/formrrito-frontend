@@ -28,12 +28,10 @@ jobs:
           mkdir deploy
           cp -R dist/* deploy/
 
+      - name: Set private key permissions
+        run: |
+          chmod 600 ${{ secrets.EC2_PRIVATE_KEY }}
+
       - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
-          key: ${{ secrets.EC2_PRIVATE_KEY }}
-          script: |
-            rm -rf /usr/share/nginx/html/*
-            cp -R ~/workspace/formrrito-frontend/deploy/* /usr/share/nginx/html/
+        run: |
+          scp -i ${{ secrets.EC2_PRIVATE_KEY }} -r deploy/*  ec2-user@${{ secrets.EC2_HOST }}:/usr/share/nginx/html/
