@@ -17,4 +17,6 @@ const Go = () => {
   return null;
 };
 
+Go.displayName = 'Go';
+
 export default Go;

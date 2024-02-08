@@ -63,8 +63,7 @@ const QuestionEdit = (props: QuestionEditProps) => {
   };
 
   const handleDuplicateQuestion = () => {
-    duplicateQuestion().then((res) => {
-      console.log(res);
+    duplicateQuestion().then(() => {
       addNotification({
         message: 'Question added successfully',
       });
