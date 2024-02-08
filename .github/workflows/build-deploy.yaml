@@ -36,4 +36,5 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           rm: true
           source: "deploy/*"
+          strip_components: 1
           target: "/usr/share/nginx/html/deploy"
