@@ -26,7 +26,7 @@ const FormFieldWrapper = (props: FormFieldWrapperProps) => {
     <div className={cx('root')}>
       <Typography variant="body1" fontWeight={500} gutterBottom>
         {is_required && <span style={{ color: 'var(--red-1)' }}>*</span>}{' '}
-        {title ? `${index + 1}. ${title}` : `Question ${index + 1}`}
+        {`${index + 1}. ${title || `Question ${index + 1}`}`}
       </Typography>
       {description && (
         <Typography variant="body2" color="var(--gray-3)" gutterBottom>

@@ -55,7 +55,8 @@ const QuestionDisplay = (props: QuestionDisplayProps) => {
   return (
     <div>
       <Typography variant="subtitle1" fontWeight={700}>
-        {getValues(`questions.${index}.title`) || `Question ${index + 1}`}
+        {getValues(`questions.${index}.required`) && <span style={{ color: 'var(--red-1)' }}>*</span>}{' '}
+        {`${index + 1}. ${getValues(`questions.${index}.title`) || `Question ${index + 1}`}`}
       </Typography>
       {getValues(`questions.${index}.description`) && (
         <Typography variant="subtitle2" color="var(--gray-3)">

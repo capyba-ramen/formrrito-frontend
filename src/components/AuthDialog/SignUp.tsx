@@ -19,7 +19,7 @@ export interface SignUpProps {
 
 const SignUp = (props: SignUpProps) => {
   const { onAuthDialogModeChange } = props;
-  const { handleSubmit } = useFormContext();
+  const { handleSubmit, setError } = useFormContext();
   const { trigger: postSignUp } = useSignUp();
   const { addNotification } = useNotification();
 
@@ -28,12 +28,23 @@ const SignUp = (props: SignUpProps) => {
       email: data.email,
       password: data.password,
       username: data.username,
-    }).then(() => {
-      addNotification({
-        message: 'Account created successfully! Please login to continue.',
+    })
+      .then(() => {
+        addNotification({
+          message: 'Account created successfully! Please login to continue.',
+        });
+        onAuthDialogModeChange('signIn');
+      })
+      .catch((err) => {
+        console.log(err);
+
+        if (err.response.status === 400) {
+          setError('email', {
+            type: 'server',
+            message: 'Email already exists',
+          });
+        }
       });
-      onAuthDialogModeChange('signIn');
-    });
   });
 
   const handleSignInClick = () => {
