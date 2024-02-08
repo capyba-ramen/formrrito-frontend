@@ -17,6 +17,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import useDeleteQuestion from '@/api/question/useDeleteQuestion';
+import useDuplicateQuestion from '@/api/question/useDuplicateQuestion';
 import useFormRequest from '@/api/form/useFormRequest';
 import useUpdateQuestion from '@/api/question/useUpdateQuestion';
 import useNotification from '@/components/NotificationProvider/useNotification';
@@ -41,6 +42,7 @@ const QuestionEdit = (props: QuestionEditProps) => {
   const formId = useParams()?.formId || '';
   const { control, getValues } = useFormContext();
   const { trigger: deleteQuestion } = useDeleteQuestion(qId, formId);
+  const { trigger: duplicateQuestion } = useDuplicateQuestion(qId, formId);
   const { trigger: updateQuestion } = useUpdateQuestion();
   const { mutate } = useFormRequest(formId, { revalidateOnMount: false });
   const { addNotification } = useNotification();
@@ -55,6 +57,16 @@ const QuestionEdit = (props: QuestionEditProps) => {
     deleteQuestion().then(() => {
       addNotification({
         message: 'Question deleted successfully',
+      });
+      mutate();
+    });
+  };
+
+  const handleDuplicateQuestion = () => {
+    duplicateQuestion().then((res) => {
+      console.log(res);
+      addNotification({
+        message: 'Question added successfully',
       });
       mutate();
     });
@@ -177,7 +189,12 @@ const QuestionEdit = (props: QuestionEditProps) => {
       <div className={cx('actions')}>
         <div className={cx('action-left')}>
           <Tooltip title="Duplicate">
-            <IconButton aria-label="copy" color="primary" sx={{ width: '40px', height: '40px' }}>
+            <IconButton
+              aria-label="copy"
+              color="primary"
+              onClick={handleDuplicateQuestion}
+              sx={{ width: '40px', height: '40px' }}
+            >
               <ContentCopyIcon fontSize="small" />
             </IconButton>
           </Tooltip>

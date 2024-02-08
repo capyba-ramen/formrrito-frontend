@@ -23,9 +23,6 @@ export default function useSignIn() {
     return trigger(arg).then((res) => {
       const token = res.data.access_token;
 
-      console.log('response', res);
-      console.log('token', token);
-
       if (token) {
         setToken(token);
         getUserInfo(token).then((data) => {

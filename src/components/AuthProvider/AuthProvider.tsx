@@ -24,8 +24,6 @@ const AuthProvider = (props: AuthProviderProps) => {
   };
 
   React.useEffect(() => {
-    console.log(error);
-    console.log(error?.response?.status);
     if (error?.response?.status === 401) {
       openAuthDialog();
     }
