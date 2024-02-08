@@ -6,26 +6,14 @@ import { UserInfo } from '@/types/user';
 
 interface AuthProviderProps {
   children: React.ReactNode;
-  type?: 'business' | 'consumer';
 }
 
 const AuthProvider = (props: AuthProviderProps) => {
-  const { children, type = 'business' } = props;
+  const { children } = props;
   const [loggedInUser, setLoggedInUser] = React.useState<UserInfo | null>(null);
   const [showAuthDialog, setShowAuthDialog] = React.useState(false);
 
-  const { data: user, error } = useUserInfoRequest(type === 'business');
-
-  React.useEffect(() => {
-    if (type === 'consumer') return;
-    if (error?.response?.status === 401) {
-      openAuthDialog();
-    }
-
-    if (user?.username) {
-      setLoggedInUser({ name: user?.username });
-    }
-  }, [error, user]);
+  const { data: user, error } = useUserInfoRequest();
 
   const openAuthDialog = () => {
     setShowAuthDialog(true);
@@ -34,6 +22,16 @@ const AuthProvider = (props: AuthProviderProps) => {
   const closeAuthDialog = () => {
     setShowAuthDialog(false);
   };
+
+  React.useEffect(() => {
+    if (error?.response?.status === 401) {
+      openAuthDialog();
+    }
+
+    if (user?.username) {
+      setLoggedInUser({ name: user?.username });
+    }
+  }, [error, user]);
 
   const contextValue: AuthContextProps = React.useMemo(
     () => ({

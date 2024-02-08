@@ -18,5 +18,5 @@ export const setToken = (token: string): void => {
 };
 
 export const removeToken = (): void => {
-  document.cookie = `${TOKEN_COOKIE_KEY}=; expires=${new Date(0).toUTCString()}; secure; samesite=strict`;
+  document.cookie = `${TOKEN_COOKIE_KEY}=; expires=${new Date(0).toUTCString()}; secure; samesite=strict; path=/`;
 };
