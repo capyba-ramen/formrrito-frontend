@@ -11,7 +11,7 @@ import Email from '../UserFormFields/Email/Email';
 import useAuth from '../AuthProvider/useAuth';
 import useSignIn from '@/api/user/useSignIn';
 import { AuthDialogMode } from './AuthDialog';
-import useNotification from '../NotificationProvider/useNotification';
+import useNotification from '@/components/NotificationProvider/useNotification';
 
 export interface SignInProps {
   onAuthDialogModeChange: (mode: AuthDialogMode) => void;
