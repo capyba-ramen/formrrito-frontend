@@ -1,4 +1,3 @@
-import { ImageUrlType } from '@/constants/form';
 import { Question, QuestionField } from '@/types/question';
 
 export type Form = {
@@ -9,7 +8,7 @@ export type Form = {
   opened_at: string;
   user_id: string;
   accepts_reply: boolean;
-  image_url: keyof ImageUrlType;
+  image_url: string;
   questions: Question[];
 };
 

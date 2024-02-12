@@ -8,7 +8,6 @@ import Button from '@mui/material/Button';
 import useCFormRequest from '@/api/reply/useCFormRequest';
 import { Question } from '@/types/question';
 import { ReplyField, FormValues } from '@/types/reply';
-import { ImageUrl, ImageUrlType } from '@/constants/form';
 import FormFieldWrapper from '@/components/FormFieldWrapper/FormFieldWrapper';
 import useApiErrorHandlers from '@/api/useApiErrorsHandler';
 import useSubmitCForm from '@/api/reply/useSubmitCForm';
@@ -147,7 +146,7 @@ const FormFiller = () => {
       ) : (
         <FormWrapper style={{ marginTop: '24px' }}>
           <div className={cx('banner')}>
-            <img src={ImageUrl[data?.image_url as keyof ImageUrlType]} alt="form-banner" />
+            <img src={data?.image_url} alt="form-banner" />
           </div>
           <Typography variant="h5" fontWeight={600}>
             {data?.title || 'Untitled Form'}

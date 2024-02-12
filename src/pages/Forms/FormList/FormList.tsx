@@ -4,7 +4,6 @@ import Grid from '@mui/material/Grid';
 
 import FormCard from '@/components/FormCard/FormCard';
 import SkeletonFormCard from '@/components/FormCard/SkeletonFormCard';
-import { ImageUrl } from '@/constants/form';
 import useFormsRequest from '@/api/form/useFormsRequest';
 import { Form } from '@/types/form';
 import useIntersectionObserver from '@/hooks/useIntersectionObserver';
@@ -91,7 +90,7 @@ const FormList = () => {
                 <FormCard
                   onDelete={onDelete}
                   formId={el.id}
-                  image={ImageUrl[el.image_url]}
+                  image={el.image_url}
                   title={el.title}
                   openDateTime={el?.opened_at}
                 />

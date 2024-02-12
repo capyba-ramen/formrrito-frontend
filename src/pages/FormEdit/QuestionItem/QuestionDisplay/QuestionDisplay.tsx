@@ -8,6 +8,7 @@ import Radio from '@mui/material/Radio';
 import Checkbox from '@mui/material/Checkbox';
 import Divider from '@mui/material/Divider';
 import { QuestionTypeEnum } from '@/constants/question';
+import ImageDisplay from '../ImageDisplay/ImageDisplay';
 
 export interface QuestionDisplayProps {
   qId: string;
@@ -58,6 +59,7 @@ const QuestionDisplay = (props: QuestionDisplayProps) => {
         {getValues(`questions.${index}.required`) && <span style={{ color: 'var(--red-1)' }}>*</span>}{' '}
         {`${index + 1}. ${getValues(`questions.${index}.title`) || `Question ${index + 1}`}`}
       </Typography>
+      <ImageDisplay index={index} />
       {getValues(`questions.${index}.description`) && (
         <Typography variant="subtitle2" color="var(--gray-3)">
           {getValues(`questions.${index}.description`)}

@@ -67,6 +67,7 @@ const Questions = () => {
           optionId: el.id,
           title: el.title,
         })),
+        imageUrl: q.image_url,
       })),
     }));
   }, [data]);

@@ -22,6 +22,8 @@ import useFormRequest from '@/api/form/useFormRequest';
 import useUpdateQuestion from '@/api/question/useUpdateQuestion';
 import useNotification from '@/components/NotificationProvider/useNotification';
 import useApiErrorHandlers from '@/api/useApiErrorsHandler';
+import ImageUpload from './ImageUpload/ImageUpload';
+import ImageDisplay from '../ImageDisplay/ImageDisplay';
 
 import { Question } from '@/types/question';
 import { OptionField } from '@/types/option';
@@ -124,10 +126,11 @@ const QuestionEdit = (props: QuestionEditProps) => {
               error={!!error?.type}
               helperText={error?.message}
               ref={ref}
-              sx={{ width: '100%', marginRight: '16px' }}
+              sx={{ width: '100%' }}
             />
           )}
         />
+        <ImageUpload qId={qId} index={index} />
         <Controller
           control={control}
           name={`questions.${index}.type`}
@@ -154,6 +157,7 @@ const QuestionEdit = (props: QuestionEditProps) => {
           )}
         />
       </div>
+      <ImageDisplay index={index} />
       <Controller
         control={control}
         name={`questions.${index}.description`}
