@@ -3,11 +3,6 @@ import ImageSrc2 from '@/assets/webp/2.webp';
 import ImageSrc3 from '@/assets/webp/3.webp';
 import ImageSrc4 from '@/assets/webp/4.webp';
 import ImageSrc5 from '@/assets/webp/5.webp';
-import ImageSrc6 from '@/assets/webp/6.webp';
-import ImageSrc7 from '@/assets/webp/7.webp';
-import ImageSrc8 from '@/assets/webp/8.webp';
-import ImageSrc9 from '@/assets/webp/9.webp';
-import ImageSrc10 from '@/assets/webp/10.webp';
 
 export const FormApiFields = {
   title: 'title',

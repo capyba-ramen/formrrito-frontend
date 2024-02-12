@@ -20,7 +20,7 @@ const BannerWithUpload = () => {
   });
   const { addNotification } = useNotification();
 
-  const handleUpload = (e) => {
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) {
       return;
     }
