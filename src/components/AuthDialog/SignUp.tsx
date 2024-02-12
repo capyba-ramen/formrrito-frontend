@@ -11,7 +11,7 @@ import Email from '../UserFormFields/Email/Email';
 import Username from '../UserFormFields/Username/Username';
 import { AuthDialogMode } from './AuthDialog';
 import useSignUp from '@/api/user/useSignUp';
-import useNotification from '../NotificationProvider/useNotification';
+import useNotification from '@/components/NotificationProvider/useNotification';
 
 export interface SignUpProps {
   onAuthDialogModeChange: (mode: AuthDialogMode) => void;
@@ -36,8 +36,6 @@ const SignUp = (props: SignUpProps) => {
         onAuthDialogModeChange('signIn');
       })
       .catch((err) => {
-        console.log(err);
-
         if (err.response.status === 400) {
           setError('email', {
             type: 'server',

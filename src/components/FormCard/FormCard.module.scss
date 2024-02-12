@@ -1,31 +1,29 @@
 .root {
-    &.card {
-        border-radius: 8px;
-        border: 1px solid var(--gray-2);
-        transition: transform .2s;
+  &.card {
+    border-radius: 8px;
+    border: 1px solid var(--gray-2);
+    transition: transform 0.2s;
 
-        &:hover {
-            box-shadow: 0px 10px 35px rgba(0, 0, 0, 0.06);
-            transform: translateY(-4px);
-        }
+    &:hover {
+      box-shadow: 0px 10px 35px rgba(0, 0, 0, 0.06);
+      transform: translateY(-4px);
     }
+  }
 
-    .title {
-        font-size: 16px;
-        font-weight: 500;
-        margin-bottom: 4px;
-    }
+  .title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
 
-    .subheader {
-        font-size: 14px;
-        color: var(--gray-3);
-        display: flex;
-        align-items: center;
-    }
+  .subheader {
+    font-size: 14px;
+    color: var(--gray-3);
+    display: flex;
+    align-items: center;
+  }
 
-    .action {
-        margin-top: auto;
-    }
+  .action {
+    margin-top: auto;
+  }
 }
-
-
