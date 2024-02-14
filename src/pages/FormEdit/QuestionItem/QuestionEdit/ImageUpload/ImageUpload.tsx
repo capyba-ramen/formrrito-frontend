@@ -52,10 +52,9 @@ const ImageUpload = (props: ImageUploadProps) => {
 
     uploadImage(formData)
       .then((res) => {
-        console.log(res);
+        if (!res.data) return;
 
-        // TODO: set url
-        setValue(`questions.${index}.imageUrl`, '');
+        setValue(`questions.${index}.imageUrl`, res.data, { shouldDirty: true });
       })
       .catch((err) => {
         console.log(err);

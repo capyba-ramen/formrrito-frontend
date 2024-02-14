@@ -90,7 +90,8 @@ const Questions = () => {
       questionDirtyFields?.title ||
       questionDirtyFields?.description ||
       questionDirtyFields?.required ||
-      questionDirtyFields?.options?.some((o: OptionField) => o.optionId || o.title)
+      questionDirtyFields?.options?.some((o: OptionField) => o.optionId || o.title) ||
+      questionDirtyFields?.imageUrl
     ) {
       const updateOptionsPromise =
         questionDirtyFields?.options?.some((o: OptionField) => o.optionId || o.title) &&
@@ -106,7 +107,10 @@ const Questions = () => {
           : Promise.resolve();
 
       const updateQuestionPromise =
-        questionDirtyFields?.title || questionDirtyFields?.description || questionDirtyFields?.required
+        questionDirtyFields?.title ||
+        questionDirtyFields?.description ||
+        questionDirtyFields?.required ||
+        questionDirtyFields?.imageUrl
           ? updateQuestion({
               form_id: formId,
               question_id: qId,
@@ -114,6 +118,7 @@ const Questions = () => {
               description: getValues(`questions.${index}.description`),
               is_required: getValues(`questions.${index}.required`),
               type: getValues(`questions.${index}.type`),
+              image_url: getValues(`questions.${index}.imageUrl`),
             })
           : Promise.resolve();
 

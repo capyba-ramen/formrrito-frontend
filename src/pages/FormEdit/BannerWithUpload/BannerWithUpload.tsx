@@ -13,7 +13,7 @@ const cx = classNames.bind(style);
 
 const BannerWithUpload = () => {
   const formId = useParams()?.formId || '';
-  const { getValues, setValue } = useFormContext();
+  const { watch, setValue } = useFormContext();
   const { isMutating, trigger: uploadImage } = useUploadImage();
   const { validateFile } = useValidateFile({
     allowedTypes: ['image/jpeg', 'image/png'],
@@ -43,9 +43,9 @@ const BannerWithUpload = () => {
 
     uploadImage(formData)
       .then((res) => {
-        console.log(res);
-        // TODO: set url
-        setValue('imageUrl', '');
+        if (!res.data) return;
+
+        setValue('imageUrl', res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -54,7 +54,7 @@ const BannerWithUpload = () => {
 
   return (
     <div className={cx('root')}>
-      <img src={getValues('imageUrl')} alt="form-banner" />
+      <img src={`${import.meta.env.VITE_CDN_PATH}${watch('imageUrl')}`} alt="form-banner" />
       <label className={cx('overlay', { show: isMutating })} htmlFor="upload-banner">
         {isMutating ? (
           <CircularProgress size={24} color="secondary" />
