@@ -6,73 +6,50 @@ import { useFieldArray } from 'react-hook-form';
 import QuestionItem from '@/pages/FormEdit/QuestionItem/QuestionItem';
 import useUpdateQuestion from '@/api/question/useUpdateQuestion';
 import useUpdateOptions from '@/api/option/useUpdateOptions';
-import useChangeQuestionOrder from '@/api/question/useChangeQuestionOrder';
+// import useChangeQuestionOrder from '@/api/question/useChangeQuestionOrder';
 import { OptionQuestionTypes } from '@/constants/question';
 import useClearDirtyFields from '@/hooks/useClearDirtyFields';
 import { Option, OptionField } from '@/types/option';
-import useApiErrorHandlers from '@/api/useApiErrorsHandler';
-import useFormRequest from '@/api/form/useFormRequest';
-import { Question, QuestionField } from '@/types/question';
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
+
 import { FormValues } from '@/types/form';
 import AddQuestionButton from '../AddQuestionButton/AddQuestionButton';
+import useAutoSave from '@/hooks/useAutoSave';
 
 const Questions = () => {
   const [activeQuestionId, setActiveQuestionId] = React.useState<string | undefined>(undefined);
   const formId = useParams().formId || '';
   const { trigger: updateQuestion } = useUpdateQuestion();
   const { trigger: updateOptions } = useUpdateOptions();
-  const { trigger: changeQuestionOrder } = useChangeQuestionOrder();
+  // const { trigger: changeQuestionOrder } = useChangeQuestionOrder();
+  const method = useFormContext();
   const {
     getValues,
     trigger,
     formState,
     clearErrors,
     formState: { errors },
-    reset,
     setValue,
     setError,
-  } = useFormContext();
+  } = method;
   const { dirtyFields } = formState;
-  const { data, error } = useFormRequest(formId, {
-    revalidateOnMount: false,
-  });
-  const { errorsHandler } = useApiErrorHandlers();
 
   const {
     append,
     fields: questions,
-    swap,
+    // swap,
   } = useFieldArray<FormValues, 'questions'>({
     name: 'questions',
   });
 
-  React.useEffect(() => {
-    if (!error) return;
-
-    errorsHandler(error);
-  }, [error, errorsHandler]);
-
-  React.useEffect(() => {
-    if (!data) return;
-
-    reset((formValues) => ({
-      ...formValues,
-      questions: data?.questions?.map((q: Question) => ({
-        qId: q.id,
-        type: q.type,
-        title: q.title,
-        description: q.description,
-        required: q.is_required,
-        options: q.options?.map((el) => ({
-          optionId: el.id,
-          title: el.title,
-        })),
-        imageUrl: q.image_url,
-      })),
-    }));
-  }, [data]);
-
   const { clearDirtyFields } = useClearDirtyFields();
+  const debouncedValue = useAutoSave(method, 5000, () => {
+    console.log('hihihihi auto saving', debouncedValue);
+
+    questions.forEach((q, index) => {
+      handleDirtyFieldsQuestion(q.qId, index);
+    });
+  });
 
   const handleDirtyFieldsQuestion = async (qId: string, index: number) => {
     clearErrors();
@@ -142,10 +119,9 @@ const Questions = () => {
     return true;
   };
 
-  const handleClickAway = (qId: string, index: number) => {
+  const handleClickAway = (qId: string) => {
     if (activeQuestionId !== qId) return;
 
-    handleDirtyFieldsQuestion(qId, index);
     setActiveQuestionId(undefined);
   };
 
@@ -156,37 +132,39 @@ const Questions = () => {
   };
 
   const handleSwap = async (index1: number, index2: number) => {
-    if (Object.keys(errors?.questions?.[index1] || {})?.length) return;
-    if (index1 < 0 || index2 < 0 || index1 >= questions.length) return;
-
-    const isValid = await handleDirtyFieldsQuestion(questions[index1].qId, index1);
-    if (!isValid) return;
-
-    swap(index1, index2);
-
-    changeQuestionOrder({
-      form_id: formId,
-      question_ids_in_order: getValues('questions').map((el: QuestionField) => el.qId),
-    }).then(clearDirtyFields);
+    // if (Object.keys(errors?.questions?.[index1] || {})?.length) return;
+    // if (index1 < 0 || index2 < 0 || index1 >= questions.length) return;
+    // const isValid = await handleDirtyFieldsQuestion(questions[index1].qId, index1);
+    // if (!isValid) return;
+    // swap(index1, index2);
+    // changeQuestionOrder({
+    //   form_id: formId,
+    //   question_ids_in_order: getValues('questions').map((el: QuestionField) => el.qId),
+    // }).then(clearDirtyFields);
   };
 
   return (
     <>
       {questions?.map((q, index: number) => (
-        <QuestionItem
-          key={q.id}
-          index={index}
-          onQuestionClickAway={() => {
-            handleClickAway(q.qId, index);
+        <ClickAwayListener
+          mouseEvent="onMouseDown"
+          touchEvent="onTouchStart"
+          onClickAway={() => {
+            handleClickAway(q.qId);
           }}
-          onQuestionClick={() => {
-            handleClick(q.qId);
-          }}
-          active={activeQuestionId === q.qId}
-          error={!!Object.keys(errors?.questions?.[index] || {})?.length}
-          onQuestionSwap={handleSwap}
-          {...q}
-        />
+        >
+          <QuestionItem
+            key={q.id}
+            index={index}
+            active={activeQuestionId === q.qId}
+            error={!!Object.keys(errors?.questions?.[index] || {})?.length}
+            onQuestionSwap={handleSwap}
+            {...q}
+            onClick={() => {
+              handleClick(q.qId);
+            }}
+          />
+        </ClickAwayListener>
       ))}
       <AddQuestionButton sx={{ marginTop: '16px' }} append={append} setActiveQuestionId={setActiveQuestionId} />
     </>

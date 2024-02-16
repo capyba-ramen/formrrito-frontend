@@ -90,7 +90,7 @@ const FormList = () => {
                 <FormCard
                   onDelete={onDelete}
                   formId={el.id}
-                  image={el.image_url}
+                  image={`${import.meta.env.VITE_CDN_PATH}${el.image_url}`}
                   title={el.title}
                   openDateTime={el?.opened_at}
                 />

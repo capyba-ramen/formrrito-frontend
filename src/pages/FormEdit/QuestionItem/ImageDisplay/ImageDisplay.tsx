@@ -26,8 +26,7 @@ const ImageDisplay = (props: ImageDisplayProps) => {
         <div className={cx('root')}>
           <img
             className={cx('image')}
-            src={`${watch(`questions.${index}.imageUrl`)}`}
-            // src={`${import.meta.env.VITE_CDN_PATH}${watch(`questions.${index}.imageUrl`)}`}
+            src={`${import.meta.env.VITE_CDN_PATH}${watch(`questions.${index}.imageUrl`)}`}
             loading="lazy"
           />
           {isEdit && (
