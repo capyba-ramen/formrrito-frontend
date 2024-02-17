@@ -10,7 +10,6 @@ import useUpdateOptions from '@/api/option/useUpdateOptions';
 import { OptionQuestionTypes } from '@/constants/question';
 import useClearDirtyFields from '@/hooks/useClearDirtyFields';
 import { Option, OptionField } from '@/types/option';
-import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 
 import { FormValues } from '@/types/form';
 import AddQuestionButton from '../AddQuestionButton/AddQuestionButton';
@@ -148,25 +147,20 @@ const Questions = () => {
   return (
     <>
       {questions?.map((q, index: number) => (
-        <ClickAwayListener
-          mouseEvent="onMouseDown"
-          touchEvent="onTouchStart"
+        <QuestionItem
+          index={index}
+          key={q.id}
+          active={activeQuestionId === q.qId}
+          error={!!Object.keys(errors?.questions?.[index] || {})?.length}
+          onQuestionSwap={handleSwap}
+          {...q}
+          onClick={() => {
+            handleClick(q.qId);
+          }}
           onClickAway={() => {
             handleClickAway(q.qId, index);
           }}
-          key={q.id}
-        >
-          <QuestionItem
-            index={index}
-            active={activeQuestionId === q.qId}
-            error={!!Object.keys(errors?.questions?.[index] || {})?.length}
-            onQuestionSwap={handleSwap}
-            {...q}
-            onClick={() => {
-              handleClick(q.qId);
-            }}
-          />
-        </ClickAwayListener>
+        />
       ))}
       <AddQuestionButton sx={{ marginTop: '16px' }} append={append} setActiveQuestionId={setActiveQuestionId} />
     </>

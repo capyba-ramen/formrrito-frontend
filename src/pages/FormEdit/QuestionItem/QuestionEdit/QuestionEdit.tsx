@@ -24,6 +24,7 @@ import useNotification from '@/components/NotificationProvider/useNotification';
 import useApiErrorHandlers from '@/api/useApiErrorsHandler';
 import ImageUpload from './ImageUpload/ImageUpload';
 import ImageDisplay from '../ImageDisplay/ImageDisplay';
+import { ClickAwayListener } from '@mui/base/ClickAwayListener';
 
 import { Question } from '@/types/question';
 import { OptionField } from '@/types/option';
@@ -37,10 +38,11 @@ export interface QuestionEditProps {
   qId: string;
   index: number;
   onQuestionSwap: (index1: number, index2: number) => void;
+  onClickAway: () => void;
 }
 
 const QuestionEdit = (props: QuestionEditProps) => {
-  const { qId, index, onQuestionSwap } = props;
+  const { qId, index, onQuestionSwap, onClickAway } = props;
   const formId = useParams()?.formId || '';
   const { control, getValues } = useFormContext();
   const { trigger: deleteQuestion } = useDeleteQuestion(qId, formId);
@@ -106,150 +108,152 @@ const QuestionEdit = (props: QuestionEditProps) => {
   };
 
   return (
-    <div className={cx('root')}>
-      <div className={cx('header')}>
+    <ClickAwayListener mouseEvent="onMouseDown" touchEvent="onTouchStart" onClickAway={onClickAway}>
+      <div className={cx('root')}>
+        <div className={cx('header')}>
+          <Controller
+            control={control}
+            name={`questions.${index}.title`}
+            rules={{
+              maxLength: {
+                value: 50,
+                message: 'Maximum 50 characters',
+              },
+            }}
+            render={({ field: { value, onChange, ref }, fieldState: { error } }) => (
+              <TextField
+                label="Question Title"
+                value={value}
+                variant="standard"
+                onChange={onChange}
+                error={!!error?.type}
+                helperText={error?.message}
+                ref={ref}
+                sx={{ width: '100%' }}
+              />
+            )}
+          />
+          <ImageUpload qId={qId} index={index} className={cx('image-upload')} />
+          <Controller
+            control={control}
+            name={`questions.${index}.type`}
+            render={({ field: { value, onChange, ref }, fieldState: { error } }) => (
+              <FormControl variant="standard" sx={{ minWidth: '200px' }}>
+                <InputLabel>Type</InputLabel>
+                <Select
+                  value={value}
+                  onChange={(e: SelectChangeEvent) => {
+                    onChange(Number(e.target.value));
+                    handleUpdateQuestionType(Number(e.target.value));
+                  }}
+                  ref={ref}
+                  classes={{ select: cx('select') }}
+                >
+                  <MenuItem value={0}>Short Answer</MenuItem>
+                  <MenuItem value={1}>Paragraph</MenuItem>
+                  <MenuItem value={2}>Multiple Choice</MenuItem>
+                  <MenuItem value={3}>Checkboxes</MenuItem>
+                  <MenuItem value={4}>Dropdown</MenuItem>
+                </Select>
+                {error?.message && <FormHelperText>{error?.message}</FormHelperText>}
+              </FormControl>
+            )}
+          />
+        </div>
+        <ImageDisplay index={index} isEdit qId={qId} />
         <Controller
           control={control}
-          name={`questions.${index}.title`}
+          name={`questions.${index}.description`}
           rules={{
             maxLength: {
-              value: 50,
-              message: 'Maximum 50 characters',
+              value: 150,
+              message: 'Maximum 150 characters',
             },
           }}
           render={({ field: { value, onChange, ref }, fieldState: { error } }) => (
             <TextField
-              label="Question Title"
+              label="Question Description"
               value={value}
               variant="standard"
               onChange={onChange}
               error={!!error?.type}
               helperText={error?.message}
               ref={ref}
-              sx={{ width: '100%' }}
+              sx={{ marginTop: '16px', width: '100%' }}
             />
           )}
         />
-        <ImageUpload qId={qId} index={index} className={cx('image-upload')} />
-        <Controller
-          control={control}
-          name={`questions.${index}.type`}
-          render={({ field: { value, onChange, ref }, fieldState: { error } }) => (
-            <FormControl variant="standard" sx={{ minWidth: '200px' }}>
-              <InputLabel>Type</InputLabel>
-              <Select
-                value={value}
-                onChange={(e: SelectChangeEvent) => {
-                  onChange(Number(e.target.value));
-                  handleUpdateQuestionType(Number(e.target.value));
-                }}
-                ref={ref}
-                classes={{ select: cx('select') }}
-              >
-                <MenuItem value={0}>Short Answer</MenuItem>
-                <MenuItem value={1}>Paragraph</MenuItem>
-                <MenuItem value={2}>Multiple Choice</MenuItem>
-                <MenuItem value={3}>Checkboxes</MenuItem>
-                <MenuItem value={4}>Dropdown</MenuItem>
-              </Select>
-              {error?.message && <FormHelperText>{error?.message}</FormHelperText>}
-            </FormControl>
-          )}
-        />
-      </div>
-      <ImageDisplay index={index} isEdit />
-      <Controller
-        control={control}
-        name={`questions.${index}.description`}
-        rules={{
-          maxLength: {
-            value: 150,
-            message: 'Maximum 150 characters',
-          },
-        }}
-        render={({ field: { value, onChange, ref }, fieldState: { error } }) => (
-          <TextField
-            label="Question Description"
-            value={value}
-            variant="standard"
-            onChange={onChange}
-            error={!!error?.type}
-            helperText={error?.message}
-            ref={ref}
-            sx={{ marginTop: '16px', width: '100%' }}
+        <div className={cx('content')}>
+          <Options
+            index={index}
+            options={fields as OptionField & { id: string }[]}
+            append={append}
+            remove={remove}
+            type={watchType}
           />
-        )}
-      />
-      <div className={cx('content')}>
-        <Options
-          index={index}
-          options={fields as OptionField & { id: string }[]}
-          append={append}
-          remove={remove}
-          type={watchType}
-        />
-      </div>
-      <div className={cx('actions')}>
-        <div className={cx('action-left')}>
-          <Tooltip title="Duplicate">
-            <IconButton
-              aria-label="copy"
-              color="primary"
-              onClick={handleDuplicateQuestion}
-              sx={{ width: '40px', height: '40px' }}
-            >
-              <ContentCopyIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Delete">
-            <IconButton aria-label="delete" color="primary" onClick={handleDeleteQuestion}>
-              <DeleteOutlineOutlinedIcon />
-            </IconButton>
-          </Tooltip>
-          <div className={cx('switch')}>
-            <Typography variant="body2" color="var(--black)" sx={{ marginRight: '4px', whiteSpace: 'nowrap' }}>
-              Required
-            </Typography>
-            <Controller
-              control={control}
-              name={`questions.${index}.required`}
-              render={({ field: { value = false, onChange, ref } }) => (
-                <Switch
-                  checked={value}
-                  onChange={(e) => {
-                    onChange(e.target.checked);
-                  }}
-                  ref={ref}
-                />
-              )}
-            />
+        </div>
+        <div className={cx('actions')}>
+          <div className={cx('action-left')}>
+            <Tooltip title="Duplicate">
+              <IconButton
+                aria-label="copy"
+                color="primary"
+                onClick={handleDuplicateQuestion}
+                sx={{ width: '40px', height: '40px' }}
+              >
+                <ContentCopyIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Delete">
+              <IconButton aria-label="delete" color="primary" onClick={handleDeleteQuestion}>
+                <DeleteOutlineOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+            <div className={cx('switch')}>
+              <Typography variant="body2" color="var(--black)" sx={{ marginRight: '4px', whiteSpace: 'nowrap' }}>
+                Required
+              </Typography>
+              <Controller
+                control={control}
+                name={`questions.${index}.required`}
+                render={({ field: { value = false, onChange, ref } }) => (
+                  <Switch
+                    checked={value}
+                    onChange={(e) => {
+                      onChange(e.target.checked);
+                    }}
+                    ref={ref}
+                  />
+                )}
+              />
+            </div>
+          </div>
+          <div className={cx('swap-actions')}>
+            <Tooltip title={index === 0 ? '' : 'Swap Up'}>
+              <IconButton
+                aria-label="swap up"
+                color="primary"
+                sx={{ marginRight: '8px' }}
+                disabled={index === 0}
+                onClick={handleSwapUp}
+              >
+                <ExpandLessIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={index === getValues('questions')?.length - 1 ? '' : 'Swap Down'}>
+              <IconButton
+                aria-label="swap down"
+                color="primary"
+                onClick={handleSwapDown}
+                disabled={index === getValues('questions')?.length - 1}
+              >
+                <ExpandMoreIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
           </div>
         </div>
-        <div className={cx('swap-actions')}>
-          <Tooltip title={index === 0 ? '' : 'Swap Up'}>
-            <IconButton
-              aria-label="swap up"
-              color="primary"
-              sx={{ marginRight: '8px' }}
-              disabled={index === 0}
-              onClick={handleSwapUp}
-            >
-              <ExpandLessIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title={index === getValues('questions')?.length - 1 ? '' : 'Swap Down'}>
-            <IconButton
-              aria-label="swap down"
-              color="primary"
-              onClick={handleSwapDown}
-              disabled={index === getValues('questions')?.length - 1}
-            >
-              <ExpandMoreIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        </div>
       </div>
-    </div>
+    </ClickAwayListener>
   );
 };
 
