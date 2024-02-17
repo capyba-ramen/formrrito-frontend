@@ -48,12 +48,10 @@ const AuthDialog = (props: AuthDialogProps) => {
       open={open}
       onClose={onClose}
       PaperProps={{
-        sx: {
-          padding: '40px 24px',
-        },
         component: 'form',
       }}
       scroll="body"
+      classes={style}
     >
       <FormProvider {...methods}>
         {mode === 'signIn' ? (

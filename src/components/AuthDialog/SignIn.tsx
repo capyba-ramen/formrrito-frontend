@@ -50,7 +50,7 @@ const SignIn = (props: SignInProps) => {
       <DialogContentText sx={{ color: 'var(--gray-3)' }} align="center">
         Wrap up your ideas with Formrrito! Login to start rolling out your custom forms today!
       </DialogContentText>
-      <DialogContent sx={{ padding: '24px 24px 0' }}>
+      <DialogContent sx={{ padding: '0' }}>
         <Email />
         <Password />
         <div style={{ padding: '24px 0' }}>

@@ -2,6 +2,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media #{$media-phone} {
+    flex-direction: column;
+    align-items: start;
+  }
+}
+
+.image-upload {
+  margin: 0 8px;
+
+  @media #{$media-phone} {
+    align-self: flex-end;
+    margin-top: 8px;
+  }
 }
 
 .content {
@@ -14,6 +28,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .action-left {
@@ -29,4 +44,10 @@
 
 .select:focus {
   background-color: var(--white) !important;
+}
+
+.swap-actions {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
 }

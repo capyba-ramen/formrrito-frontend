@@ -130,7 +130,7 @@ const QuestionEdit = (props: QuestionEditProps) => {
             />
           )}
         />
-        <ImageUpload qId={qId} index={index} />
+        <ImageUpload qId={qId} index={index} className={cx('image-upload')} />
         <Controller
           control={control}
           name={`questions.${index}.type`}
@@ -207,7 +207,7 @@ const QuestionEdit = (props: QuestionEditProps) => {
             </IconButton>
           </Tooltip>
           <div className={cx('switch')}>
-            <Typography variant="body2" color="var(--black)" sx={{ marginRight: '4px' }}>
+            <Typography variant="body2" color="var(--black)" sx={{ marginRight: '4px', whiteSpace: 'nowrap' }}>
               Required
             </Typography>
             <Controller
@@ -225,7 +225,7 @@ const QuestionEdit = (props: QuestionEditProps) => {
             />
           </div>
         </div>
-        <div>
+        <div className={cx('swap-actions')}>
           <Tooltip title={index === 0 ? '' : 'Swap Up'}>
             <IconButton
               aria-label="swap up"

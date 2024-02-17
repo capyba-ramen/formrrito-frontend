@@ -16,10 +16,11 @@ const cx = classNames.bind(style);
 export interface ImageUploadProps {
   qId: string;
   index: number;
+  className?: string;
 }
 
 const ImageUpload = (props: ImageUploadProps) => {
-  const { qId, index } = props;
+  const { qId, index, className } = props;
   const formId = useParams()?.formId || '';
   const { setValue } = useFormContext();
   const { isMutating, trigger: uploadImage } = useUploadImage();
@@ -62,7 +63,7 @@ const ImageUpload = (props: ImageUploadProps) => {
   };
 
   return (
-    <div className={cx('root')}>
+    <div className={cx('root', className)}>
       <Tooltip title="Upload Image" placement="top">
         <IconButton aria-label="upload" color="primary" component="label" htmlFor="upload-question-image">
           {isMutating ? <CircularProgress size={24} /> : <AddPhotoAlternateOutlinedIcon />}

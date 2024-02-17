@@ -4,3 +4,11 @@
   justify-content: center;
   margin-top: 48px;
 }
+
+.paper {
+  padding: 40px 48px;
+
+  @media #{$media-non-desktop} {
+    padding: 24px 20px;
+  }
+}
