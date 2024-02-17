@@ -157,7 +157,7 @@ const Questions = () => {
           onClick={() => {
             handleClick(q.qId);
           }}
-          onClickAway={() => {
+          onQuestionClickAway={() => {
             handleClickAway(q.qId, index);
           }}
         />

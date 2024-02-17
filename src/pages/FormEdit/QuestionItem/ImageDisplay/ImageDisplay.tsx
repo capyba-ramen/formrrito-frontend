@@ -11,7 +11,7 @@ import style from './ImageDisplay.module.scss';
 const cx = classNames.bind(style);
 
 export interface ImageDisplayProps {
-  qId: string;
+  qId?: string;
   index: number;
   isEdit?: boolean;
 }
