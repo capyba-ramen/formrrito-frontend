@@ -1,9 +1,3 @@
-import ImageSrc1 from '@/assets/webp/1.webp';
-import ImageSrc2 from '@/assets/webp/2.webp';
-import ImageSrc3 from '@/assets/webp/3.webp';
-import ImageSrc4 from '@/assets/webp/4.webp';
-import ImageSrc5 from '@/assets/webp/5.webp';
-
 export const FormApiFields = {
   title: 'title',
   description: 'description',
@@ -21,27 +15,27 @@ export const TemplateEnum = {
 export const TemplateForms = [
   {
     title: 'Party Invite',
-    image: ImageSrc1,
+    image: 'default/1.webp',
     type: TemplateEnum.PARTY_INVITE,
   },
   {
     title: 'Contact Information',
-    image: ImageSrc2,
+    image: 'default/2.webp',
     type: TemplateEnum.CONTACT_INFORMATION,
   },
   {
     title: 'Event Registration',
-    image: ImageSrc3,
+    image: 'default/3.webp',
     type: TemplateEnum.EVENT_REGISTRATION,
   },
   {
     title: 'RSVP',
-    image: ImageSrc4,
+    image: 'default/4.webp',
     type: TemplateEnum.RSVP,
   },
   {
     title: 'Customer Feedback',
-    image: ImageSrc5,
+    image: 'default/5.webp',
     type: TemplateEnum.CUSTOMER_FEEDBACK,
   },
 ];

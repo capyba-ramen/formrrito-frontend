@@ -56,32 +56,44 @@ const FormList = () => {
     <section className={cx('root')}>
       <div className={cx('title')}>
         <Typography fontWeight={700}>Recent Forms</Typography>
-        <Tooltip title="Sort by date opened">
-          <Button
-            startIcon={
-              <SwitchRightIcon
-                sx={{
-                  transform: sortDesc ? 'rotate(90deg)' : 'rotate(270deg)',
-                  transition: 'transform 0.2s',
-                }}
-              />
-            }
-            variant="outlined"
-            size="small"
-            onClick={handleClick}
-          >
-            Sort
-          </Button>
-        </Tooltip>
+        {forms?.length !== 0 && (
+          <Tooltip title="Sort by date opened">
+            <Button
+              startIcon={
+                <SwitchRightIcon
+                  sx={{
+                    transform: sortDesc ? 'rotate(90deg)' : 'rotate(270deg)',
+                    transition: 'transform 0.2s',
+                  }}
+                />
+              }
+              variant="outlined"
+              size="small"
+              onClick={handleClick}
+            >
+              Sort
+            </Button>
+          </Tooltip>
+        )}
       </div>
       <Grid container spacing={2}>
-        {isFetching && forms?.length === 0 ? (
+        {forms?.length === 0 ? (
           <>
-            {Array.from(new Array(6)).map((_, idx) => (
-              <Grid key={idx} item xs={6} sm={6} md={4} lg={3}>
-                <SkeletonFormCard />
+            {isFetching ? (
+              <>
+                {Array.from(new Array(6)).map((_, idx) => (
+                  <Grid key={idx} item xs={6} sm={6} md={4} lg={3}>
+                    <SkeletonFormCard />
+                  </Grid>
+                ))}
+              </>
+            ) : (
+              <Grid item xs={12} sx={{ margin: '36px' }}>
+                <Typography variant="body1" color="var(--gray-3)" align="center">
+                  No forms found
+                </Typography>
               </Grid>
-            ))}
+            )}
           </>
         ) : (
           <>
@@ -90,7 +102,7 @@ const FormList = () => {
                 <FormCard
                   onDelete={onDelete}
                   formId={el.id}
-                  image={el.image_url}
+                  image={`${import.meta.env.VITE_CDN_PATH}${el.image_url}`}
                   title={el.title}
                   openDateTime={el?.opened_at}
                 />

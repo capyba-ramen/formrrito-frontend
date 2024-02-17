@@ -157,7 +157,7 @@ const QuestionEdit = (props: QuestionEditProps) => {
           )}
         />
       </div>
-      <ImageDisplay index={index} />
+      <ImageDisplay index={index} isEdit />
       <Controller
         control={control}
         name={`questions.${index}.description`}

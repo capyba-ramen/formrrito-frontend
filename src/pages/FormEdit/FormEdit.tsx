@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import FormTabs from './FormTabs/FormTabs';
 import FormInfo from './FormInfo/FormInfo';
 import FormWrapper from '@/components/FormWrapper/FormWrapper';
-import Questions from './Questions/Questions';
+import QuestionsContainer from './Questions/QuestionsContainer';
 import Responses from './Responses/Responses';
 import useFormRequest from '@/api/form/useFormRequest';
 import PageSkeleton from '@/components/PageSkeleton/PageSkeleton';
@@ -47,7 +47,7 @@ const FormEdit = () => {
           <FormInfo />
           <FormTabs />
           <FormWrapper style={{ marginTop: '24px' }}>
-            {location.hash !== '#responses' ? <Questions /> : <Responses />}
+            {location.hash !== '#responses' ? <QuestionsContainer /> : <Responses />}
           </FormWrapper>
         </>
       )}

@@ -16,10 +16,11 @@ export interface FormFieldWrapperProps {
   description: Question['description'];
   is_required: Question['is_required'];
   index: number;
+  image_url: Question['image_url'];
 }
 
 const FormFieldWrapper = (props: FormFieldWrapperProps) => {
-  const { type, options, title, description, is_required, index } = props;
+  const { type, options, title, description, is_required, index, image_url } = props;
   const { control } = useFormContext();
 
   return (
@@ -28,6 +29,7 @@ const FormFieldWrapper = (props: FormFieldWrapperProps) => {
         {is_required && <span style={{ color: 'var(--red-1)' }}>*</span>}{' '}
         {`${index + 1}. ${title || `Question ${index + 1}`}`}
       </Typography>
+      {image_url && <img className={cx('image')} src={`${import.meta.env.VITE_CDN_PATH}${image_url}`} loading="lazy" />}
       {description && (
         <Typography variant="body2" color="var(--gray-3)" gutterBottom>
           {description}

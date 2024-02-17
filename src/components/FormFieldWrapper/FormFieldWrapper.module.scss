@@ -4,3 +4,11 @@
   border-radius: 4px;
   margin-bottom: 12px;
 }
+
+.image {
+  width: 100%;
+  height: auto;
+  max-height: 480px;
+  max-width: 480px;
+  object-fit: contain;
+}
