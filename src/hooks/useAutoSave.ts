@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import useDebounceDeepCompare from '@/hooks/useDebounceDeepCompare';
-import { FieldValues, UseFormReturn } from 'react-hook-form';
+import { FieldValues, UseFormReturn, useWatch } from 'react-hook-form';
 
 export default function useAutoSave<T extends FieldValues>(
   useFormReturn: UseFormReturn<T>,
@@ -9,22 +9,18 @@ export default function useAutoSave<T extends FieldValues>(
   callback: () => void | Promise<void>
 ) {
   const {
-    watch,
     formState: { isDirty },
   } = useFormReturn;
 
-  const debouncedValue = useDebounceDeepCompare(watch(), debounceTime);
+  const debouncedValue = useDebounceDeepCompare(useWatch(), debounceTime);
   const DebouncedValueStringified = JSON.stringify(debouncedValue);
 
   React.useEffect(() => {
-    console.log('save is triggered, checking if isDirty is true');
-
     const debouncedSave = async () => {
       if (!isDirty) {
-        console.log('autosave not triggered because form is not dirty');
         return;
       }
-      console.log('isDirty is true, saving form data');
+
       await callback();
     };
 

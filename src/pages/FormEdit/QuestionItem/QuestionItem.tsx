@@ -15,7 +15,7 @@ export interface QuestionItemProps extends QuestionField {
   onQuestionSwap: (index1: number, index2: number) => void;
 }
 
-const QuestionItem = React.forwardRef((props: QuestionItemProps, ref) => {
+const QuestionItem = React.forwardRef((props: QuestionItemProps, ref: React.Ref<HTMLDivElement>) => {
   const { active, error, qId, index, onClick, onQuestionSwap } = props;
 
   return (

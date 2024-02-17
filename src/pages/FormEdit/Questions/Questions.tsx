@@ -43,9 +43,8 @@ const Questions = () => {
   });
 
   const { clearDirtyFields } = useClearDirtyFields();
-  const debouncedValue = useAutoSave(method, 5000, () => {
-    console.log('hihihihi auto saving', debouncedValue);
 
+  useAutoSave(method, 5000, () => {
     questions.forEach((q, index) => {
       handleDirtyFieldsQuestion(q.qId, index);
     });
@@ -106,21 +105,23 @@ const Questions = () => {
             res?.data?.map((el: Option) => ({ ...el, optionId: el.id }))
           );
 
-          clearDirtyFields();
           clearErrors();
           return true;
         })
         .catch((err) => {
-          setError(`questions.${index}`, { type: 'server', message: err.response.data?.detail });
-          setActiveQuestionId(qId);
-        });
+          if (err?.response?.data) {
+            setError(`questions.${index}`, { type: 'server', message: err.response.data.detail });
+            setActiveQuestionId(qId);
+          }
+        })
+        .finally(clearDirtyFields);
     }
 
     return true;
   };
 
-  const handleClickAway = (qId: string) => {
-    if (activeQuestionId !== qId) return;
+  const handleClickAway = (qId: string, index: number) => {
+    if (activeQuestionId !== qId || errors?.questions?.[index]) return;
 
     setActiveQuestionId(undefined);
   };
@@ -131,7 +132,8 @@ const Questions = () => {
     setActiveQuestionId(qId);
   };
 
-  const handleSwap = async (index1: number, index2: number) => {
+  const handleSwap = async () => {
+    // const handleSwap = async (index1: number, index2: number) => {
     // if (Object.keys(errors?.questions?.[index1] || {})?.length) return;
     // if (index1 < 0 || index2 < 0 || index1 >= questions.length) return;
     // const isValid = await handleDirtyFieldsQuestion(questions[index1].qId, index1);
@@ -150,11 +152,11 @@ const Questions = () => {
           mouseEvent="onMouseDown"
           touchEvent="onTouchStart"
           onClickAway={() => {
-            handleClickAway(q.qId);
+            handleClickAway(q.qId, index);
           }}
+          key={q.id}
         >
           <QuestionItem
-            key={q.id}
             index={index}
             active={activeQuestionId === q.qId}
             error={!!Object.keys(errors?.questions?.[index] || {})?.length}

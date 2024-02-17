@@ -146,7 +146,7 @@ const FormFiller = () => {
       ) : (
         <FormWrapper style={{ marginTop: '24px' }}>
           <div className={cx('banner')}>
-            <img src={data?.image_url} alt="form-banner" />
+            <img src={`${import.meta.env.VITE_CDN_PATH}${data?.image_url}`} alt="form-banner" />
           </div>
           <Typography variant="h5" fontWeight={600}>
             {data?.title || 'Untitled Form'}
@@ -166,6 +166,7 @@ const FormFiller = () => {
                 title={r.title}
                 description={r.description}
                 is_required={r.is_required}
+                image_url={r.image_url}
               />
             ))}
           </div>
