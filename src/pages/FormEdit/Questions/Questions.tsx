@@ -6,10 +6,11 @@ import { useFieldArray } from 'react-hook-form';
 import QuestionItem from '@/pages/FormEdit/QuestionItem/QuestionItem';
 import useUpdateQuestion from '@/api/question/useUpdateQuestion';
 import useUpdateOptions from '@/api/option/useUpdateOptions';
-// import useChangeQuestionOrder from '@/api/question/useChangeQuestionOrder';
+import useChangeQuestionOrder from '@/api/question/useChangeQuestionOrder';
 import { OptionQuestionTypes } from '@/constants/question';
 import useClearDirtyFields from '@/hooks/useClearDirtyFields';
 import { Option, OptionField } from '@/types/option';
+import { QuestionField } from '@/types/question';
 
 import { FormValues } from '@/types/form';
 import AddQuestionButton from '../AddQuestionButton/AddQuestionButton';
@@ -20,7 +21,7 @@ const Questions = () => {
   const formId = useParams().formId || '';
   const { trigger: updateQuestion } = useUpdateQuestion();
   const { trigger: updateOptions } = useUpdateOptions();
-  // const { trigger: changeQuestionOrder } = useChangeQuestionOrder();
+  const { trigger: changeQuestionOrder } = useChangeQuestionOrder();
   const method = useFormContext();
   const {
     getValues,
@@ -36,18 +37,27 @@ const Questions = () => {
   const {
     append,
     fields: questions,
-    // swap,
+    swap,
   } = useFieldArray<FormValues, 'questions'>({
     name: 'questions',
   });
 
   const { clearDirtyFields } = useClearDirtyFields();
 
-  useAutoSave(method, 5000, () => {
-    questions.forEach((q, index) => {
-      handleDirtyFieldsQuestion(q.qId, index);
+  const handleQuestionsSubmit = () => {
+    let isValid = true;
+
+    questions.forEach(async (q, index) => {
+      const valid = await handleDirtyFieldsQuestion(q.qId, index);
+      if (!valid) {
+        isValid = false;
+      }
     });
-  });
+
+    return isValid;
+  };
+
+  useAutoSave(method, 5000, handleQuestionsSubmit);
 
   const handleDirtyFieldsQuestion = async (qId: string, index: number) => {
     clearErrors();
@@ -113,7 +123,7 @@ const Questions = () => {
             setActiveQuestionId(qId);
           }
         })
-        .finally(clearDirtyFields);
+        .finally(clearDirtyFields);x
     }
 
     return true;
@@ -131,17 +141,25 @@ const Questions = () => {
     setActiveQuestionId(qId);
   };
 
-  const handleSwap = async () => {
-    // const handleSwap = async (index1: number, index2: number) => {
-    // if (Object.keys(errors?.questions?.[index1] || {})?.length) return;
-    // if (index1 < 0 || index2 < 0 || index1 >= questions.length) return;
-    // const isValid = await handleDirtyFieldsQuestion(questions[index1].qId, index1);
-    // if (!isValid) return;
-    // swap(index1, index2);
-    // changeQuestionOrder({
-    //   form_id: formId,
-    //   question_ids_in_order: getValues('questions').map((el: QuestionField) => el.qId),
-    // }).then(clearDirtyFields);
+  const handleSwap = async (index1: number, index2: number) => {
+    if (Object.keys(errors?.questions?.[index1] || {})?.length) return;
+    if (index1 < 0 || index2 < 0 || index1 >= questions.length) return;
+
+    const isSuccess = await handleDirtyFieldsQuestion(questions[index1].qId, index1);
+    if (!isSuccess) return;
+
+    swap(index1, index2);
+
+    changeQuestionOrder({
+      form_id: formId,
+      question_ids_in_order: getValues('questions').map((el: QuestionField) => el.qId),
+    }).then(() => {
+      /**
+       * react-hook-form swap will cause swaped fields to be dirty though content is the same, so we need to clear dirty fields
+       * ref: https://github.com/react-hook-form/react-hook-form/issues/8309
+       **/
+      clearDirtyFields();
+    });
   };
 
   return (

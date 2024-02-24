@@ -1,4 +1,4 @@
-import AddOption from '../AddOption';
+import AddOption from '../AddOption/AddOption';
 import Radio from '@mui/material/Radio';
 import Typography from '@mui/material/Typography';
 import Checkbox from '@mui/material/Checkbox';
@@ -42,7 +42,7 @@ const Options = (props: OptionsProps) => {
               />
             ))}
           </div>
-          <AddOption append={append} currentLength={options?.length} />
+          <AddOption index={index} append={append} />
         </>
       );
     case QuestionTypeEnum.MULTIPLE:
@@ -60,7 +60,7 @@ const Options = (props: OptionsProps) => {
               />
             ))}
           </div>
-          <AddOption append={append} currentLength={options?.length} />
+          <AddOption index={index} append={append} />
         </>
       );
     case QuestionTypeEnum.DROP_DOWN:
@@ -82,7 +82,7 @@ const Options = (props: OptionsProps) => {
               />
             ))}
           </div>
-          <AddOption append={append} currentLength={options?.length} />
+          <AddOption index={index} append={append} />
         </>
       );
     default:
