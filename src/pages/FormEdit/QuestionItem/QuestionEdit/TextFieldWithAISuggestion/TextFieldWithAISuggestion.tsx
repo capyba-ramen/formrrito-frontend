@@ -69,7 +69,7 @@ const TextFieldWithAISuggestion = React.forwardRef((props: TextFieldWithAISugges
           ),
         }}
       />
-      <RefinedSuggestion anchorEl={anchorRef.current} open={open} sameAsAnchorWidth isLoading={isLoading}>
+      <RefinedSuggestion anchorEl={anchorRef.current} open={open} sameAsAnchorWidth>
         <Typography variant="subtitle1" fontWeight={700} gutterBottom>
           {`Suggestion for "${value}"`}
         </Typography>

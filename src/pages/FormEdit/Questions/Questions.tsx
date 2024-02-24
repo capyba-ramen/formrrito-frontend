@@ -123,7 +123,7 @@ const Questions = () => {
             setActiveQuestionId(qId);
           }
         })
-        .finally(clearDirtyFields);x
+        .finally(clearDirtyFields);
     }
 
     return true;

@@ -84,7 +84,7 @@ const AddOption = (props: AddOptionProps) => {
           />
         </div>
       </div>
-      <RefinedSuggestion onClose={handleClose} anchorEl={anchorRef.current} open={open} isLoading={isMutating}>
+      <RefinedSuggestion onClose={handleClose} anchorEl={anchorRef.current} open={open}>
         <Typography variant="subtitle1" fontWeight={700} gutterBottom>
           {`Suggested options for "${getValues(`questions.${index}.title`) || `Question ${index + 1}`}"`}
         </Typography>
