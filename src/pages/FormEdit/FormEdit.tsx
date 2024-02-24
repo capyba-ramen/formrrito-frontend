@@ -32,8 +32,8 @@ const FormEdit = () => {
 
     reset((formValues) => ({
       ...formValues,
-      title: data?.title || 'Untitled Form',
-      description: data?.description || 'Form description',
+      title: data?.title || '',
+      description: data?.description || '',
       imageUrl: data?.image_url,
     }));
   }, [data]);

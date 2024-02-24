@@ -1,7 +1,7 @@
+import * as React from 'react';
 import { useFormContext, Controller, useFieldArray, useWatch } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
-import TextField from '@mui/material/TextField';
 import Switch from '@mui/material/Switch';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -10,20 +10,24 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Options from './Options/Options';
 import Tooltip from '@mui/material/Tooltip';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+
+import Options from './Options/Options';
 import useDeleteQuestion from '@/api/question/useDeleteQuestion';
 import useDuplicateQuestion from '@/api/question/useDuplicateQuestion';
 import useFormRequest from '@/api/form/useFormRequest';
 import useUpdateQuestion from '@/api/question/useUpdateQuestion';
+import useRefineQuestionTitle from '@/api/question/useRefineQuestionTitle';
+import useRefineQuestionDescription from '@/api/question/useRefineQuestionDescription';
 import useNotification from '@/components/NotificationProvider/useNotification';
 import useApiErrorHandlers from '@/api/useApiErrorsHandler';
 import ImageUpload from './ImageUpload/ImageUpload';
 import ImageDisplay from '../ImageDisplay/ImageDisplay';
+import TextFieldWithAISuggestion from './TextFieldWithAISuggestion/TextFieldWithAISuggestion';
 
 import { Question } from '@/types/question';
 import { OptionField } from '@/types/option';
@@ -46,6 +50,8 @@ const QuestionEdit = (props: QuestionEditProps) => {
   const { trigger: deleteQuestion } = useDeleteQuestion(qId, formId);
   const { trigger: duplicateQuestion } = useDuplicateQuestion(qId, formId);
   const { trigger: updateQuestion } = useUpdateQuestion();
+  const { trigger: refineTitle, isMutating: isRefiningTitle } = useRefineQuestionTitle();
+  const { trigger: refineDescription, isMutating: isRefiningDescription } = useRefineQuestionDescription();
   const { mutate } = useFormRequest(formId, { revalidateOnMount: false });
   const { addNotification } = useNotification();
   const { errorsHandler } = useApiErrorHandlers();
@@ -54,6 +60,8 @@ const QuestionEdit = (props: QuestionEditProps) => {
     name: `questions.${index}.options`,
   });
   const watchType = useWatch({ name: `questions.${index}.type` });
+  const [titleSuggestion, setTitleSuggestion] = React.useState('');
+  const [descriptionSuggestion, setDescriptionSuggestion] = React.useState('');
 
   const handleDeleteQuestion = () => {
     deleteQuestion().then(() => {
@@ -105,6 +113,35 @@ const QuestionEdit = (props: QuestionEditProps) => {
     onQuestionSwap(index, index + 1);
   };
 
+  const handleRefineTitle = () => {
+    refineTitle({
+      form_title: getValues('title'),
+      form_description: getValues('description'),
+      question_title: getValues(`questions.${index}.title`),
+    })
+      .then((res) => {
+        if (res.data) {
+          setTitleSuggestion(res.data);
+        }
+      })
+      .catch(errorsHandler);
+  };
+
+  const handleRefineDescription = () => {
+    refineDescription({
+      form_title: getValues('title'),
+      form_description: getValues('description'),
+      question_title: getValues(`questions.${index}.title`),
+      question_description: getValues(`questions.${index}.description`) || '',
+    })
+      .then((res) => {
+        if (res.data) {
+          setDescriptionSuggestion(res.data);
+        }
+      })
+      .catch(errorsHandler);
+  };
+
   return (
     <div className={cx('root')}>
       <div className={cx('header')}>
@@ -118,15 +155,16 @@ const QuestionEdit = (props: QuestionEditProps) => {
             },
           }}
           render={({ field: { value, onChange, ref }, fieldState: { error } }) => (
-            <TextField
+            <TextFieldWithAISuggestion
               label="Question Title"
               value={value}
-              variant="standard"
+              fieldName={`questions.${index}.title`}
               onChange={onChange}
-              error={!!error?.type}
-              helperText={error?.message}
+              error={error}
+              onRefineButtonClick={handleRefineTitle}
+              isLoading={isRefiningTitle}
+              content={titleSuggestion}
               ref={ref}
-              sx={{ width: '100%' }}
             />
           )}
         />
@@ -168,15 +206,16 @@ const QuestionEdit = (props: QuestionEditProps) => {
           },
         }}
         render={({ field: { value, onChange, ref }, fieldState: { error } }) => (
-          <TextField
+          <TextFieldWithAISuggestion
             label="Question Description"
             value={value}
-            variant="standard"
+            fieldName={`questions.${index}.description`}
             onChange={onChange}
-            error={!!error?.type}
-            helperText={error?.message}
+            error={error}
+            onRefineButtonClick={handleRefineDescription}
+            isLoading={isRefiningDescription}
+            content={descriptionSuggestion}
             ref={ref}
-            sx={{ marginTop: '16px', width: '100%' }}
           />
         )}
       />
@@ -226,7 +265,7 @@ const QuestionEdit = (props: QuestionEditProps) => {
           </div>
         </div>
         <div className={cx('swap-actions')}>
-          <Tooltip title={index === 0 ? '' : 'Swap Up'}>
+          <Tooltip title={index == 0 ? '' : 'Swap Up'}>
             <IconButton
               aria-label="swap up"
               color="primary"

@@ -55,6 +55,7 @@ const FormInfo = () => {
               value={value}
               variant="standard"
               multiline
+              placeholder="Untitled Form"
               onChange={onChange}
               error={!!error?.type}
               helperText={error?.message}
@@ -78,13 +79,14 @@ const FormInfo = () => {
         name="description"
         rules={{
           maxLength: {
-            value: 50,
-            message: 'Maximum 50 characters',
+            value: 150,
+            message: 'Maximum 150 characters',
           },
         }}
         render={({ field: { value, onChange, ref }, fieldState: { error } }) => (
           <TextField
             value={value}
+            placeholder="Form description"
             variant="standard"
             multiline
             onChange={onChange}

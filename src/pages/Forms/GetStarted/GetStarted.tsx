@@ -66,7 +66,7 @@ const GetStarted = () => {
               Use Popular Templates
             </Typography>
             <Typography variant="body2" color="var(--gray-3)">
-              Blank Form
+              Trending templates to get you started
             </Typography>
           </div>
           <Grid wrap="nowrap" container spacing={2}>
