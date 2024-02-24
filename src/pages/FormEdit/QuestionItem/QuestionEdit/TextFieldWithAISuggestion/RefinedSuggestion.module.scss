@@ -1,9 +1,10 @@
 .root {
   padding: 16px;
+  position: relative;
 }
 
 .popper {
-  position: relative;
+  max-width: 100%;
 }
 
 .delete-button {

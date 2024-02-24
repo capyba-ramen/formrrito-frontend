@@ -36,12 +36,14 @@ const RefinedSuggestion = (props: RefinedSuggestionProps) => {
       anchorEl={anchorEl}
       className={cx('popper')}
     >
-      <Paper className={cx('root')}>{children}</Paper>
-      {onClose && (
-        <IconButton size="small" aria-label="delete" className={cx('delete-button')} onClick={onClose}>
-          <CloseIcon />
-        </IconButton>
-      )}
+      <Paper className={cx('root')}>
+        {children}
+        {onClose && (
+          <IconButton size="small" aria-label="delete" className={cx('delete-button')} onClick={onClose}>
+            <CloseIcon />
+          </IconButton>
+        )}
+      </Paper>
     </Popper>
   );
 };

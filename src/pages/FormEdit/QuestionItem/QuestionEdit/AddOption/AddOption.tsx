@@ -8,6 +8,7 @@ import useRefineOptions from '@/api/option/useRefineOptions';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { OptionField } from '@/types/option';
+import useApiErrorHandlers from '@/api/useApiErrorsHandler';
 
 import * as classNames from 'classnames/bind';
 import style from './AddOption.module.scss';
@@ -25,17 +26,20 @@ const AddOption = (props: AddOptionProps) => {
   const [open, setOpen] = React.useState(false);
   const [suggestedOptions, setSuggestedOptions] = React.useState([]);
   const anchorRef = React.useRef<HTMLDivElement | null>(null);
+  const { errorsHandler } = useApiErrorHandlers();
   const handleButtonClick = () => {
     setOpen(true);
 
     refineOptions({
       question_title: getValues(`questions.${index}.title`),
       current_options: getValues(`questions.${index}.options`).map((el: { title: string }) => el.title),
-    }).then((res) => {
-      if (res.data) {
-        setSuggestedOptions(res.data);
-      }
-    });
+    })
+      .then((res) => {
+        if (res.data) {
+          setSuggestedOptions(res.data);
+        }
+      })
+      .catch(errorsHandler);
   };
 
   const handleAppendOption = (title?: string) => {
