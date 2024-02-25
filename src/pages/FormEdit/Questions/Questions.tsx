@@ -11,13 +11,19 @@ import { OptionQuestionTypes } from '@/constants/question';
 import useClearDirtyFields from '@/hooks/useClearDirtyFields';
 import { Option, OptionField } from '@/types/option';
 import { QuestionField } from '@/types/question';
+import LinearProgress from '@mui/material/LinearProgress';
 
 import { FormValues } from '@/types/form';
 import AddQuestionButton from '../AddQuestionButton/AddQuestionButton';
 import useAutoSave from '@/hooks/useAutoSave';
 
+import * as classNames from 'classnames/bind';
+import style from './Questions.module.scss';
+const cx = classNames.bind(style);
+
 const Questions = () => {
   const [activeQuestionId, setActiveQuestionId] = React.useState<string | undefined>(undefined);
+  const [loading, setLoading] = React.useState<boolean>(false);
   const formId = useParams().formId || '';
   const { trigger: updateQuestion } = useUpdateQuestion();
   const { trigger: updateOptions } = useUpdateOptions();
@@ -44,13 +50,18 @@ const Questions = () => {
 
   const { clearDirtyFields } = useClearDirtyFields();
 
-  const handleQuestionsSubmit = () => {
-    questions.forEach((q, index) => {
-      handleDirtyFieldsQuestion(q.qId, index);
-    });
+  const handleQuestionsSubmit = async () => {
+    setLoading(true);
+
+    try {
+      const promises = questions.map((q, index) => handleDirtyFieldsQuestion(q.qId, index));
+      await Promise.all(promises);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useAutoSave(method, 5000, handleQuestionsSubmit);
+  useAutoSave(method, 2000, handleQuestionsSubmit);
 
   const handleDirtyFieldsQuestion = async (qId: string, index: number) => {
     clearErrors();
@@ -69,10 +80,12 @@ const Questions = () => {
       questionDirtyFields?.description ||
       questionDirtyFields?.required ||
       questionDirtyFields?.options?.some((o: OptionField) => o.optionId || o.title) ||
+      questionDirtyFields?.options === true ||
       questionDirtyFields?.imageUrl
     ) {
       const updateOptionsPromise =
-        questionDirtyFields?.options?.some((o: OptionField) => o.optionId || o.title) &&
+        (questionDirtyFields?.options?.some((o: OptionField) => o.optionId || o.title) ||
+          questionDirtyFields?.options === true) &&
         OptionQuestionTypes.includes(getValues(`questions.${index}.type`))
           ? updateOptions({
               formId,
@@ -101,11 +114,12 @@ const Questions = () => {
           : Promise.resolve();
 
       return Promise.all([updateOptionsPromise, updateQuestionPromise])
-        .then(([res]) => {
+        .then(([res, questionRes]) => {
           setValue(
             `questions.${index}.options`,
             res?.data?.map((el: Option) => ({ ...el, optionId: el.id }))
           );
+          setValue(`questions.${index}.imageUrl`, questionRes?.data?.permanent_image_url);
           clearErrors();
           return true;
         })
@@ -155,7 +169,12 @@ const Questions = () => {
   };
 
   return (
-    <>
+    <div>
+      {loading && (
+        <div className={cx('progress')}>
+          <LinearProgress />
+        </div>
+      )}
       {questions?.map((q, index: number) => (
         <QuestionItem
           index={index}
@@ -173,7 +192,7 @@ const Questions = () => {
         />
       ))}
       <AddQuestionButton sx={{ marginTop: '16px' }} append={append} setActiveQuestionId={setActiveQuestionId} />
-    </>
+    </div>
   );
 };
 

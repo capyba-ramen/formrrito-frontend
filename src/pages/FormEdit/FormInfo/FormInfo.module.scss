@@ -34,6 +34,19 @@
 
 .title-share {
   display: flex;
+  flex-direction: column;
+
+  @media #{$media-non-phone} {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.actions {
+  display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 4px;
+  white-space: nowrap;
+  margin-left: auto;
 }

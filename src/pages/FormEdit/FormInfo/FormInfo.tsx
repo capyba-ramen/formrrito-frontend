@@ -2,6 +2,8 @@ import { useParams } from 'react-router-dom';
 import { useFormContext, Controller } from 'react-hook-form';
 
 import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import DownloadIcon from '@mui/icons-material/Download';
 import useUpdateForm from '@/api/form/useUpdateForm';
 import { FormApiFields } from '@/constants/form';
 import useClearDirtyFields from '@/hooks/useClearDirtyFields';
@@ -72,7 +74,12 @@ const FormInfo = () => {
             />
           )}
         />
-        <SendLinkButton />
+        <div className={cx('actions')}>
+          <Button variant="outlined" size="large" startIcon={<DownloadIcon />}>
+            Download Excel
+          </Button>
+          <SendLinkButton />
+        </div>
       </div>
       <Controller
         control={control}

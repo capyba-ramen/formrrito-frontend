@@ -85,6 +85,7 @@ const QuestionEdit = (props: QuestionEditProps) => {
       form_id: formId,
       question_id: qId,
       title: getValues(`questions.${index}.title`),
+      image_url: getValues(`questions.${index}.imageUrl`),
       description: getValues(`questions.${index}.description`),
       is_required: getValues(`questions.${index}.required`),
       type,
@@ -94,10 +95,10 @@ const QuestionEdit = (props: QuestionEditProps) => {
           remove();
         }
 
-        if (res?.data) {
+        if (res?.data?.option) {
           append({
-            optionId: res.data.id,
-            title: res.data.title,
+            optionId: res.data.option.id,
+            title: res.data.option.title,
           });
         }
       })
