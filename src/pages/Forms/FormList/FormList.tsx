@@ -1,16 +1,17 @@
 import * as React from 'react';
+
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-
-import FormCard from '@/components/FormCard/FormCard';
-import SkeletonFormCard from '@/components/FormCard/SkeletonFormCard';
-import useFormsRequest from '@/api/form/useFormsRequest';
-import { Form } from '@/types/form';
-import useIntersectionObserver from '@/hooks/useIntersectionObserver';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import SwitchRightIcon from '@mui/icons-material/SwitchRight';
 import Tooltip from '@mui/material/Tooltip';
+
+import FormCard from '@/components/FormCard/FormCard';
+import SkeletonFormCard from '@/components/FormCard/SkeletonFormCard';
+import useFormsRequest from '@/api/form/useFormsRequest';
+import useIntersectionObserver from '@/hooks/useIntersectionObserver';
+import { Form } from '@/types/form';
 
 import * as classNames from 'classnames/bind';
 import style from './FormList.module.scss';
@@ -36,7 +37,7 @@ const FormList = () => {
     }
   });
 
-  const handleClick = () => {
+  const handleSortClick = () => {
     setSortDesc((prev) => !prev);
     setStart('1');
     setForms([]);
@@ -69,7 +70,7 @@ const FormList = () => {
               }
               variant="outlined"
               size="small"
-              onClick={handleClick}
+              onClick={handleSortClick}
             >
               Sort
             </Button>
