@@ -1,5 +1,10 @@
+.root {
+  position: relative;
+}
+
 .or {
   margin: 0 12px 0 8px;
+  white-space: nowrap;
 }
 
 .suggestion {
@@ -7,9 +12,10 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .actions {
-  margin-left: 4px;
   white-space: nowrap;
 }

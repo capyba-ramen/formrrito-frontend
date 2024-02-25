@@ -45,7 +45,7 @@ const TextFieldWithAISuggestion = React.forwardRef((props: TextFieldWithAISugges
   };
 
   return (
-    <>
+    <div className={cx('root')}>
       <TextField
         inputRef={ref}
         label={label}
@@ -69,7 +69,7 @@ const TextFieldWithAISuggestion = React.forwardRef((props: TextFieldWithAISugges
           ),
         }}
       />
-      <RefinedSuggestion anchorEl={anchorRef.current} open={open} sameAsAnchorWidth>
+      <RefinedSuggestion anchorEl={anchorRef.current} open={open}>
         <Typography variant="subtitle1" fontWeight={700} gutterBottom>
           {`Suggestion for "${value}"`}
         </Typography>
@@ -89,7 +89,7 @@ const TextFieldWithAISuggestion = React.forwardRef((props: TextFieldWithAISugges
           </div>
         )}
       </RefinedSuggestion>
-    </>
+    </div>
   );
 });
 

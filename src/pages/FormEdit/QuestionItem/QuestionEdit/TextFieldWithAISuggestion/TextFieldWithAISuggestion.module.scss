@@ -1,10 +1,16 @@
+.root {
+  width: 100%;
+  position: relative;
+}
+
 .suggestion {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .actions {
-  margin-left: 4px;
   white-space: nowrap;
 }
