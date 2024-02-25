@@ -16,23 +16,25 @@ const RefineButton = (props: RefineButtonProps) => {
 
   return (
     <Tooltip title={tooltipTitle}>
-      <Button
-        size="small"
-        aria-label="ai-refine"
-        sx={{ color: 'var(--green-1)', ...(buttonText ? {} : { borderRadius: '50%', minWidth: 'auto' }) }}
-        onClick={onClick}
-        disabled={disabled}
-        {...other}
-      >
-        {isLoading ? (
-          <CircularProgress size={16} />
-        ) : (
-          <>
-            {buttonText && <span style={{ marginRight: '4px' }}>{buttonText}</span>}
-            <AutoAwesomeRoundedIcon />
-          </>
-        )}
-      </Button>
+      <span>
+        <Button
+          size="small"
+          aria-label="ai-refine"
+          sx={{ color: 'var(--green-1)', ...(buttonText ? {} : { borderRadius: '50%', minWidth: 'auto' }) }}
+          onClick={onClick}
+          disabled={disabled}
+          {...other}
+        >
+          {isLoading ? (
+            <CircularProgress size={16} />
+          ) : (
+            <>
+              {buttonText && <span style={{ marginRight: '4px' }}>{buttonText}</span>}
+              <AutoAwesomeRoundedIcon />
+            </>
+          )}
+        </Button>
+      </span>
     </Tooltip>
   );
 };

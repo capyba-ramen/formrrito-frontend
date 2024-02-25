@@ -45,16 +45,9 @@ const Questions = () => {
   const { clearDirtyFields } = useClearDirtyFields();
 
   const handleQuestionsSubmit = () => {
-    let isValid = true;
-
-    questions.forEach(async (q, index) => {
-      const valid = await handleDirtyFieldsQuestion(q.qId, index);
-      if (!valid) {
-        isValid = false;
-      }
+    questions.forEach((q, index) => {
+      handleDirtyFieldsQuestion(q.qId, index);
     });
-
-    return isValid;
   };
 
   useAutoSave(method, 5000, handleQuestionsSubmit);
@@ -113,7 +106,6 @@ const Questions = () => {
             `questions.${index}.options`,
             res?.data?.map((el: Option) => ({ ...el, optionId: el.id }))
           );
-
           clearErrors();
           return true;
         })
@@ -167,11 +159,11 @@ const Questions = () => {
       {questions?.map((q, index: number) => (
         <QuestionItem
           index={index}
-          key={q.id}
+          key={q.qId}
           active={activeQuestionId === q.qId}
           error={!!Object.keys(errors?.questions?.[index] || {})?.length}
           onQuestionSwap={handleSwap}
-          {...q}
+          qId={q.qId}
           onClick={() => {
             handleClick(q.qId);
           }}

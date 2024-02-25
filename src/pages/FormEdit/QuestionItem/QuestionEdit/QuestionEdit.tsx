@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useFormContext, Controller, useFieldArray, useWatch } from 'react-hook-form';
+import { useFormContext, Controller, useFieldArray } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
 import Switch from '@mui/material/Switch';
@@ -59,7 +59,6 @@ const QuestionEdit = (props: QuestionEditProps) => {
     control,
     name: `questions.${index}.options`,
   });
-  const watchType = useWatch({ name: `questions.${index}.type` });
   const [titleSuggestion, setTitleSuggestion] = React.useState('');
   const [descriptionSuggestion, setDescriptionSuggestion] = React.useState('');
 
@@ -220,13 +219,7 @@ const QuestionEdit = (props: QuestionEditProps) => {
         )}
       />
       <div className={cx('content')}>
-        <Options
-          index={index}
-          options={fields as OptionField & { id: string }[]}
-          append={append}
-          remove={remove}
-          type={watchType}
-        />
+        <Options index={index} options={fields as OptionField & { id: string }[]} append={append} remove={remove} />
       </div>
       <div className={cx('actions')}>
         <div className={cx('action-left')}>
@@ -266,25 +259,29 @@ const QuestionEdit = (props: QuestionEditProps) => {
         </div>
         <div className={cx('swap-actions')}>
           <Tooltip title={index == 0 ? '' : 'Swap Up'}>
-            <IconButton
-              aria-label="swap up"
-              color="primary"
-              sx={{ marginRight: '8px' }}
-              disabled={index === 0}
-              onClick={handleSwapUp}
-            >
-              <ExpandLessIcon fontSize="small" />
-            </IconButton>
+            <span>
+              <IconButton
+                aria-label="swap up"
+                color="primary"
+                sx={{ marginRight: '8px' }}
+                disabled={index === 0}
+                onClick={handleSwapUp}
+              >
+                <ExpandLessIcon fontSize="small" />
+              </IconButton>
+            </span>
           </Tooltip>
           <Tooltip title={index === getValues('questions')?.length - 1 ? '' : 'Swap Down'}>
-            <IconButton
-              aria-label="swap down"
-              color="primary"
-              onClick={handleSwapDown}
-              disabled={index === getValues('questions')?.length - 1}
-            >
-              <ExpandMoreIcon fontSize="small" />
-            </IconButton>
+            <span>
+              <IconButton
+                aria-label="swap down"
+                color="primary"
+                onClick={handleSwapDown}
+                disabled={index === getValues('questions')?.length - 1}
+              >
+                <ExpandMoreIcon fontSize="small" />
+              </IconButton>
+            </span>
           </Tooltip>
         </div>
       </div>

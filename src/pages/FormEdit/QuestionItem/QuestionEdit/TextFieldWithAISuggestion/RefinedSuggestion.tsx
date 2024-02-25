@@ -14,28 +14,14 @@ export interface RefinedSuggestionProps {
   anchorEl: HTMLElement | null;
   onClose?: () => void;
   children?: React.ReactNode;
-  sameAsAnchorWidth?: boolean;
   isShowCloseButton?: boolean;
 }
 
 const RefinedSuggestion = (props: RefinedSuggestionProps) => {
-  const { open, anchorEl, onClose, children, sameAsAnchorWidth } = props;
+  const { open, anchorEl, onClose, children } = props;
 
   return (
-    <Popper
-      placement="bottom-start"
-      style={
-        sameAsAnchorWidth
-          ? {
-              width: anchorEl?.clientWidth,
-            }
-          : {}
-      }
-      role="menu"
-      open={open}
-      anchorEl={anchorEl}
-      className={cx('popper')}
-    >
+    <Popper placement="bottom-start" role="menu" open={open} anchorEl={anchorEl} className={cx('popper')} disablePortal>
       <Paper className={cx('root')}>
         {children}
         {onClose && (

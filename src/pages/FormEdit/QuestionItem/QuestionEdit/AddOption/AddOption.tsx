@@ -64,11 +64,11 @@ const AddOption = (props: AddOptionProps) => {
   };
 
   React.useEffect(() => {
-    if (!suggestedOptions.length) setOpen(false);
+    if (!suggestedOptions?.length) setOpen(false);
   }, [suggestedOptions]);
 
   return (
-    <>
+    <div className={cx('root')} ref={anchorRef}>
       <div style={{ display: 'flex', alignItems: 'center', color: 'var(--black)', cursor: 'pointer' }}>
         <Button
           startIcon={<AddIcon />}
@@ -79,7 +79,7 @@ const AddOption = (props: AddOptionProps) => {
           Add option
         </Button>
         <div className={cx('or')}>or</div>
-        <div ref={anchorRef}>
+        <div>
           <RefineButton
             tooltipTitle="Use AI to refine the options"
             onClick={handleButtonClick}
@@ -125,7 +125,7 @@ const AddOption = (props: AddOptionProps) => {
           </>
         )}
       </RefinedSuggestion>
-    </>
+    </div>
   );
 };
 

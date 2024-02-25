@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 import useUploadImage from '@/api/tool/useUploadImage';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
@@ -13,12 +13,13 @@ const cx = classNames.bind(style);
 
 const BannerWithUpload = () => {
   const formId = useParams()?.formId || '';
-  const { watch, setValue } = useFormContext();
+  const { setValue } = useFormContext();
   const { isMutating, trigger: uploadImage } = useUploadImage();
   const { validateFile } = useValidateFile({
     allowedTypes: ['image/jpeg', 'image/png'],
   });
   const { addNotification } = useNotification();
+  const watchImageUrl = useWatch({ name: `imageUrl` });
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) {
@@ -54,7 +55,7 @@ const BannerWithUpload = () => {
 
   return (
     <div className={cx('root')}>
-      <img src={`${import.meta.env.VITE_CDN_PATH}${watch('imageUrl')}`} alt="form-banner" />
+      <img src={`${import.meta.env.VITE_CDN_PATH}${watchImageUrl}`} alt="form-banner" />
       <label className={cx('overlay', { show: isMutating })} htmlFor="upload-banner">
         {isMutating ? (
           <CircularProgress size={24} color="secondary" />

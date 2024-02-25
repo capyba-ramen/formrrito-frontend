@@ -1,10 +1,10 @@
+import { useWatch } from 'react-hook-form';
 import AddOption from '../AddOption/AddOption';
 import Radio from '@mui/material/Radio';
 import Typography from '@mui/material/Typography';
 import Checkbox from '@mui/material/Checkbox';
 import Option from '../Option/Option';
 import { QuestionTypeEnum } from '@/constants/question';
-import { Question } from '@/types/question';
 import { OptionField } from '@/types/option';
 
 import * as classNames from 'classnames/bind';
@@ -12,7 +12,6 @@ import style from './Options.module.scss';
 const cx = classNames.bind(style);
 
 export interface OptionsProps {
-  type: Question['type'];
   append: (option: OptionField) => void;
   remove: (index: number) => void;
   options: OptionField & { id: string }[];
@@ -20,9 +19,10 @@ export interface OptionsProps {
 }
 
 const Options = (props: OptionsProps) => {
-  const { type, append, remove, options, index } = props;
+  const { append, remove, options, index } = props;
+  const watchType = useWatch({ name: `questions.${index}.type` });
 
-  switch (type) {
+  switch (watchType) {
     case QuestionTypeEnum.SIMPLE:
       return <Typography color="var(--gray-3)">ShortAnswer</Typography>;
     case QuestionTypeEnum.COMPLEX:

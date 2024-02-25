@@ -6,7 +6,7 @@ import { FieldValues, UseFormReturn, useWatch } from 'react-hook-form';
 export default function useAutoSave<T extends FieldValues>(
   useFormReturn: UseFormReturn<T>,
   debounceTime: number = 2000,
-  callback: () => void | Promise<void> | boolean
+  callback: () => void | Promise<void>
 ) {
   const {
     formState: { isDirty },

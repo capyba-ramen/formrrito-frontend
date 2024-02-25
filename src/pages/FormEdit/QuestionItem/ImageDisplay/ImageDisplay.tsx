@@ -1,4 +1,4 @@
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { useParams } from 'react-router-dom';
 
 import IconButton from '@mui/material/IconButton';
@@ -18,10 +18,11 @@ export interface ImageDisplayProps {
 
 const ImageDisplay = (props: ImageDisplayProps) => {
   const { qId, index, isEdit } = props;
-  const { watch, setValue, getValues } = useFormContext();
+  const { setValue, getValues } = useFormContext();
   const formId = useParams()?.formId || '';
   const { trigger: deleteImage } = useDeleteImage();
   const { errorsHandler } = useApiErrorHandlers();
+  const watchImageUrl = useWatch({ name: `questions.${index}.imageUrl` });
 
   const handleRemoveImage = () => {
     deleteImage({
@@ -38,13 +39,9 @@ const ImageDisplay = (props: ImageDisplayProps) => {
 
   return (
     <>
-      {watch(`questions.${index}.imageUrl`) && (
+      {watchImageUrl && (
         <div className={cx('root')}>
-          <img
-            className={cx('image')}
-            src={`${import.meta.env.VITE_CDN_PATH}${watch(`questions.${index}.imageUrl`)}`}
-            loading="lazy"
-          />
+          <img className={cx('image')} src={`${import.meta.env.VITE_CDN_PATH}${watchImageUrl}`} loading="lazy" />
           {isEdit && (
             <IconButton aria-label="delete" className={cx('delete-button')} onClick={handleRemoveImage}>
               <CloseIcon />

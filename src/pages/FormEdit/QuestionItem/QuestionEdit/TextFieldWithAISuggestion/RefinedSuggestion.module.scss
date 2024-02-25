@@ -1,15 +1,17 @@
-.root {
-  padding: 16px;
-  position: relative;
-}
-
 .popper {
   max-width: 100%;
-}
+  width: 100%;
+  z-index: var(--z-index-popper);
 
-.delete-button {
-  position: absolute;
-  top: -16px;
-  right: -16px;
-  background: var(--gray-1);
+  .root {
+    padding: 16px;
+    position: relative;
+
+    .delete-button {
+      position: absolute;
+      top: -16px;
+      right: -16px;
+      background-color: var(--gray-1);
+    }
+  }
 }
