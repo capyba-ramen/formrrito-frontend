@@ -14,7 +14,7 @@ interface UseValidateFileOptions {
 
 const defaultOptions: UseValidateFileOptions = {
   allowedTypes: [],
-  maxSizeInBytes: 1024 * 1024, // Default: 1MB
+  maxSizeInBytes: 5 * 1024 * 1024, // Default: 5MB
 };
 
 const useValidateFile = (options: UseValidateFileOptions = defaultOptions) => {
