@@ -4,10 +4,11 @@ import Button from '@mui/material/Button';
 import DownloadIcon from '@mui/icons-material/Download';
 import useDownloadResponses from '@/api/reply/useDownloadResponses';
 import useApiErrorHandlers from '@/api/useApiErrorsHandler';
+import CircularProgress from '@mui/material/CircularProgress';
 
 const DownloadExcelButton = () => {
   const { formId } = useParams();
-  const { trigger: downloadResponses } = useDownloadResponses();
+  const { trigger: downloadResponses, isMutating } = useDownloadResponses();
   const { errorsHandler } = useApiErrorHandlers();
 
   const handleDownloadResponses = () => {
@@ -25,8 +26,14 @@ const DownloadExcelButton = () => {
   };
 
   return (
-    <Button variant="outlined" size="large" startIcon={<DownloadIcon />} onClick={handleDownloadResponses}>
-      Download Excel
+    <Button
+      variant="outlined"
+      size="large"
+      startIcon={isMutating ? <CircularProgress size={16} sx={{ color: 'rgba(0, 0, 0, 0.26)' }} /> : <DownloadIcon />}
+      onClick={handleDownloadResponses}
+      disabled={isMutating}
+    >
+      {`${isMutating ? 'Generating' : 'Download'} Excel`}
     </Button>
   );
 };
