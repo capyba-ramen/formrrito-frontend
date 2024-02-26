@@ -11,8 +11,6 @@ import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Tooltip from '@mui/material/Tooltip';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 
@@ -40,11 +38,10 @@ const cx = classNames.bind(style);
 export interface QuestionEditProps {
   qId: string;
   index: number;
-  onQuestionSwap: (index1: number, index2: number) => void;
 }
 
 const QuestionEdit = (props: QuestionEditProps) => {
-  const { qId, index, onQuestionSwap } = props;
+  const { qId, index } = props;
   const formId = useParams()?.formId || '';
   const { control, getValues } = useFormContext();
   const { trigger: deleteQuestion } = useDeleteQuestion(qId, formId);
@@ -103,14 +100,6 @@ const QuestionEdit = (props: QuestionEditProps) => {
         }
       })
       .catch(errorsHandler);
-  };
-
-  const handleSwapUp = () => {
-    onQuestionSwap(index, index - 1);
-  };
-
-  const handleSwapDown = () => {
-    onQuestionSwap(index, index + 1);
   };
 
   const handleRefineTitle = () => {
@@ -257,33 +246,6 @@ const QuestionEdit = (props: QuestionEditProps) => {
               )}
             />
           </div>
-        </div>
-        <div className={cx('swap-actions')}>
-          <Tooltip title={index == 0 ? '' : 'Swap Up'}>
-            <span>
-              <IconButton
-                aria-label="swap up"
-                color="primary"
-                sx={{ marginRight: '8px' }}
-                disabled={index === 0}
-                onClick={handleSwapUp}
-              >
-                <ExpandLessIcon fontSize="small" />
-              </IconButton>
-            </span>
-          </Tooltip>
-          <Tooltip title={index === getValues('questions')?.length - 1 ? '' : 'Swap Down'}>
-            <span>
-              <IconButton
-                aria-label="swap down"
-                color="primary"
-                onClick={handleSwapDown}
-                disabled={index === getValues('questions')?.length - 1}
-              >
-                <ExpandMoreIcon fontSize="small" />
-              </IconButton>
-            </span>
-          </Tooltip>
         </div>
       </div>
     </div>
