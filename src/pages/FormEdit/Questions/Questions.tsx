@@ -10,7 +10,6 @@ import useChangeQuestionOrder from '@/api/question/useChangeQuestionOrder';
 import { OptionQuestionTypes } from '@/constants/question';
 import useClearDirtyFields from '@/hooks/useClearDirtyFields';
 import { Option, OptionField } from '@/types/option';
-import { QuestionField } from '@/types/question';
 import LinearProgress from '@mui/material/LinearProgress';
 
 import { FormValues } from '@/types/form';
@@ -20,6 +19,14 @@ import useAutoSave from '@/hooks/useAutoSave';
 import * as classNames from 'classnames/bind';
 import style from './Questions.module.scss';
 const cx = classNames.bind(style);
+
+interface DragAndDrop {
+  draggedFrom: number | null;
+  draggedTo: number | null;
+  isDragging: boolean;
+  originalOrder: string[];
+  updatedOrder: string[];
+}
 
 const Questions = () => {
   const [activeQuestionId, setActiveQuestionId] = React.useState<string | undefined>(undefined);
@@ -43,7 +50,7 @@ const Questions = () => {
   const {
     append,
     fields: questions,
-    swap,
+    move,
   } = useFieldArray<FormValues, 'questions'>({
     name: 'questions',
   });
@@ -147,24 +154,83 @@ const Questions = () => {
     setActiveQuestionId(qId);
   };
 
-  const handleSwap = async (index1: number, index2: number) => {
-    if (Object.keys(errors?.questions?.[index1] || {})?.length) return;
-    if (index1 < 0 || index2 < 0 || index1 >= questions.length) return;
+  const [dragAndDrop, setDragAndDrop] = React.useState<DragAndDrop>({
+    draggedFrom: null,
+    draggedTo: null,
+    isDragging: false,
+    originalOrder: [],
+    updatedOrder: [],
+  });
 
-    const isSuccess = await handleDirtyFieldsQuestion(questions[index1].qId, index1);
-    if (!isSuccess) return;
+  const onDragStart = (event: React.DragEvent<HTMLDivElement>) => {
+    setActiveQuestionId(undefined);
+    const initialPosition = Number(event.currentTarget.dataset.position);
 
-    swap(index1, index2);
+    setDragAndDrop({
+      ...dragAndDrop,
+      draggedFrom: initialPosition,
+      isDragging: true,
+      originalOrder: questions.map((el) => el.qId),
+    });
 
-    changeQuestionOrder({
-      form_id: formId,
-      question_ids_in_order: getValues('questions').map((el: QuestionField) => el.qId),
-    }).then(() => {
-      /**
-       * react-hook-form swap will cause swaped fields to be dirty though content is the same, so we need to clear dirty fields
-       * ref: https://github.com/react-hook-form/react-hook-form/issues/8309
-       **/
-      clearDirtyFields();
+    // Note: this is only for Firefox.
+    event.dataTransfer.setData('text/html', '');
+  };
+
+  const onDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    if (dragAndDrop.draggedFrom === null) return;
+
+    let newList = dragAndDrop.originalOrder;
+
+    // index of the item being dragged
+    const draggedFrom = dragAndDrop.draggedFrom;
+
+    // index of the droppable area being hovered
+    const draggedTo = Number(event.currentTarget.dataset.position);
+
+    const itemDragged = newList[draggedFrom];
+    const remainingItems = newList.filter((_, index) => index !== draggedFrom);
+
+    newList = [...remainingItems.slice(0, draggedTo), itemDragged, ...remainingItems.slice(draggedTo)];
+
+    if (draggedTo !== dragAndDrop.draggedTo) {
+      setDragAndDrop({
+        ...dragAndDrop,
+        updatedOrder: newList,
+        draggedTo: draggedTo,
+      });
+    }
+  };
+
+  const onDrop = () => {
+    if (dragAndDrop.draggedFrom !== dragAndDrop.draggedTo) {
+      changeQuestionOrder({
+        form_id: formId,
+        question_ids_in_order: dragAndDrop.updatedOrder,
+      }).then(() => {
+        if (dragAndDrop.draggedFrom === null || dragAndDrop.draggedTo === null) return;
+        move(dragAndDrop.draggedFrom, dragAndDrop.draggedTo);
+        /**
+         * react-hook-form swap will cause swaped fields to be dirty though content is the same, so we need to clear dirty fields
+         * ref: https://github.com/react-hook-form/react-hook-form/issues/8309
+         **/
+        clearDirtyFields();
+      });
+    }
+
+    setDragAndDrop({
+      ...dragAndDrop,
+      draggedFrom: null,
+      draggedTo: null,
+      isDragging: false,
+    });
+  };
+
+  const onDragLeave = () => {
+    setDragAndDrop({
+      ...dragAndDrop,
+      draggedTo: null,
     });
   };
 
@@ -181,7 +247,6 @@ const Questions = () => {
           key={q.qId}
           active={activeQuestionId === q.qId}
           error={!!Object.keys(errors?.questions?.[index] || {})?.length}
-          onQuestionSwap={handleSwap}
           qId={q.qId}
           onClick={() => {
             handleClick(q.qId);
@@ -189,6 +254,16 @@ const Questions = () => {
           onQuestionClickAway={() => {
             handleClickAway(q.qId, index);
           }}
+          onDragStart={onDragStart}
+          onDragOver={onDragOver}
+          onDrop={onDrop}
+          onDragLeave={onDragLeave}
+          className={cx({ last: index === questions.length - 1 })}
+          style={
+            dragAndDrop.draggedTo === Number(index)
+              ? ({ '--color': 'var(--blue-1)', background: 'rgba(0,0,0,0.05)' } as React.CSSProperties)
+              : {}
+          }
         />
       ))}
       <AddQuestionButton sx={{ marginTop: '16px' }} append={append} setActiveQuestionId={setActiveQuestionId} />
