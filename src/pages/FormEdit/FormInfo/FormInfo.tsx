@@ -14,7 +14,7 @@ import style from './FormInfo.module.scss';
 const cx = classNames.bind(style);
 
 const FormInfo = () => {
-  const { formId } = useParams();
+  const formId = useParams()?.formId || '';
   const {
     control,
     getValues,

@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import useCFormRequest from '@/api/reply/useCFormRequest';
 import { Question } from '@/types/question';
-import { ReplyField, FormValues } from '@/types/reply';
+import { ReplyField } from '@/types/reply';
 import FormFieldWrapper from '@/components/FormFieldWrapper/FormFieldWrapper';
 import useApiErrorHandlers from '@/api/useApiErrorsHandler';
 import useSubmitCForm from '@/api/reply/useSubmitCForm';
@@ -37,7 +37,7 @@ const FormFiller = () => {
   const { openDialog } = useDialog(DialogTypes.INFO_DIALOG);
   const navigate = useNavigate();
 
-  const { fields } = useFieldArray<FormValues, 'replies'>({
+  const { fields } = useFieldArray<{ replies: ReplyField[] }, 'replies'>({
     control: methods.control,
     name: 'replies',
   });

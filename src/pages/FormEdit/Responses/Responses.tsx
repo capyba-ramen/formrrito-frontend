@@ -9,13 +9,14 @@ import { FormApiFields } from '@/constants/form';
 import useClearDirtyFields from '@/hooks/useClearDirtyFields';
 import useReplyStatisticsRequest from '@/api/reply/useReplyStatisticsRequest';
 import ResponsesStats from '../ResponsesStats/ResponsesStats';
+import useApiErrorHandlers from '@/api/useApiErrorsHandler';
 
 import * as classNames from 'classnames/bind';
 import style from './Responses.module.scss';
 const cx = classNames.bind(style);
 
 const Responses = () => {
-  const { formId } = useParams();
+  const formId = useParams()?.formId || '';
   const {
     control,
     trigger,
@@ -24,9 +25,13 @@ const Responses = () => {
   } = useFormContext();
   const { trigger: updateForm } = useUpdateForm();
   const { clearDirtyFields } = useClearDirtyFields();
-  const { data } = useReplyStatisticsRequest(formId);
+  const { data, error } = useReplyStatisticsRequest(formId);
+  const { errorsHandler } = useApiErrorHandlers();
 
   React.useEffect(() => {
+    if (error) {
+      errorsHandler(error);
+    }
     if (!data) return;
 
     reset((formValues) => ({

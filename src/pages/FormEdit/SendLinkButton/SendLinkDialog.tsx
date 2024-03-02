@@ -17,9 +17,14 @@ import * as classNames from 'classnames/bind';
 import style from './SendLinkDialog.module.scss';
 const cx = classNames.bind(style);
 
-const SendLinkDialog = (props) => {
+export interface SendLinkDialogProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+const SendLinkDialog = (props: SendLinkDialogProps) => {
   const { open, onClose } = props;
-  const { formId } = useParams();
+  const formId = useParams()?.formId || '';
   const { addNotification } = useNotification();
   const linkPrefix = import.meta.env.VITE_PUBLIC_PATH;
 

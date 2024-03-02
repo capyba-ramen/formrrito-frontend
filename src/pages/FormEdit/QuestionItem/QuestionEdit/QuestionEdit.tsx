@@ -88,15 +88,16 @@ const QuestionEdit = (props: QuestionEditProps) => {
       type,
     })
       .then((res) => {
-        if (NonOptionQuestionTypes.includes(type)) {
-          remove();
-        }
-
         if (res?.data?.option) {
           append({
             optionId: res.data.option.id,
             title: res.data.option.title,
           });
+          return;
+        }
+
+        if (NonOptionQuestionTypes.includes(type)) {
+          remove();
         }
       })
       .catch(errorsHandler);

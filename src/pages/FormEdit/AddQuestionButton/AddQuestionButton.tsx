@@ -16,7 +16,7 @@ export interface AddQuestionButtonProps extends ButtonProps {
 
 const AddQuestionButton = (props: AddQuestionButtonProps) => {
   const { append, setActiveQuestionId, ...other } = props;
-  const { formId } = useParams();
+  const formId = useParams()?.formId || '';
 
   const { trigger: postCreateQuestion } = useCreateQuestion(formId);
 

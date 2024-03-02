@@ -24,7 +24,7 @@ const AddOption = (props: AddOptionProps) => {
   const { trigger: refineOptions, isMutating } = useRefineOptions();
   const { getValues } = useFormContext();
   const [open, setOpen] = React.useState(false);
-  const [suggestedOptions, setSuggestedOptions] = React.useState([]);
+  const [suggestedOptions, setSuggestedOptions] = React.useState<string[]>([]);
   const anchorRef = React.useRef<HTMLDivElement | null>(null);
   const { errorsHandler } = useApiErrorHandlers();
   const handleButtonClick = () => {
