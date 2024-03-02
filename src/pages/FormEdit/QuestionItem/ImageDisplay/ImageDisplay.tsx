@@ -25,6 +25,8 @@ const ImageDisplay = (props: ImageDisplayProps) => {
   const watchImageUrl = useWatch({ name: `questions.${index}.imageUrl` });
 
   const handleRemoveImage = () => {
+    if (!qId) return;
+
     deleteImage({
       delete_type: 'question',
       form_id: formId,

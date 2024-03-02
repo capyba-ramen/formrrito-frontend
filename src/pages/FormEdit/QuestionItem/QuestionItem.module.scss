@@ -7,11 +7,11 @@
   transition: background-color 0.3s;
   background-color: var(--white);
 
-  &:hover:not(.active, .error) {
+  &:hover:not(.editing, .error) {
     border: 1px solid var(--gray-3);
   }
 
-  &:not(&.active) {
+  &:not(&.editing) {
     cursor: pointer;
   }
 
@@ -38,8 +38,9 @@
   }
 }
 
-.active {
+.editing {
   border: 1px solid var(--green-1);
+  padding-top: 16px;
 }
 
 .error {

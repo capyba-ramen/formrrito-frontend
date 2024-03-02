@@ -12,7 +12,7 @@ import useClearDirtyFields from '@/hooks/useClearDirtyFields';
 import { Option, OptionField } from '@/types/option';
 import LinearProgress from '@mui/material/LinearProgress';
 
-import { FormValues } from '@/types/form';
+import { FormField } from '@/types/form';
 import AddQuestionButton from '../AddQuestionButton/AddQuestionButton';
 import useAutoSave from '@/hooks/useAutoSave';
 
@@ -51,7 +51,7 @@ const Questions = () => {
     append,
     fields: questions,
     move,
-  } = useFieldArray<FormValues, 'questions'>({
+  } = useFieldArray<FormField, 'questions'>({
     name: 'questions',
   });
 
@@ -87,7 +87,6 @@ const Questions = () => {
       questionDirtyFields?.description ||
       questionDirtyFields?.required ||
       questionDirtyFields?.options?.some((o: OptionField) => o.optionId || o.title) ||
-      questionDirtyFields?.options === true ||
       questionDirtyFields?.imageUrl
     ) {
       const updateOptionsPromise =
@@ -122,11 +121,16 @@ const Questions = () => {
 
       return Promise.all([updateOptionsPromise, updateQuestionPromise])
         .then(([res, questionRes]) => {
-          setValue(
-            `questions.${index}.options`,
-            res?.data?.map((el: Option) => ({ ...el, optionId: el.id }))
-          );
-          setValue(`questions.${index}.imageUrl`, questionRes?.data?.permanent_image_url);
+          if (res?.data) {
+            setValue(
+              `questions.${index}.options`,
+              res?.data?.map((el: Option) => ({ ...el, optionId: el.id }))
+            );
+          }
+
+          if (questionRes?.data?.permanent_image_url) {
+            setValue(`questions.${index}.imageUrl`, questionRes?.data?.permanent_image_url);
+          }
           clearErrors();
           return true;
         })

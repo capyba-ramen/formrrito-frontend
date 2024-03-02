@@ -7,7 +7,7 @@ import useApiErrorHandlers from '@/api/useApiErrorsHandler';
 import CircularProgress from '@mui/material/CircularProgress';
 
 const DownloadExcelButton = () => {
-  const { formId } = useParams();
+  const formId = useParams()?.formId || '';
   const { trigger: downloadResponses, isMutating } = useDownloadResponses();
   const { errorsHandler } = useApiErrorHandlers();
 

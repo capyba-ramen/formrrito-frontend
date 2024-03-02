@@ -1,5 +1,10 @@
 import createRequestApi from '@/api/createRequestApi';
-import { UserInfoApiData } from '@/types/user';
+
+type UserInfoApiData = {
+  user_id: string;
+  username: string;
+  expire_time: string;
+};
 
 const {
   useRequest: useUserInfoRequest,

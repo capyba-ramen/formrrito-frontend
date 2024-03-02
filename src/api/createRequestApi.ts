@@ -47,7 +47,7 @@ export default function createRequestApi<T>(config: Config) {
     };
   };
 
-  const preloadByKey = (params: any) => preload(serializeKey(_key, params), (url) => client.get(url));
+  const preloadByKey = (params: any) => preload(serializeKey(_key, params), (url: string) => client.get(url));
 
   const mutateByKey = (params: any, args: Parameters<typeof mutate>) => mutate(serializeKey(_key, params), args);
 

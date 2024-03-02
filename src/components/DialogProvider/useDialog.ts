@@ -5,7 +5,7 @@ const useDialog = (key: string) => {
   const { openDialog, closeDialog } = React.useContext(DialogContext);
 
   const handleOpenDialog = React.useCallback(
-    ({ component, dialogProps }: { component?: React.FC; dialogProps?: any }) => {
+    ({ component, dialogProps }: { component?: React.FC<any>; dialogProps?: any }) => {
       openDialog(key, { component, dialogProps });
     },
     [key, openDialog]

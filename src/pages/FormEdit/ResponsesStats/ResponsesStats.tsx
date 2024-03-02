@@ -5,7 +5,7 @@ import { QuestionStat } from '@/types/reply';
 import Typography from '@mui/material/Typography';
 
 const ResponsesStats = () => {
-  const { formId } = useParams();
+  const formId = useParams()?.formId || '';
   const { data } = useReplyStatisticsRequest(formId, { revalidateOnMount: false });
 
   return (

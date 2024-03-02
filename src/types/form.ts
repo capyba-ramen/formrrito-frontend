@@ -12,28 +12,8 @@ export type Form = {
   questions: Question[];
 };
 
-export type FormListApiData = {
-  count: number;
-  has_next: boolean;
-  limit: number;
-  offset: number;
-  result: Form[];
-  next: number;
-};
-
-export type FormCreateApiData = {
-  data: {
-    form_id: string;
-  };
-};
-
-export type TemplateFormCreateApiData = {
-  data: {
-    form_id: string;
-  };
-};
-
-export type FormValues = {
+// type used in the react-hook-form form
+export type FormField = {
   title: string;
   description: string;
   acceptsReply: boolean;

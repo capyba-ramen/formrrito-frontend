@@ -19,28 +19,15 @@
   }
 }
 
-.content {
-  padding: 16px 0;
-  margin-bottom: 8px;
-  border-bottom: 1px solid var(--gray-2);
-}
+.options {
+  border-top: 1px solid var(--gray-2);
+  margin-top: 12px;
 
-.actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-
-.action-left {
-  display: flex;
-  align-items: center;
-}
-
-.switch {
-  margin-left: 16px;
-  display: flex;
-  align-items: center;
+  &.editing {
+    padding: 16px 0;
+    margin: 0 0 8px;
+    border-bottom: 1px solid var(--gray-2);
+  }
 }
 
 .select:focus {

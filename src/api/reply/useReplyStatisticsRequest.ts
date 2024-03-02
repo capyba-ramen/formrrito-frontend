@@ -1,5 +1,11 @@
 import createRequestApi from '@/api/createRequestApi';
-import { ReplyStatisticsApiData } from '@/types/reply';
+import { QuestionStat } from '@/types/reply';
+
+type ReplyStatisticsApiData = {
+  total: number;
+  accepts_reply: boolean;
+  question_stats: QuestionStat[];
+};
 
 const {
   useRequest: useReplyStatisticsRequest,

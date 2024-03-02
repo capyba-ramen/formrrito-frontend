@@ -11,6 +11,7 @@ export type Question = {
   created_at: string;
 };
 
+// type used in the react-hook-form form
 export type QuestionField = {
   qId: string;
   type: number;

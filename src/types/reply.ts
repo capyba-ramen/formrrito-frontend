@@ -8,16 +8,11 @@ export type Reply = {
   answer?: string;
 };
 
+// type used in the react-hook-form form
 export interface ReplyField extends Question {
   value: string | string[];
   question_id: string;
 }
-
-export type ReplyStatisticsApiData = {
-  total: number;
-  accepts_reply: boolean;
-  question_stats: QuestionStat[];
-};
 
 export type QuestionStat = {
   title: string;
@@ -30,8 +25,4 @@ export type QuestionStat = {
 export type OptionStat = {
   title: string;
   count: number;
-};
-
-export type FormValues = {
-  replies: ReplyField[];
 };
