@@ -26,7 +26,7 @@ export interface FormCardProps extends CardProps {
   title?: string;
   openDateTime?: string;
   formId: string;
-  onDelete: (formId: string) => void;
+  onDelete: () => void;
 }
 
 const FormCard = (props: FormCardProps) => {
@@ -34,7 +34,6 @@ const FormCard = (props: FormCardProps) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const { trigger: deleteForm } = useDeleteForm();
   const { addNotification } = useNotification();
-
   const handleMoreClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -43,7 +42,7 @@ const FormCard = (props: FormCardProps) => {
     deleteForm({
       formId,
     }).then(() => {
-      onDelete(formId);
+      onDelete();
       addNotification({
         message: 'Form deleted successfully',
       });
