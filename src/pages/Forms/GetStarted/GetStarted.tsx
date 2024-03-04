@@ -8,7 +8,6 @@ import AddIcon from '@mui/icons-material/Add';
 import useCreateForm from '@/api/form/useCreateForm';
 import { TemplateForms } from '@/constants/form';
 import TemplateItem from '@/components/TemplateItem/TemplateItem';
-import useFormsRequest from '@/api/form/useFormsRequest';
 
 import * as classNames from 'classnames/bind';
 import style from './GetStarted.module.scss';
@@ -17,13 +16,11 @@ const cx = classNames.bind(style);
 const GetStarted = () => {
   const { trigger: postCreateForm } = useCreateForm();
   const navigate = useNavigate();
-  const { mutate } = useFormsRequest({ start: '1', size: '12', sort: 'desc' });
 
   const handleCreateForm = () => {
     postCreateForm().then((res) => {
       if (res) {
         navigate(`/form/${res.data.form_id}`);
-        mutate();
       }
     });
   };

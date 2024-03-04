@@ -1,4 +1,5 @@
 import * as React from 'react';
+import useSWRInfinite, { SWRInfiniteKeyLoader } from 'swr/infinite';
 
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
@@ -6,58 +7,71 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
 import SwitchRightIcon from '@mui/icons-material/SwitchRight';
 import Tooltip from '@mui/material/Tooltip';
+import { generateQueryString } from '@/utils/queryString';
 
 import FormCard from '@/components/FormCard/FormCard';
 import SkeletonFormCard from '@/components/FormCard/SkeletonFormCard';
-import useFormsRequest from '@/api/form/useFormsRequest';
-import useIntersectionObserver from '@/hooks/useIntersectionObserver';
+import useOnScreen from '@/hooks/useOnScreen';
 import { Form } from '@/types/form';
+import { getFetcher } from '@/api/fetchers';
 
 import * as classNames from 'classnames/bind';
 import style from './FormList.module.scss';
 const cx = classNames.bind(style);
 
-const mergeResponseData = (prev: Form[], curr: Form[]) => {
-  if (!prev) return curr;
-
-  const uniqueElements = new Set([...prev, ...curr].map((el) => JSON.stringify(el)));
-  return Array.from(uniqueElements).map((el) => JSON.parse(el));
+type FormListApiData = {
+  count: number;
+  has_next: boolean;
+  limit: number;
+  offset: number;
+  result: Form[];
+  next: number;
 };
 
 const FormList = () => {
-  const [start, setStart] = React.useState('1');
   const [sortDesc, setSortDesc] = React.useState(true);
-  const [forms, setForms] = React.useState<Form[]>([]);
-  const { data, isFetching } = useFormsRequest({ start, size: '12', sort: sortDesc ? 'desc' : 'asc' });
-  const ref = React.useRef(null);
-  useIntersectionObserver(ref, (entry) => {
-    const isVisible = !!entry?.isIntersecting;
-    if (isVisible) {
-      setStart(`${data?.next}`);
-    }
+  const getKey: SWRInfiniteKeyLoader = (_, previousPageData: FormListApiData | null) => {
+    const url = `/api/form/list${generateQueryString({
+      start: previousPageData?.next?.toString() || '1',
+      size: '12',
+      sort: sortDesc ? 'desc' : 'asc',
+    })}`;
+
+    return url;
+  };
+
+  const { data, mutate, size, setSize, isValidating, isLoading } = useSWRInfinite<
+    FormListApiData,
+    unknown,
+    SWRInfiniteKeyLoader
+  >(getKey, getFetcher, {
+    revalidateFirstPage: false,
+    revalidateAll: false,
   });
+  const ref = React.useRef(null);
+  const forms = data?.map((el) => el?.result);
+  const isEmpty = !forms?.[0]?.length;
+  const isVisible = useOnScreen(ref);
+
+  React.useEffect(() => {
+    if (isVisible && data && !isLoading && !isValidating && data?.[size - 1]?.has_next) {
+      setSize((prev) => prev + 1);
+    }
+  }, [isVisible, data]);
 
   const handleSortClick = () => {
     setSortDesc((prev) => !prev);
-    setStart('1');
-    setForms([]);
   };
 
-  React.useEffect(() => {
-    if (!data) return;
-
-    setForms((prev) => mergeResponseData(prev, data.result));
-  }, [data]);
-
-  const onDelete = (formId: string) => {
-    setForms((prev) => prev.filter((el: Form) => el.id !== formId));
+  const onDelete = () => {
+    mutate();
   };
 
   return (
     <section className={cx('root')}>
       <div className={cx('title')}>
         <Typography fontWeight={700}>Recent Forms</Typography>
-        {forms?.length !== 0 && (
+        {!isEmpty && (
           <Tooltip title="Sort by date opened">
             <Button
               startIcon={
@@ -78,9 +92,9 @@ const FormList = () => {
         )}
       </div>
       <Grid container spacing={2}>
-        {forms?.length === 0 ? (
+        {isEmpty ? (
           <>
-            {isFetching ? (
+            {isLoading || isValidating ? (
               <>
                 {Array.from(new Array(6)).map((_, idx) => (
                   <Grid key={idx} item xs={6} sm={6} md={4} lg={3}>
@@ -98,25 +112,27 @@ const FormList = () => {
           </>
         ) : (
           <>
-            {forms?.map((el: Form) => (
-              <Grid key={el.id} item xs={6} sm={6} md={4} lg={3}>
-                <FormCard
-                  onDelete={onDelete}
-                  formId={el.id}
-                  image={`${import.meta.env.VITE_CDN_PATH}${el.image_url}`}
-                  title={el.title}
-                  openDateTime={el?.opened_at}
-                />
-              </Grid>
-            ))}
-            {isFetching && !!forms?.length && (
+            {forms?.map((res) =>
+              res.map((el: Form) => (
+                <Grid key={el.id} item xs={6} sm={6} md={4} lg={3}>
+                  <FormCard
+                    onDelete={onDelete}
+                    formId={el.id}
+                    image={`${import.meta.env.VITE_CDN_PATH}${el.image_url}`}
+                    title={el.title}
+                    openDateTime={el?.opened_at}
+                  />
+                </Grid>
+              ))
+            )}
+            {(isLoading || isValidating) && !isEmpty && (
               <div style={{ width: '100%', textAlign: 'center', padding: '32px' }}>
                 <CircularProgress color="primary" />
               </div>
             )}
           </>
         )}
-        {!isFetching && data?.has_next && <div ref={ref} style={{ width: '100%' }} />}
+        <div ref={ref} style={{ height: '5px', background: 'blue' }} />
       </Grid>
     </section>
   );
